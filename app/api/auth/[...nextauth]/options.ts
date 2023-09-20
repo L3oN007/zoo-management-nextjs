@@ -1,8 +1,9 @@
-import type { NextAuthOptions } from 'next-auth';
+import { getServerSession, type NextAuthOptions } from 'next-auth';
 import GitHubProvider from 'next-auth/providers/github';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { GithubProfile } from 'next-auth/providers/github';
-import axios from 'axios'; 
+import axios from 'axios'; // Import Axios for HTTP requests
+import { getSession } from 'next-auth/react';
 
 export const options: NextAuthOptions = {
     providers: [
@@ -26,12 +27,12 @@ export const options: NextAuthOptions = {
                 username: {
                     label: 'Username:',
                     type: 'text',
-                    placeholder: 'Enter username',
+                    placeholder: 'your-cool-username',
                 },
                 password: {
                     label: 'Password:',
                     type: 'password',
-                    placeholder: 'Enter password',
+                    placeholder: 'your-awesome-password',
                 },
             },
             async authorize(credentials) {
@@ -80,5 +81,13 @@ export const options: NextAuthOptions = {
             }
             return session;
         },
+        async redirect({ url, baseUrl }) {
+            const session = await getServerSession(options);
+            
+            console.log('url', url);
+            console.log('baseUrl', baseUrl);
+
+            return url.startsWith(baseUrl) ? url : `${baseUrl}/${session?.user?.role}`;
+        }
     },
 };
