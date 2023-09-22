@@ -1,26 +1,9 @@
-import { getServerSession, type NextAuthOptions } from 'next-auth';
-import GitHubProvider from 'next-auth/providers/github';
-import CredentialsProvider from 'next-auth/providers/credentials';
-import { GithubProfile } from 'next-auth/providers/github';
 import axios from 'axios'; // Import Axios for HTTP requests
-import { getSession } from 'next-auth/react';
+import { type NextAuthOptions } from 'next-auth';
+import CredentialsProvider from 'next-auth/providers/credentials';
 
 export const options: NextAuthOptions = {
     providers: [
-        GitHubProvider({
-            profile(profile: GithubProfile) {
-                return {
-                    ...profile,
-                    role: profile.role ?? 'user',
-                    id: profile.id.toString(),
-                    image: profile.avatar_url,
-                    accessToken: '', // Add the actual access token here
-                    refreshToken: '', // Add the actual refresh token here
-                };
-            },
-            clientId: process.env.GITHUB_ID as string,
-            clientSecret: process.env.GITHUB_SECRET as string,
-        }),
         CredentialsProvider({
             name: 'Credentials',
             credentials: {
@@ -63,6 +46,13 @@ export const options: NextAuthOptions = {
         }),
     ],
     callbacks: {
+        // async redirect({ url, baseUrl }) {
+        //     // Allows relative callback URLs
+        //     if (url.startsWith("/")) return `${baseUrl}${url}`
+        //     // Allows callback URLs on the same origin
+        //     else if (new URL(url).origin === baseUrl) return url
+        //     return baseUrl
+        // },
         // Include accessToken and refreshToken in the token object
         async jwt({ token, user }) {
             if (user) {
@@ -81,13 +71,9 @@ export const options: NextAuthOptions = {
             }
             return session;
         },
-        async redirect({ url, baseUrl }) {
-            const session = await getServerSession(options);
-            
-            console.log('url', url);
-            console.log('baseUrl', baseUrl);
 
-            return url.startsWith(baseUrl) ? url : `${baseUrl}/${session?.user?.role}`;
-        }
     },
+    pages:{
+        signIn:'/',       
+    }
 };
