@@ -36,7 +36,7 @@ export const options: NextAuthOptions = {
                             refreshToken: user.refreshToken,
                         };
                     } else {
-                        return null;
+                        return "null";
                     }
                 } catch (error) {
                     console.error(error);
@@ -74,6 +74,7 @@ export const options: NextAuthOptions = {
 
     },
     pages:{
-        signIn:'/',       
+        signIn:'/',  
+        error: "Username or Password is incorrect"     
     }
 };
