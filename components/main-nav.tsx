@@ -4,43 +4,46 @@ import Link from 'next/link';
 import { useParams, usePathname } from 'next/navigation';
 
 import { cn } from '@/lib/utils';
+import { type } from 'os';
 
-export function MainNav({ className, ...props }: React.HTMLAttributes<HTMLElement>) {
+type Route = {
+	href: string;
+	label: string;
+	active: boolean;
+};
+
+export function MainNav({ className, role, ...props }: React.HTMLAttributes<HTMLElement>) {
 	const pathname = usePathname();
 	const params = useParams();
+	let routes: Route[] = [];
 
-	const routes = [
-		{
-			href: `/api/auth/signin`,
-			label: 'Login',
-			active: pathname === `/api/auth/signin`,
-		},
-		{
-			href: `/api/auth/signout`,
-			label: 'Logout',
-			active: pathname === `/api/auth/signout`,
-		},
-		{
-			href: `/admin`,
-			label: 'Admin',
-			active: pathname === `/admin`,
-		},
-		{
-			href: `/staff`,
-			label: 'Staff',
-			active: pathname === `/staff`,
-		},
-		{
-			href: `/trainer`,
-			label: 'Trainer',
-			active: pathname === `/trainer`,
-		},
-		{
-			href: `/${params.storeId}/billboards`,
-			label: 'XXXXXX',
-			active: pathname === `/${params.storeId}/billboards`,
-		},
-	];
+	if (role === 'admin') {
+		routes = [
+			{
+				href: `/api/auth/signin`,
+				label: 'Login',
+				active: pathname === `/api/auth/signin`,
+			},
+			{
+				href: `/api/auth/signout`,
+				label: 'Logout',
+				active: pathname === `/api/auth/signout`,
+			},
+			{
+				href: `/admin/manage-staff`,
+				label: 'Manage Staffs',
+				active: pathname === `/admin/manage-staff`,
+			},
+			{
+				href: `/${params.storeId}/billboards`,
+				label: 'XXXXXX',
+				active: pathname === `/${params.storeId}/billboards`,
+			},
+		];
+	} else if (role === 'staff') {
+
+	}
+
 
 	return (
 		<nav className={cn('flex items-center space-x-4 lg:space-x-6', className)} {...props}>

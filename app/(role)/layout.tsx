@@ -1,18 +1,12 @@
-
-
+import AdminNavbar from '@/components/admin-navbar';
 import Navbar from '@/components/navbar';
 
 
-export default async function DashboardLayout({
-    children
-}: {
-    children: React.ReactNode
-
-}) {
-    return (
-        <>
-            <Navbar />
-            {children}
-        </>
-    );
-};
+export default async function RoleLayout({ children }: { children: React.ReactNode }) {
+	return (
+		<>
+			<Navbar />
+			{children}
+		</>
+	);
+}

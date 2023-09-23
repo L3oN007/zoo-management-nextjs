@@ -33,8 +33,8 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
 				callbackUrl: '/redirect',
 			});
 
-			if (result.error) {
-				setError("Username or password doesn't match.");
+			if (result?.error) {
+				setError('Username or password is not correct.');
 			} else {
 				// If the signIn was successful, navigate to '/redirect'
 				router.push('/redirect');

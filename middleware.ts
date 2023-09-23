@@ -40,4 +40,4 @@ export default withAuth(
 
 // Applies next-auth only to matching routes - can be regex
 // Ref: https://nextjs.org/docs/app/building-your-application/routing/middleware#matcher
-export const config = { matcher: ["/admin", "/staff", "/trainer"] }
+export const config = { matcher: ["/admin/:path*", "/staff/:path*", "/trainer/:path*"] }

@@ -12,10 +12,13 @@ import {
 	DropdownMenuShortcut,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
-export function UserNav() {
+
+export function UserNav({ userRole }: { userRole: string | undefined }) {
 	const router = useRouter();
+
+
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
@@ -35,13 +38,13 @@ export function UserNav() {
 						</Avatar>
 						<div className='flex flex-col space-y-1'>
 							<p className='text-sm font-medium leading-none'>Minh Nhat</p>
-							<p className='text-xs leading-none text-muted-foreground mt-1'>Role : Admin</p>
+							<p className='text-xs leading-none text-muted-foreground mt-1'>Role : {userRole} </p>
 						</div>
 					</div>
 				</DropdownMenuLabel>
 				<DropdownMenuSeparator />
 				<DropdownMenuGroup>
-					<DropdownMenuItem onClick={() => router.push('/settings')}>
+					<DropdownMenuItem onClick={() => router.push('/admin/settings')}>
 						Profile
 						<DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
 					</DropdownMenuItem>
