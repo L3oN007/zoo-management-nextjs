@@ -22,12 +22,12 @@ export function DataTableToolbar<TData>({
     const isFiltered = table.getState().columnFilters.length > 0
     const statuses = [
         {
-            value: "yes",
+            value: "0",
             label: "Active",
             icon: CheckCircledIcon,
         },
         {
-            value: "no",
+            value: "1",
             label: "Inactive",
             icon: CrossCircledIcon,
         },
