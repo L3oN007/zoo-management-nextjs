@@ -22,12 +22,12 @@ export function DataTableToolbar<TData>({
     const isFiltered = table.getState().columnFilters.length > 0
     const statuses = [
         {
-            value: "0",
+            value: "yes",
             label: "Active",
             icon: CheckCircledIcon,
         },
         {
-            value: "1",
+            value: "no",
             label: "Inactive",
             icon: CrossCircledIcon,
         },
@@ -44,9 +44,9 @@ export function DataTableToolbar<TData>({
                     }
                     className="h-8 w-[150px] lg:w-[250px]"
                 />
-                {table.getColumn("status") && (
+                {table.getColumn("isDeleted") && (
                     <DataTableFacetedFilter
-                        column={table.getColumn("status")}
+                        column={table.getColumn("isDeleted")}
                         title="Status"
                         options={statuses}
                     />
