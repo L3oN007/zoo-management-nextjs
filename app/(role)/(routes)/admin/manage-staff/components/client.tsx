@@ -16,8 +16,6 @@ interface ManageStaffClientProps {
 
 export const ManageStaffClient: FC<ManageStaffClientProps> = (data) => {
     const router = useRouter();
-    const params = useParams();
-
 
     return (
         <>

@@ -5,6 +5,8 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown, MoreHorizontal } from "lucide-react"
+import { CellAction } from './cell-action';
+import { DataTableRowActions } from '@/components/data-table/data-table-row-actions';
 
 export type StaffColumn = {
     id: string;
@@ -74,8 +76,11 @@ export const columns: ColumnDef<StaffColumn>[] = [
                 >
                     {props.row.original.isDeleted == "0" ? 'Active' : 'Inactive'}
                 </span>
-                <p>{props.row.original.isDeleted}</p>
             </div>
         ),
+    },
+    {
+        id: "actions",
+        cell: ({ row }) => <CellAction data={row.original} />
     },
 ];
