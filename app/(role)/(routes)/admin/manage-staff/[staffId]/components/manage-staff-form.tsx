@@ -25,13 +25,17 @@ import { AlertModal } from "@/components/modals/alert-modal"
 import ImageUpload from "@/components/ui/image-upload"
 
 const formSchema = z.object({
-    image: z.string().min(1),
-    fullName: z.string().min(1),
-    dob: z.string().min(1),
-    citizenId: z.string().min(1),
-    email: z.string().min(1),
-    phoneNumber: z.string().min(1),
-    isDeleted: z.string().min(1),
+    image: z.string(),
+    fullName: z.string().min(1, { message: "Full name must be between 1-50 characters." }).max(50),
+    dob: z.string().min(1, { message: "Date of birth is required." }),
+    citizenId: z.string().min(1, { message: "Citizen ID is required." }),
+    email: z.string().email({ message: "Invalid email address." }),
+    phoneNumber: z.string().refine((value) => /^\d{10}$/.test(value), {
+        message: "Phone number must be exactly 10 digits.",
+    }),
+    isDeleted: z.string().refine((value) => value === "0" || value === "1", {
+        message: "Status must be either '0' or '1'.",
+    }),
 
 });
 
@@ -62,19 +66,25 @@ export const ManageStaffForm: React.FC<ManageStaffFormProps> = ({
 
     const form = useForm<ManageStaffFormValues>({
         resolver: zodResolver(formSchema),
-        // defaultValues: initialData || {
-        //     label: '',
-        //     imageUrl: ''
-        // }
+        defaultValues: initialData || {
+            image: '',
+            fullName: '',
+            dob: '',
+            citizenId: '',
+            email: '',
+            phoneNumber: '',
+            isDeleted: '',
+        },
     });
+
 
     const onSubmit = async (data: ManageStaffFormValues) => {
         try {
             setLoading(true);
             if (initialData) {
-                await axios.patch(`https://648867740e2469c038fda6cc.mockapi.io/staff/${params.staffId}`, data);
+                await axios.put(url + `/${params.staffId}`, data);
             } else {
-                await axios.post(`https://648867740e2469c038fda6cc.mockapi.io/staff`, data);
+                await axios.post(url, data);
             }
             router.refresh();
             router.push(`/admin/manage-staff`);
@@ -89,12 +99,12 @@ export const ManageStaffForm: React.FC<ManageStaffFormProps> = ({
     const onDelete = async () => {
         try {
             setLoading(true);
-            await axios.delete(`/api/${params.storeId}/billboards/${params.billboardId}`);
+            await axios.delete(url + `/${params.staffId}`);
             router.refresh();
-            router.push(`/${params.storeId}/billboards`);
-            toast.success('Billboard deleted.');
+            router.push(`/admin/manage-staff`);
+            toast.success('Staff deleted.');
         } catch (error: any) {
-            toast.error('Make sure you removed all categories using this billboard first.');
+            toast.error('Fail to delete.');
         } finally {
             setLoading(false);
             setOpen(false);
