@@ -3,6 +3,7 @@ import { ThemeProvider } from '@/providers/theme-provider';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
+import { ToastProvider } from '@/providers/toast-provider';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -17,7 +18,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 			<body className={inter.className}>
 				<AuthProvider>
 					<ThemeProvider attribute='class' defaultTheme='system' enableSystem>
-						
+						<ToastProvider />
 						{children}
 					</ThemeProvider>
 				</AuthProvider>
