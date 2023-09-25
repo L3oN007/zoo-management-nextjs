@@ -14,7 +14,6 @@ import { Button } from "@/components/ui/button"
 import {
     Form,
     FormControl,
-    FormDescription,
     FormField,
     FormItem,
     FormLabel,
@@ -23,78 +22,62 @@ import {
 import { Separator } from "@/components/ui/separator"
 import { Heading } from "@/components/ui/heading"
 import { AlertModal } from "@/components/modals/alert-modal"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import ImageUpload from "@/components/ui/image-upload"
-import { Checkbox } from "@/components/ui/checkbox"
 
 const formSchema = z.object({
-    name: z.string().min(1),
-    images: z.object({ url: z.string() }).array(),
-    price: z.coerce.number().min(1),
-    categoryId: z.string().min(1),
-    colorId: z.string().min(1),
-    sizeId: z.string().min(1),
-    isFeatured: z.boolean().default(false).optional(),
-    isArchived: z.boolean().default(false).optional()
+    image: z.string().min(1),
+    fullName: z.string().min(1),
+    dob: z.string().min(1),
+    citizenId: z.string().min(1),
+    email: z.string().min(1),
+    phoneNumber: z.string().min(1),
+    isDeleted: z.string().min(1),
+
 });
 
-type ProductFormValues = z.infer<typeof formSchema>
+type ManageStaffFormValues = z.infer<typeof formSchema>
+
+interface Staff {
+
+}
 
 interface ManageStaffFormProps {
-    initialData: Product & {
-        images: Image[]
-    } | null;
-    categories: Category[];
-    colors: Color[];
-    sizes: Size[];
+    initialData: Staff | null;
 };
 
-export const ProductForm: React.FC<ProductFormProps> = ({
-    initialData,
-    categories,
-    sizes,
-    colors
+export const ManageStaffForm: React.FC<ManageStaffFormProps> = ({
+    initialData
 }) => {
+    const url = "https://648867740e2469c038fda6cc.mockapi.io/staff";
     const params = useParams();
     const router = useRouter();
 
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
 
-    const title = initialData ? 'Edit product' : 'Create product';
-    const description = initialData ? 'Edit a product.' : 'Add a new product';
-    const toastMessage = initialData ? 'Product updated.' : 'Product created.';
+    const title = initialData ? 'Edit Staff Account' : 'Create Staff Account';
+    const description = initialData ? 'Edit a staff account.' : 'Add a new staff account';
+    const toastMessage = initialData ? 'Staff account updated.' : 'Staff account created.';
     const action = initialData ? 'Save changes' : 'Create';
 
-    const defaultValues = initialData ? {
-        ...initialData,
-        price: parseFloat(String(initialData?.price)),
-    } : {
-        name: '',
-        images: [],
-        price: 0,
-        categoryId: '',
-        colorId: '',
-        sizeId: '',
-        isFeatured: false,
-        isArchived: false,
-    }
-
-    const form = useForm<ProductFormValues>({
+    const form = useForm<ManageStaffFormValues>({
         resolver: zodResolver(formSchema),
-        defaultValues
+        // defaultValues: initialData || {
+        //     label: '',
+        //     imageUrl: ''
+        // }
     });
 
-    const onSubmit = async (data: ProductFormValues) => {
+    const onSubmit = async (data: ManageStaffFormValues) => {
         try {
             setLoading(true);
             if (initialData) {
-                await axios.patch(`/api/${params.storeId}/products/${params.productId}`, data);
+                await axios.patch(`https://648867740e2469c038fda6cc.mockapi.io/staff/${params.staffId}`, data);
             } else {
-                await axios.post(`/api/${params.storeId}/products`, data);
+                await axios.post(`https://648867740e2469c038fda6cc.mockapi.io/staff`, data);
             }
             router.refresh();
-            router.push(`/${params.storeId}/products`);
+            router.push(`/admin/manage-staff`);
             toast.success(toastMessage);
         } catch (error: any) {
             toast.error('Something went wrong.');
@@ -106,12 +89,12 @@ export const ProductForm: React.FC<ProductFormProps> = ({
     const onDelete = async () => {
         try {
             setLoading(true);
-            await axios.delete(`/api/${params.storeId}/products/${params.productId}`);
+            await axios.delete(`/api/${params.storeId}/billboards/${params.billboardId}`);
             router.refresh();
-            router.push(`/${params.storeId}/products`);
-            toast.success('Product deleted.');
+            router.push(`/${params.storeId}/billboards`);
+            toast.success('Billboard deleted.');
         } catch (error: any) {
-            toast.error('Something went wrong.');
+            toast.error('Make sure you removed all categories using this billboard first.');
         } finally {
             setLoading(false);
             setOpen(false);
@@ -144,16 +127,16 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
                     <FormField
                         control={form.control}
-                        name="images"
+                        name="image"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Images</FormLabel>
+                                <FormLabel>Staff Avatar Image</FormLabel>
                                 <FormControl>
                                     <ImageUpload
-                                        value={field.value.map((image) => image.url)}
+                                        value={field.value ? [field.value] : []}
                                         disabled={loading}
-                                        onChange={(url) => field.onChange([...field.value, { url }])}
-                                        onRemove={(url) => field.onChange([...field.value.filter((current) => current.url !== url)])}
+                                        onChange={(url) => field.onChange(url)}
+                                        onRemove={() => field.onChange('')}
                                     />
                                 </FormControl>
                                 <FormMessage />
@@ -163,12 +146,12 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                     <div className="md:grid md:grid-cols-3 gap-8">
                         <FormField
                             control={form.control}
-                            name="name"
+                            name="fullName"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Name</FormLabel>
+                                    <FormLabel>Full Name</FormLabel>
                                     <FormControl>
-                                        <Input disabled={loading} placeholder="Product name" {...field} />
+                                        <Input disabled={loading} placeholder="Billboard label" {...field} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -176,12 +159,12 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                         />
                         <FormField
                             control={form.control}
-                            name="price"
+                            name="dob"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Price</FormLabel>
+                                    <FormLabel>Date of birth</FormLabel>
                                     <FormControl>
-                                        <Input type="number" disabled={loading} placeholder="9.99" {...field} />
+                                        <Input type="date" disabled={loading} placeholder="Billboard label" {...field} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -189,113 +172,53 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                         />
                         <FormField
                             control={form.control}
-                            name="categoryId"
+                            name="citizenId"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Category</FormLabel>
-                                    <Select disabled={loading} onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
-                                        <FormControl>
-                                            <SelectTrigger>
-                                                <SelectValue defaultValue={field.value} placeholder="Select a category" />
-                                            </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                            {categories.map((category) => (
-                                                <SelectItem key={category.id} value={category.id}>{category.name}</SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="sizeId"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Size</FormLabel>
-                                    <Select disabled={loading} onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
-                                        <FormControl>
-                                            <SelectTrigger>
-                                                <SelectValue defaultValue={field.value} placeholder="Select a size" />
-                                            </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                            {sizes.map((size) => (
-                                                <SelectItem key={size.id} value={size.id}>{size.name}</SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="colorId"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Color</FormLabel>
-                                    <Select disabled={loading} onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
-                                        <FormControl>
-                                            <SelectTrigger>
-                                                <SelectValue defaultValue={field.value} placeholder="Select a color" />
-                                            </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                            {colors.map((color) => (
-                                                <SelectItem key={color.id} value={color.id}>{color.name}</SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="isFeatured"
-                            render={({ field }) => (
-                                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                                    <FormLabel>Citizen ID:</FormLabel>
                                     <FormControl>
-                                        <Checkbox
-                                            checked={field.value}
-                                            // @ts-ignore
-                                            onCheckedChange={field.onChange}
-                                        />
+                                        <Input type="number" disabled={loading} placeholder="Billboard label" {...field} />
                                     </FormControl>
-                                    <div className="space-y-1 leading-none">
-                                        <FormLabel>
-                                            Featured
-                                        </FormLabel>
-                                        <FormDescription>
-                                            This product will appear on the home page
-                                        </FormDescription>
-                                    </div>
+                                    <FormMessage />
                                 </FormItem>
                             )}
                         />
                         <FormField
                             control={form.control}
-                            name="isArchived"
+                            name="email"
                             render={({ field }) => (
-                                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                                <FormItem>
+                                    <FormLabel>Email:</FormLabel>
                                     <FormControl>
-                                        <Checkbox
-                                            checked={field.value}
-                                            // @ts-ignore
-                                            onCheckedChange={field.onChange}
-                                        />
+                                        <Input type="email" disabled={loading} placeholder="Billboard label" {...field} />
                                     </FormControl>
-                                    <div className="space-y-1 leading-none">
-                                        <FormLabel>
-                                            Archived
-                                        </FormLabel>
-                                        <FormDescription>
-                                            This product will not appear anywhere in the store.
-                                        </FormDescription>
-                                    </div>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="phoneNumber"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Phone:</FormLabel>
+                                    <FormControl>
+                                        <Input type="tel" disabled={loading} placeholder="Billboard label" {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="isDeleted"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Status:</FormLabel>
+                                    <FormControl>
+                                        <Input type="text" disabled={loading} placeholder="Billboard label" {...field} />
+                                    </FormControl>
+                                    <FormMessage />
                                 </FormItem>
                             )}
                         />
