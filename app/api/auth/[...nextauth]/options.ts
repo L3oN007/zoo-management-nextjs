@@ -76,5 +76,9 @@ export const options: NextAuthOptions = {
     pages:{
         signIn:'/',  
         error: "Username or Password is incorrect"     
+    },
+    session:{
+        maxAge: 60 * 60 * 24 * 7, 
+        
     }
 };
