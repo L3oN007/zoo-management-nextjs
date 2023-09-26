@@ -14,7 +14,7 @@ interface ImageUploadProps {
 	value: string[];
 }
 
-const ImageUpload: React.FC<ImageUploadProps> = ({ disabled, onChange, onRemove, value }) => {
+const ImageUploadAvatar: React.FC<ImageUploadProps> = ({ disabled, onChange, onRemove, value }) => {
 	const [isMounted, setIsMounted] = useState(false);
 
 	useEffect(() => {
@@ -30,7 +30,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ disabled, onChange, onRemove,
 	}
 
 	return (
-		<div>
+		<div className=''>
 			<div className='mb-4 flex items-center gap-4'>
 				{value.map((url) => (
 					<div key={url} className='relative w-[200px] h-[200px] rounded-md overflow-hidden'>
@@ -39,26 +39,26 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ disabled, onChange, onRemove,
 								<Trash className='h-4 w-4' />
 							</Button>
 						</div>
-						<Image fill className='object-cover' alt='Image' src={url} />
+						<Image fill className='h-full w-full rounded-tl-sm rounded-tr-sm object-cover object-center ' alt='Image' src={url} />
 					</div>
 				))}
-			</div>
-			<CldUploadWidget onUpload={onUpload} uploadPreset='sfkkn1yl'>
-				{({ open }) => {
-					const onClick = () => {
-						open();
-					};
+				<CldUploadWidget onUpload={onUpload} uploadPreset='sfkkn1yl'>
+					{({ open }) => {
+						const onClick = () => {
+							open();
+						};
 
-					return (
-						<Button type='button' disabled={disabled} variant='secondary' onClick={onClick}>
-							<ImagePlus className='h-4 w-4 mr-2' />
-							Upload an Image
-						</Button>
-					);
-				}}
-			</CldUploadWidget>
+						return (
+							<Button type='button' disabled={disabled} variant='secondary' onClick={onClick} className='mt-3'>
+								<ImagePlus className='h-4 w-4 mr-2' />
+								Upload an Image
+							</Button>
+						);
+					}}
+				</CldUploadWidget>
+			</div>
 		</div>
 	);
 };
 
-export default ImageUpload;
+export default ImageUploadAvatar;

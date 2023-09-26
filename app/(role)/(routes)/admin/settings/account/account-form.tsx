@@ -1,199 +1,234 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { CalendarIcon, CaretSortIcon, CheckIcon } from '@radix-ui/react-icons';
-import { format } from 'date-fns';
+import axios from 'axios';
+import { Trash } from 'lucide-react';
+import { useParams, useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'react-hot-toast';
 import * as z from 'zod';
 
-import { cn } from '@/lib/utils';
+import { AlertModal } from '@/components/modals/alert-modal';
 import { Button } from '@/components/ui/button';
-import { Calendar } from '@/components/ui/calendar';
-import {
-	Command,
-	CommandEmpty,
-	CommandGroup,
-	CommandInput,
-	CommandItem,
-} from '@/components/ui/command';
-import {
-	Form,
-	FormControl,
-	FormDescription,
-	FormField,
-	FormItem,
-	FormLabel,
-	FormMessage,
-} from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Heading } from '@/components/ui/heading';
+import ImageUploadAvatar from '@/components/ui/image-upload-avatar';
 import { Input } from '@/components/ui/input';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { toast } from '@/components/ui/use-toast';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Separator } from '@/components/ui/separator';
 
-const languages = [
-	{ label: 'English', value: 'en' },
-	{ label: 'French', value: 'fr' },
-	{ label: 'German', value: 'de' },
-	{ label: 'Spanish', value: 'es' },
-	{ label: 'Portuguese', value: 'pt' },
-	{ label: 'Russian', value: 'ru' },
-	{ label: 'Japanese', value: 'ja' },
-	{ label: 'Korean', value: 'ko' },
-	{ label: 'Chinese', value: 'zh' },
-] as const;
-
-const accountFormSchema = z.object({
-	name: z
-		.string()
-		.min(2, {
-			message: 'Name must be at least 2 characters.',
-		})
-		.max(30, {
-			message: 'Name must not be longer than 30 characters.',
-		}),
-	dob: z.date({
-		required_error: 'A date of birth is required.',
+const formSchema = z.object({
+	image: z.string().nullable(),
+	fullName: z.string().min(1, { message: 'Full name must be between 1-50 characters.' }).max(50),
+	dob: z.string().min(1, { message: 'Date of birth is required.' }),
+	citizenId: z.string().min(1, { message: 'Citizen ID is required.' }),
+	email: z.string().email({ message: 'Invalid email address.' }),
+	phoneNumber: z.string().refine((value) => /^\d{10}$/.test(value), {
+		message: 'Phone number must be exactly 10 digits.',
 	}),
-	language: z.string({
-		required_error: 'Please select a language.',
-	}),
+	isDeleted: z.string(),
+	// isDeleted: z.string().refine((value) => value === '0' || value === '1', {
+	// 	message: "Status must be either '0' or '1'.",
+	// }),
 });
 
-type AccountFormValues = z.infer<typeof accountFormSchema>;
+type ManageStaffFormValues = z.infer<typeof formSchema>;
 
-// This can come from your database or API.
-const defaultValues: Partial<AccountFormValues> = {
-	// name: "Your name",
-	// dob: new Date("2023-01-23"),
-};
+interface Staff {}
 
-export function AccountForm() {
-	const form = useForm<AccountFormValues>({
-		resolver: zodResolver(accountFormSchema),
-		defaultValues,
+interface ManageStaffFormProps {
+	initialData: Staff | null;
+}
+
+export const AccountForm: React.FC<ManageStaffFormProps> = ({ initialData }) => {
+	const url = 'https://648867740e2469c038fda6cc.mockapi.io/staff';
+	const params = useParams();
+	const router = useRouter();
+
+	const [open, setOpen] = useState(false);
+	const [loading, setLoading] = useState(false);
+	const [selectedStatus, setSelectedStatus] = useState('');
+
+	const title = initialData ? 'Edit Staff Account' : 'Create Staff Account';
+	const description = initialData ? 'Edit a staff account.' : 'Add a new staff account';
+	const toastMessage = initialData ? 'Staff account updated.' : 'Staff account created.';
+	const action = initialData ? 'Save changes' : 'Create';
+
+	const form = useForm<ManageStaffFormValues>({
+		resolver: zodResolver(formSchema),
+		defaultValues: initialData || {
+			image: '',
+			fullName: '',
+			dob: '',
+			citizenId: '',
+			email: '',
+			phoneNumber: '',
+			isDeleted: '',
+		},
 	});
 
-	function onSubmit(data: AccountFormValues) {
-		toast({
-			title: 'You submitted the following values:',
-			description: (
-				<pre className='mt-2 w-[340px] rounded-md bg-slate-950 p-4'>
-					<code className='text-white'>{JSON.stringify(data, null, 2)}</code>
-				</pre>
-			),
-		});
-	}
+	const onSubmit = async (data: ManageStaffFormValues) => {
+		try {
+			setLoading(true);
+			if (initialData) {
+				await axios.put(url + `/${params.staffId}`, data);
+			} else {
+				await axios.post(url, data);
+			}
+			router.refresh();
+			router.push(`/admin/manage-staff`);
+			toast.success(toastMessage);
+		} catch (error: any) {
+			toast.error('Something went wrong.');
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	const onDelete = async () => {
+		try {
+			setLoading(true);
+			await axios.delete(url + `/${params.staffId}`);
+			router.refresh();
+			router.push(`/admin/manage-staff`);
+			toast.success('Staff deleted.');
+		} catch (error: any) {
+			toast.error('Fail to delete.');
+		} finally {
+			setLoading(false);
+			setOpen(false);
+		}
+	};
 
 	return (
-		<Form {...form}>
-			<form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
-				<FormField
-					control={form.control}
-					name='name'
-					render={({ field }) => (
-						<FormItem>
-							<FormLabel>Name</FormLabel>
-							<FormControl>
-								<Input placeholder='Your name' {...field} />
-							</FormControl>
-							<FormDescription>
-								This is the name that will be displayed on your profile and in emails.
-							</FormDescription>
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
-				<FormField
-					control={form.control}
-					name='dob'
-					render={({ field }) => (
-						<FormItem className='flex flex-col'>
-							<FormLabel>Date of birth</FormLabel>
-							<Popover>
-								<PopoverTrigger asChild>
-									<FormControl>
-										<Button
-											variant={'outline'}
-											className={cn(
-												'w-[240px] pl-3 text-left font-normal',
-												!field.value && 'text-muted-foreground'
-											)}>
-											{field.value ? format(field.value, 'PPP') : <span>Pick a date</span>}
-											<CalendarIcon className='ml-auto h-4 w-4 opacity-50' />
-										</Button>
-									</FormControl>
-								</PopoverTrigger>
-								<PopoverContent className='w-auto p-0' align='start'>
-									<Calendar
-										mode='single'
-										selected={field.value}
-										onSelect={field.onChange}
-										disabled={(date) => date > new Date() || date < new Date('1900-01-01')}
-										initialFocus
+		<>
+			<AlertModal isOpen={open} onClose={() => setOpen(false)} onConfirm={onDelete} loading={loading} />
+			<div className='flex items-center justify-between'>
+				<Heading title={title} description={description} />
+				{initialData && (
+					<Button disabled={loading} variant='destructive' size='sm' onClick={() => setOpen(true)}>
+						<Trash className='h-4 w-4' />
+					</Button>
+				)}
+			</div>
+			<Separator />
+			<Form {...form}>
+				<form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8 w-full'>
+					<FormField
+						control={form.control}
+						name='image'
+						render={({ field }) => (
+							<FormItem>
+								<FormLabel>Staff Avatar Image</FormLabel>
+								<FormControl>
+									<ImageUploadAvatar
+										value={field.value ? [field.value] : []}
+										disabled={loading}
+										onChange={(url) => field.onChange(url)}
+										onRemove={() => field.onChange('')}
 									/>
-								</PopoverContent>
-							</Popover>
-							<FormDescription>Your date of birth is used to calculate your age.</FormDescription>
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
-				<FormField
-					control={form.control}
-					name='language'
-					render={({ field }) => (
-						<FormItem className='flex flex-col'>
-							<FormLabel>Language</FormLabel>
-							<Popover>
-								<PopoverTrigger asChild>
+								</FormControl>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+					<div className='md:grid md:grid-cols-3 gap-8'>
+						<FormField
+							control={form.control}
+							name='fullName'
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Full Name</FormLabel>
 									<FormControl>
-										<Button
-											variant='outline'
-											role='combobox'
-											className={cn(
-												'w-[200px] justify-between',
-												!field.value && 'text-muted-foreground'
-											)}>
-											{field.value
-												? languages.find((language) => language.value === field.value)?.label
-												: 'Select language'}
-											<CaretSortIcon className='ml-2 h-4 w-4 shrink-0 opacity-50' />
-										</Button>
+										<Input disabled={loading} placeholder='Billboard label' {...field} />
 									</FormControl>
-								</PopoverTrigger>
-								<PopoverContent className='w-[200px] p-0'>
-									<Command>
-										<CommandInput placeholder='Search language...' />
-										<CommandEmpty>No language found.</CommandEmpty>
-										<CommandGroup>
-											{languages.map((language) => (
-												<CommandItem
-													value={language.label}
-													key={language.value}
-													onSelect={() => {
-														form.setValue('language', language.value);
-													}}>
-													<CheckIcon
-														className={cn(
-															'mr-2 h-4 w-4',
-															language.value === field.value ? 'opacity-100' : 'opacity-0'
-														)}
-													/>
-													{language.label}
-												</CommandItem>
-											))}
-										</CommandGroup>
-									</Command>
-								</PopoverContent>
-							</Popover>
-							<FormDescription>
-								This is the language that will be used in the dashboard.
-							</FormDescription>
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
-				<Button type='submit'>Update account</Button>
-			</form>
-		</Form>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						<FormField
+							control={form.control}
+							name='dob'
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Date of birth</FormLabel>
+									<FormControl>
+										<Input type='date' disabled={loading} placeholder='Billboard label' {...field} />
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						<FormField
+							control={form.control}
+							name='citizenId'
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Citizen ID:</FormLabel>
+									<FormControl>
+										<Input type='number' disabled={loading} placeholder='Billboard label' {...field} />
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						<FormField
+							control={form.control}
+							name='email'
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Email:</FormLabel>
+									<FormControl>
+										<Input type='email' disabled={loading} placeholder='Billboard label' {...field} />
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						<FormField
+							control={form.control}
+							name='phoneNumber'
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Phone:</FormLabel>
+									<FormControl>
+										<Input type='tel' disabled={loading} placeholder='Billboard label' {...field} />
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						<FormField
+							control={form.control}
+							name='isDeleted'
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Status:</FormLabel>
+									<Select disabled={loading} onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
+										<FormControl>
+											<SelectTrigger>
+												<SelectValue defaultValue={field.value} placeholder={field.value === '0' ? 'Active' : 'Inactive'} />
+											</SelectTrigger>
+										</FormControl>
+										<SelectContent>
+											<SelectGroup>
+												<SelectLabel>Status</SelectLabel>
+												<SelectItem value='0'>Active</SelectItem>
+												<SelectItem value='1'>Inactive</SelectItem>
+											</SelectGroup>
+										</SelectContent>
+									</Select>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+					</div>
+					<Button disabled={loading} className='ml-auto' type='submit'>
+						{action}
+					</Button>
+				</form>
+			</Form>
+		</>
 	);
-}
+};
