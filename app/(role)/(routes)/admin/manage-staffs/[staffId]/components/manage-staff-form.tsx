@@ -28,9 +28,6 @@ const formSchema = z.object({
 		message: 'Phone number must be exactly 10 digits.',
 	}),
 	isDeleted: z.string(),
-	// isDeleted: z.string().refine((value) => value === '0' || value === '1', {
-	// 	message: "Status must be either '0' or '1'.",
-	// }),
 });
 
 type ManageStaffFormValues = z.infer<typeof formSchema>;
@@ -77,7 +74,7 @@ export const ManageStaffForm: React.FC<ManageStaffFormProps> = ({ initialData })
 				await axios.post(url, data);
 			}
 			router.refresh();
-			router.push(`/admin/manage-staff`);
+			router.push(`/admin/manage-staffs`);
 			toast.success(toastMessage);
 		} catch (error: any) {
 			toast.error('Something went wrong.');
@@ -91,7 +88,7 @@ export const ManageStaffForm: React.FC<ManageStaffFormProps> = ({ initialData })
 			setLoading(true);
 			await axios.delete(url + `/${params.staffId}`);
 			router.refresh();
-			router.push(`/admin/manage-staff`);
+			router.push(`/admin/manage-staffs`);
 			toast.success('Staff deleted.');
 		} catch (error: any) {
 			toast.error('Fail to delete.');

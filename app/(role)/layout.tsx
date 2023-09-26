@@ -1,6 +1,4 @@
-import AdminNavbar from '@/components/admin-navbar';
 import Navbar from '@/components/navbar';
-
 
 export default async function RoleLayout({ children }: { children: React.ReactNode }) {
 	return (

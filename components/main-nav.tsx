@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { useParams, usePathname } from 'next/navigation';
 
 import { cn } from '@/lib/utils';
-import { type } from 'os';
 
 type Route = {
 	href: string;
@@ -20,19 +19,14 @@ export function MainNav({ className, role, ...props }: React.HTMLAttributes<HTML
 	if (role === 'admin') {
 		routes = [
 			{
-				href: `/api/auth/signin`,
-				label: 'Login',
-				active: pathname === `/api/auth/signin`,
+				href: `/admin/overview`,
+				label: 'Overview',
+				active: pathname === `/admin/overview`,
 			},
 			{
-				href: `/api/auth/signout`,
-				label: 'Logout',
-				active: pathname === `/api/auth/signout`,
-			},
-			{
-				href: `/admin/manage-staff`,
+				href: `/admin/manage-staffs`,
 				label: 'Manage Staffs',
-				active: pathname === `/admin/manage-staff`,
+				active: pathname === `/admin/manage-staffs`,
 			},
 			{
 				href: `/${params.storeId}/billboards`,
@@ -41,9 +35,7 @@ export function MainNav({ className, role, ...props }: React.HTMLAttributes<HTML
 			},
 		];
 	} else if (role === 'staff') {
-
 	}
-
 
 	return (
 		<nav className={cn('flex items-center space-x-4 lg:space-x-6', className)} {...props}>
@@ -54,7 +46,8 @@ export function MainNav({ className, role, ...props }: React.HTMLAttributes<HTML
 					className={cn(
 						'text-sm font-medium transition-colors hover:text-primary',
 						route.active ? 'text-black dark:text-white' : 'text-muted-foreground'
-					)}>
+					)}
+				>
 					{route.label}
 				</Link>
 			))}
