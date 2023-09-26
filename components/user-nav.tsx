@@ -58,7 +58,7 @@ export function UserNav({ userRole }: { userRole: string | undefined }) {
 					</DropdownMenuItem>
 				</DropdownMenuGroup>
 				<DropdownMenuSeparator />
-				<DropdownMenuItem>
+				<DropdownMenuItem onClick={() => router.push('/api/auth/signout')}>
 					Log out
 					<DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
 				</DropdownMenuItem>
