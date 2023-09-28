@@ -35,7 +35,7 @@ const formSchema = z.object({
 
 type ManageStaffFormValues = z.infer<typeof formSchema>;
 
-interface Staff {}
+interface Staff { }
 
 interface ManageStaffFormProps {
 	initialData: Staff | null;
@@ -50,7 +50,6 @@ export const AccountForm: React.FC<ManageStaffFormProps> = ({ initialData }) => 
 	const [loading, setLoading] = useState(false);
 	const [selectedStatus, setSelectedStatus] = useState('');
 
-	const title = initialData ? 'Edit Staff Account' : 'Create Staff Account';
 	const description = initialData ? 'Edit a staff account.' : 'Add a new staff account';
 	const toastMessage = initialData ? 'Staff account updated.' : 'Staff account created.';
 	const action = initialData ? 'Save changes' : 'Create';
@@ -105,7 +104,7 @@ export const AccountForm: React.FC<ManageStaffFormProps> = ({ initialData }) => 
 		<>
 			<AlertModal isOpen={open} onClose={() => setOpen(false)} onConfirm={onDelete} loading={loading} />
 			<div className='flex items-center justify-between'>
-				<Heading title={title} description={description} />
+				<Heading title={'Profile Settings'} description={'The Profile Settings Page is where you personalize and manage your account. '} />
 				{initialData && (
 					<Button disabled={loading} variant='destructive' size='sm' onClick={() => setOpen(true)}>
 						<Trash className='h-4 w-4' />

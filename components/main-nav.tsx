@@ -35,6 +35,23 @@ export function MainNav({ className, role, ...props }: React.HTMLAttributes<HTML
 			},
 		];
 	} else if (role === 'staff') {
+		routes = [
+			{
+				href: `/staff/overview`,
+				label: 'Overview',
+				active: pathname === `/staff/overview`,
+			},
+			{
+				href: `/staff/manage-news`,
+				label: 'Manage News',
+				active: pathname === `/admin/manage-news`,
+			},
+			{
+				href: `/${params.storeId}/billboards`,
+				label: 'XXXXXX',
+				active: pathname === `/${params.storeId}/billboards`,
+			},
+		];
 	}
 
 	return (

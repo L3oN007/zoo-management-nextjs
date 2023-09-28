@@ -8,6 +8,7 @@ import { Plus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { FC } from 'react';
 import { columns } from './columns';
+import { PersonIcon } from '@radix-ui/react-icons';
 
 interface ManageStaffClientProps {
 	data: any;
