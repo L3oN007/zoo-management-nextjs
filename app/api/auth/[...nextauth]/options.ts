@@ -49,6 +49,7 @@ export const options: NextAuthOptions = {
         // Include accessToken and refreshToken in the token object
         async jwt({ token, user }) {
             if (user) {
+                token.username = user.username;
                 token.role = user.role;
                 token.accessToken = user.accessToken;
                 token.refreshToken = user.refreshToken;
@@ -58,6 +59,7 @@ export const options: NextAuthOptions = {
         // If you want to use the role, accessToken, and refreshToken in client components
         async session({ session, token }) {
             if (session?.user) {
+                session.user.username = token.username;
                 session.user.role = token.role;
                 session.user.accessToken = token.accessToken;
                 session.user.refreshToken = token.refreshToken;

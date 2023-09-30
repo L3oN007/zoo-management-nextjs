@@ -19,9 +19,9 @@ export function MainNav({ className, role, ...props }: React.HTMLAttributes<HTML
 	if (role === 'admin') {
 		routes = [
 			{
-				href: `/admin/overview`,
+				href: `/admin`,
 				label: 'Overview',
-				active: pathname === `/admin/overview`,
+				active: pathname === `/admin`,
 			},
 			{
 				href: `/admin/manage-staffs`,
@@ -37,14 +37,14 @@ export function MainNav({ className, role, ...props }: React.HTMLAttributes<HTML
 	} else if (role === 'staff') {
 		routes = [
 			{
-				href: `/staff/overview`,
+				href: `/staff`,
 				label: 'Overview',
-				active: pathname === `/staff/overview`,
+				active: pathname === `/staff`,
 			},
 			{
 				href: `/staff/manage-news`,
 				label: 'Manage News',
-				active: pathname === `/admin/manage-news`,
+				active: pathname === `/staff/manage-news`,
 			},
 			{
 				href: `/${params.storeId}/billboards`,

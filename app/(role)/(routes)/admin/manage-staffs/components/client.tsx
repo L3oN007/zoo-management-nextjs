@@ -21,7 +21,6 @@ export const ManageStaffClient: FC<ManageStaffClientProps> = (data) => {
 		<>
 			<div className='flex items-center justify-between'>
 				<Heading title={`Staff (${Object.keys(data.data).length})`} description='Manage Staffs information in the zoo' />
-
 				<Button onClick={() => router.push('/admin/manage-staffs/new')}>
 					<Plus className='mr-2 h-4 w-4' />
 					Add New
