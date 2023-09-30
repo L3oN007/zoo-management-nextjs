@@ -6,41 +6,38 @@ import { Heading } from '@/components/ui/heading';
 import { Separator } from '@/components/ui/separator';
 import { Plus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { FC } from 'react';
+import { FC, useMemo } from 'react';
 import { columns } from './columns';
-import { CheckCircledIcon, CrossCircledIcon } from '@radix-ui/react-icons';
 
-interface ManageStaffClientProps {
+interface ManageNewsClientProps {
 	data: any;
+
 }
 
-export const ManageStaffClient: FC<ManageStaffClientProps> = ({ data }) => {
+export const ManageNewsClient: FC<ManageNewsClientProps> = ({ data }) => {
 	const router = useRouter();
-	const statuses = [
-		{
-			value: "0",
-			label: "Active",
-			icon: CheckCircledIcon,
-		},
-		{
-			value: "1",
-			label: "Inactive",
-			icon: CrossCircledIcon,
-		},
-	]
+	const uniqueTags = useMemo(() => {
+		const allTags = data.flatMap((item: any) => item.tags);
+		return [...new Set(allTags)];
+	}, [data]) as string[];
 
+
+	const tagsData = uniqueTags.map((tag) => ({
+		label: tag,
+		value: tag,
+	}));
 
 	return (
 		<>
 			<div className='flex items-center justify-between'>
-				<Heading title={`Staff (${Object.keys(data).length})`} description='Manage Staffs information in the zoo' />
+				<Heading title={`News (${Object.keys(data).length})`} description='Manage News information in the zoo' />
 				<Button onClick={() => router.push('/admin/manage-staffs/new')}>
 					<Plus className='mr-2 h-4 w-4' />
 					Add New
 				</Button>
 			</div>
 			<Separator />
-			<DataTable columns={columns} data={data} searchKey='fullName' filterOptions={statuses} />
+			<DataTable columns={columns} data={data} searchKey='title' filterOptions={tagsData} />
 		</>
 	);
 };
