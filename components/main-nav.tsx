@@ -41,7 +41,43 @@ export function MainNav({ className, role, ...props }: React.HTMLAttributes<HTML
 			},
 		];
 	} else if (role === 'staff') {
-
+		routes = [
+			{
+				href: `/api/auth/signin`,
+				label: 'Login',
+				active: pathname === `/api/auth/signin`,
+			},
+			{
+				href: `/api/auth/signout`,
+				label: 'Logout',
+				active: pathname === `/api/auth/signout`,
+			},
+			{
+				href: `/staff/manage-news`,
+				label: 'Manage News',
+				active: pathname === `/staff/manage-news`,
+			},
+			{
+				href: `/staff/manage-areas`,
+				label: 'Manage Areas',
+				active: pathname === `/staff/manage-areas`,
+			},
+			{
+				href: `/staff/manage-cage`,
+				label: 'Manage Cage',
+				active: pathname === `/staff/manage-cage`,
+			},
+			{
+				href: `/staff/manage-trainers-account`,
+				label: 'Manage Trainer Account',
+				active: pathname === `/staff/manage-trainers-account`,
+			},
+			{
+				href: `/${params.storeId}/billboards`,
+				label: 'XXXXXX',
+				active: pathname === `/${params.storeId}/billboards`,
+			},
+		];
 	}
 
 

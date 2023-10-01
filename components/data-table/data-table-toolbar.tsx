@@ -12,7 +12,7 @@ import { DataTableFacetedFilter } from "./data-table-faceted-filter"
 
 interface DataTableToolbarProps<TData> {
     table: Table<TData>
-    searchKey: string
+    searchKey: string  
 }
 
 export function DataTableToolbar<TData>({
