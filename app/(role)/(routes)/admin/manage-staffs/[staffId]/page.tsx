@@ -2,7 +2,7 @@ import { format } from "date-fns";
 import { ManageStaffForm } from "./components/manage-staff-form";
 import axios from "axios";
 
-const ManageStaffPage = async ({ params }: { params: { staffId: string } }) => {
+const EditStaffPage = async ({ params }: { params: { staffId: string } }) => {
     // Construct the URL using the staffId from the params object
     const url = `https://648867740e2469c038fda6cc.mockapi.io/staff/${params.staffId}`;
 
@@ -28,7 +28,6 @@ const ManageStaffPage = async ({ params }: { params: { staffId: string } }) => {
             <div className='flex-col'>
                 <div className='flex-1 space-y-4 p-8 pt-6'>
                     <ManageStaffForm initialData={staffData} />
-
                 </div>
             </div>
         );
@@ -44,4 +43,4 @@ const ManageStaffPage = async ({ params }: { params: { staffId: string } }) => {
     }
 };
 
-export default ManageStaffPage;
+export default EditStaffPage;
