@@ -25,7 +25,7 @@ const EditNewsPage = async ({ params }: { params: { newsId: string } }) => {
         }
 
         return (
-            <div>
+            <div className="mb-4">
                 <ManageNewsForm initialData={newsData} />
             </div>
         );

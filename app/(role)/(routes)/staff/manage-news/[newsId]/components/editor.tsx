@@ -1,8 +1,9 @@
-import { useCallback, useRef, useState } from "react";
+import React, { useCallback, useRef, useState, useEffect } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import { htmlToMarkdown, markdownToHtml } from './parser'
+import { htmlToMarkdown, markdownToHtml } from './parser';
 import uploadToCloudinary from "./uploadImg";
+import "./editor.css";
 export interface EditorContentChanged {
     html: string;
     markdown: string;
@@ -11,15 +12,21 @@ export interface EditorContentChanged {
 export interface EditorProps {
     value?: string;
     onChange?: (changes: EditorContentChanged) => void;
-    previewContent?: (content: string) => void; // Add a prop for preview content
+    previewContent?: (content: string) => void;
+    className?: string;
 }
 
 export default function Editor(props: EditorProps) {
-    const [value, setValue] = useState<string>(markdownToHtml(props.value || ""));
+    const [editorContent, setEditorContent] = useState<string>(props.value || "");
     const reactQuillRef = useRef<ReactQuill>(null);
 
+    useEffect(() => {
+        // Update the editor content when the `value` prop changes
+        setEditorContent(props.value || "");
+    }, [props.value]);
+
     const onChange = (content: string) => {
-        setValue(content);
+        setEditorContent(content);
 
         if (props.onChange) {
             props.onChange({
@@ -28,7 +35,6 @@ export default function Editor(props: EditorProps) {
             });
         }
 
-        // Update the preview content whenever the content changes
         if (props.previewContent) {
             props.previewContent(content);
         }
@@ -53,7 +59,7 @@ export default function Editor(props: EditorProps) {
     }, []);
 
     return (
-        <div>
+        <div className={props.className}>
             <ReactQuill
                 ref={reactQuillRef}
                 theme="snow"
@@ -99,7 +105,7 @@ export default function Editor(props: EditorProps) {
                     "video",
                     "code-block",
                 ]}
-                value={value}
+                value={editorContent}
                 onChange={onChange}
             />
         </div>
