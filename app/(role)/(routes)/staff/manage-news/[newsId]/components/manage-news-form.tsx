@@ -52,7 +52,6 @@ export const ManageNewsForm: React.FC<ManageNewsFormProps> = ({ initialData }) =
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const [previewContent, setPreviewContent] = useState<string>("");
-    // const [editorContent, setEditorContent] = useState<string>('');
     const [editorContent, setEditorContent] = useState<string>(initialData ? initialData.content : '');
 
 

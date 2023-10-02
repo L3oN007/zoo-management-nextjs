@@ -37,9 +37,9 @@ export function MainNav({ className, role, ...props }: React.HTMLAttributes<HTML
 	} else if (role === 'staff') {
 		routes = [
 			{
-				href: `/staff/overview`,
+				href: `/staff`,
 				label: 'Overview',
-				active: pathname === `/staff/overview`,
+				active: pathname === `/staff`,
 			},
 			{
 				href: `/staff/manage-news`,

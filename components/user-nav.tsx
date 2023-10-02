@@ -13,11 +13,13 @@ import {
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { CaretDownIcon, GearIcon, PersonIcon, PinRightIcon } from '@radix-ui/react-icons';
+import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 
 
 export function UserNav({ userRole }: { userRole: string | undefined }) {
 	const router = useRouter();
+	const session = useSession();
 
 
 	return (
@@ -57,7 +59,7 @@ export function UserNav({ userRole }: { userRole: string | undefined }) {
 				</DropdownMenuLabel>
 				<DropdownMenuSeparator />
 				<DropdownMenuGroup>
-					<DropdownMenuItem onClick={() => router.push('/admin/settings')}>
+					<DropdownMenuItem onClick={() => router.push(`/${session.data?.user.role}/settings`)}>
 						<PersonIcon className='mr-2' /> Manage Account
 					</DropdownMenuItem>
 				</DropdownMenuGroup>

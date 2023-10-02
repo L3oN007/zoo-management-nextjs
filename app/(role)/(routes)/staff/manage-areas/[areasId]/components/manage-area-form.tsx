@@ -19,21 +19,15 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 import { Separator } from '@/components/ui/separator';
 
 const formSchema = z.object({
-	
+
 	name: z.string().min(1, { message: 'Title must be between 1-50 characters.' }).max(50),
-	
-	// phoneNumber: z.string().refine((value) => /^\d{10}$/.test(value), {
-	// 	message: 'Phone number must be exactly 10 digits.',
-	// }),
-	// isDeleted: z.string(),
-	// isDeleted: z.string().refine((value) => value === '0' || value === '1', {
-	// 	message: "Status must be either '0' or '1'.",
-	// }),
+
+
 });
 
 type ManageAreasFormValues = z.infer<typeof formSchema>;
 
-interface Areas {}
+interface Areas { }
 
 interface ManageAreasFormProps {
 	initialData: Areas | null;
@@ -56,28 +50,38 @@ export const ManageAreasForm: React.FC<ManageAreasFormProps> = ({ initialData })
 	const form = useForm<ManageAreasFormValues>({
 		resolver: zodResolver(formSchema),
 		defaultValues: initialData || {
-			
-			name:''
+
+			name: ''
 		},
 	});
 
 	const onSubmit = async (data: ManageAreasFormValues) => {
 		try {
 			setLoading(true);
-			if (initialData) {
-				await axios.put(url + `/${params.areasId}`, data);
+
+			// Check if the name already exists in the database
+			const existingAreas = await axios.get(url);
+			const isDuplicate = existingAreas.data.some((area: ManageAreasFormValues) => area.name === data.name);
+
+			if (isDuplicate) {
+				toast.error('Areas with this name already exists.');
 			} else {
-				await axios.post(url, data);
+				if (initialData) {
+					await axios.put(url + `/${params.areasId}`, data);
+				} else {
+					await axios.post(url, data);
+				}
+				router.refresh();
+				router.push(`/staff/manage-areas`);
+				toast.success(toastMessage);
 			}
-			router.refresh();
-			router.push(`/staff/manage-areas`);
-			toast.success(toastMessage);
 		} catch (error: any) {
 			toast.error('Something went wrong.');
 		} finally {
 			setLoading(false);
 		}
 	};
+
 
 	const onDelete = async () => {
 		try {
@@ -108,9 +112,9 @@ export const ManageAreasForm: React.FC<ManageAreasFormProps> = ({ initialData })
 			<Separator />
 			<Form {...form}>
 				<form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8 w-full'>
-					
+
 					<div className='md:grid md:grid-cols-3 gap-8'>
-						
+
 						<FormField
 							control={form.control}
 							name='name'
@@ -124,7 +128,7 @@ export const ManageAreasForm: React.FC<ManageAreasFormProps> = ({ initialData })
 								</FormItem>
 							)}
 						/>
-						
+
 					</div>
 					<Button disabled={loading} className='ml-auto' type='submit'>
 						{action}
