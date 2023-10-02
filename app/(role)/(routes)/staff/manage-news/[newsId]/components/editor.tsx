@@ -1,9 +1,21 @@
 import React, { useCallback, useRef, useState, useEffect } from "react";
-import ReactQuill from "react-quill";
+import ReactQuill, { Quill } from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { htmlToMarkdown, markdownToHtml } from './parser';
 import uploadToCloudinary from "./uploadImg";
 import "./editor.css";
+import dynamic from 'next/dynamic';
+
+// const ReactQuill = dynamic(async () => {
+//     const ReactQuill = await import('react-quill');
+//     const { Quill } = ReactQuill.default;
+//     const Block = Quill.import('blots/block');
+//     Block.tagName = 'div';
+//     Quill.register(Block);
+
+//     return ReactQuill;
+// }, { ssr: false });
+
 export interface EditorContentChanged {
     html: string;
     markdown: string;
@@ -19,6 +31,9 @@ export interface EditorProps {
 export default function Editor(props: EditorProps) {
     const [editorContent, setEditorContent] = useState<string>(props.value || "");
     const reactQuillRef = useRef<ReactQuill>(null);
+    const Block = Quill.import('blots/block');
+    Block.tagName = 'div';
+    Quill.register(Block);
 
     useEffect(() => {
         // Update the editor content when the `value` prop changes
@@ -61,6 +76,7 @@ export default function Editor(props: EditorProps) {
     return (
         <div className={props.className}>
             <ReactQuill
+
                 ref={reactQuillRef}
                 theme="snow"
                 placeholder="Start writing..."

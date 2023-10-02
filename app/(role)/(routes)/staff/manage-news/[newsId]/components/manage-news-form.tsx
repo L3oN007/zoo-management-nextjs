@@ -6,38 +6,38 @@ import { Card } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
 import ImageUploadNews from '@/components/ui/image-upload-news';
-import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios';
+import { format } from "date-fns";
 import { Trash } from 'lucide-react';
+import { useSession } from 'next-auth/react';
 import { useParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import * as z from 'zod';
 import Editor, { EditorContentChanged } from './editor';
-import { format } from "date-fns";
-import { useSession } from 'next-auth/react';
-import TagInput from '@/components/ui/create-tag';
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Input } from '@/components/ui/input';
 
 const formSchema = z.object({
     thumbnailImg: z.string().nullable(),
     content: z.string().nullable(),
     // content: z.string().min(1, { message: 'Content of news is required.' }),
-    title: z.string().min(1, { message: 'Title must be between 1-50 characters.' }).max(50),
+    title: z.string().min(1, { message: 'Title must be between 1-50 characters.' }),
     description: z.string().min(1, { message: 'Description of news is required.' }),
     createDate: z.string().nullable(),
     author: z.string().nullable(),
-    tags: z.array(z.string()).nullable(),
+
 });
 
 type ManageNewsFormValues = z.infer<typeof formSchema>;
 
-interface News { }
+interface News {
+    content: string;
+}
 
 interface ManageNewsFormProps {
     initialData: News | null;
@@ -55,10 +55,18 @@ export const ManageNewsForm: React.FC<ManageNewsFormProps> = ({ initialData }) =
     // const [editorContent, setEditorContent] = useState<string>('');
     const [editorContent, setEditorContent] = useState<string>(initialData ? initialData.content : '');
 
+
     // Define a callback function that matches the EditorContentChanged type
     const handleEditorChange = (changes: EditorContentChanged) => {
         setPreviewContent(changes.html); // You can access the HTML content from changes
         setEditorContent(changes.html);
+    };
+    const displayHTMLTags = () => {
+        if (typeof editorContent === 'string') {
+            const encodedHTML = editorContent.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            return { __html: encodedHTML };
+        }
+        return { __html: '' };
     };
 
     const title = initialData ? 'Edit Staff Account' : 'Create Staff Account';
@@ -84,6 +92,7 @@ export const ManageNewsForm: React.FC<ManageNewsFormProps> = ({ initialData }) =
             data.createDate = currentDate;
 
             data.author = session.data?.user.username!;
+            data.content = editorContent;
 
             setLoading(true);
             if (initialData) {
@@ -210,30 +219,6 @@ export const ManageNewsForm: React.FC<ManageNewsFormProps> = ({ initialData }) =
                                                     </FormItem>
                                                 )}
                                             />
-                                            <FormField
-                                                control={form.control}
-                                                name='isDeleted'
-                                                render={({ field }) => (
-                                                    <FormItem>
-                                                        <FormLabel>Status:</FormLabel>
-                                                        <Select disabled={loading} onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
-                                                            <FormControl>
-                                                                <SelectTrigger>
-                                                                    <SelectValue defaultValue={field.value} placeholder={field.value === '0' ? 'Active' : 'Inactive'} />
-                                                                </SelectTrigger>
-                                                            </FormControl>
-                                                            <SelectContent>
-                                                                <SelectGroup>
-                                                                    <SelectLabel>Status</SelectLabel>
-                                                                    <SelectItem value='0'>Active</SelectItem>
-                                                                    <SelectItem value='1'>Inactive</SelectItem>
-                                                                </SelectGroup>
-                                                            </SelectContent>
-                                                        </Select>
-                                                        <FormMessage />
-                                                    </FormItem>
-                                                )}
-                                            />
                                             <Button disabled={loading} className='ml-auto' type='submit'>
                                                 Submit
                                             </Button>
@@ -247,21 +232,7 @@ export const ManageNewsForm: React.FC<ManageNewsFormProps> = ({ initialData }) =
                                                     placeholder="Write a tagline for an ice cream shop"
                                                     className="min-h-[400px] flex-1 p-4 md:min-h-[700px] lg:min-h-[700px]"
                                                 /> */}
-                                                <FormField
-                                                    control={form.control}
-                                                    name='content'
-                                                    render={({ field }) => (
-                                                        <FormItem>
-                                                            <FormLabel>News Description</FormLabel>
-                                                            <FormControl>
-                                                                <Editor onChange={handleEditorChange} value={editorContent} />
-
-                                                            </FormControl>
-                                                            <FormMessage />
-                                                        </FormItem>
-                                                    )}
-                                                />
-
+                                                <Editor onChange={handleEditorChange} value={editorContent} />
                                             </div>
                                         </TabsContent>
                                         {/* TODO: Preview here */}
@@ -269,7 +240,10 @@ export const ManageNewsForm: React.FC<ManageNewsFormProps> = ({ initialData }) =
                                             <div className="flex flex-col space-y-4">
                                                 <div className="flex h-full flex-col space-y-4">
                                                     <Card className='px-5 py-3'>
-                                                        <div className="html-preview" dangerouslySetInnerHTML={{ __html: previewContent }} />
+                                                        <div className="App-preview">
+                                                            <h2>Normal Text</h2>
+                                                            <div className="html-preview" dangerouslySetInnerHTML={{ __html: previewContent }} />
+                                                        </div>
                                                     </Card>
                                                 </div>
                                             </div>
