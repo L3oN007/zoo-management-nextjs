@@ -12,7 +12,8 @@ import {
 	DropdownMenuShortcut,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { usePathname, useRouter } from 'next/navigation';
+import { CaretDownIcon, GearIcon, PersonIcon, PinRightIcon } from '@radix-ui/react-icons';
+import { useRouter } from 'next/navigation';
 
 
 export function UserNav({ userRole }: { userRole: string | undefined }) {
@@ -22,12 +23,24 @@ export function UserNav({ userRole }: { userRole: string | undefined }) {
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
-				<Button variant='ghost' className='relative h-8 w-8 rounded-full'>
-					<Avatar className='h-8 w-8'>
-						<AvatarImage src='https://github.com/shadcn.png' alt='@shadcn' />
-						<AvatarFallback>N</AvatarFallback>
-					</Avatar>
-				</Button>
+				<div className='flex cursor-pointer'>
+					<div className='flex-1 flex-col space-y-1 mr-2'>
+						<p className='text-sm font-medium leading-none ml-1'>Minh Nhat</p>
+						<span className='bg-green-100 text-green-800 text-xs font-medium ml-5 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300'>{userRole?.charAt(0).toUpperCase() + userRole!.slice(1)} </span>
+					</div>
+
+					<Button variant='ghost' className='relative h-8 w-8 rounded-full'>
+						<Avatar className='h-8 w-8'>
+							<AvatarImage src='https://github.com/shadcn.png' alt='@shadcn' />
+							<AvatarFallback>N</AvatarFallback>
+						</Avatar>
+					</Button>
+
+					<div className='flex-2 flex-col space-y-1 ml-1 mt-2'>
+						<CaretDownIcon className='text-xl' />
+					</div>
+				</div>
+
 			</DropdownMenuTrigger>
 			<DropdownMenuContent className='w-56' align='end' forceMount>
 				<DropdownMenuLabel className='font-normal'>
@@ -38,29 +51,19 @@ export function UserNav({ userRole }: { userRole: string | undefined }) {
 						</Avatar>
 						<div className='flex flex-col space-y-1'>
 							<p className='text-sm font-medium leading-none'>Minh Nhat</p>
-							<p className='text-xs leading-none text-muted-foreground mt-1'>Role : {userRole} </p>
+							<p className='text-xs leading-none text-muted-foreground mt-1'>minhnhatt123@gmail.com </p>
 						</div>
 					</div>
 				</DropdownMenuLabel>
 				<DropdownMenuSeparator />
 				<DropdownMenuGroup>
 					<DropdownMenuItem onClick={() => router.push('/admin/settings')}>
-						Profile
-						<DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
-					</DropdownMenuItem>
-					<DropdownMenuItem>
-						Billing
-						<DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
-					</DropdownMenuItem>
-					<DropdownMenuItem onClick={() => router.push('/settings')}>
-						Settings
-						<DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
+						<PersonIcon className='mr-2' /> Manage Account
 					</DropdownMenuItem>
 				</DropdownMenuGroup>
 				<DropdownMenuSeparator />
-				<DropdownMenuItem>
-					Log out
-					<DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+				<DropdownMenuItem onClick={() => router.push('/api/auth/signout')} className='text-red-500'>
+					<PinRightIcon className='mr-2' /> Log out
 				</DropdownMenuItem>
 			</DropdownMenuContent>
 		</DropdownMenu>

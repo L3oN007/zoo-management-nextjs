@@ -45,17 +45,11 @@ export const options: NextAuthOptions = {
             },
         }),
     ],
-    callbacks: {
-        // async redirect({ url, baseUrl }) {
-        //     // Allows relative callback URLs
-        //     if (url.startsWith("/")) return `${baseUrl}${url}`
-        //     // Allows callback URLs on the same origin
-        //     else if (new URL(url).origin === baseUrl) return url
-        //     return baseUrl
-        // },
+    callbacks: {       
         // Include accessToken and refreshToken in the token object
         async jwt({ token, user }) {
             if (user) {
+                token.username = user.username;
                 token.role = user.role;
                 token.accessToken = user.accessToken;
                 token.refreshToken = user.refreshToken;
@@ -65,6 +59,7 @@ export const options: NextAuthOptions = {
         // If you want to use the role, accessToken, and refreshToken in client components
         async session({ session, token }) {
             if (session?.user) {
+                session.user.username = token.username;
                 session.user.role = token.role;
                 session.user.accessToken = token.accessToken;
                 session.user.refreshToken = token.refreshToken;
@@ -76,5 +71,9 @@ export const options: NextAuthOptions = {
     pages:{
         signIn:'/',  
         error: "Username or Password is incorrect"     
+    },
+    session:{
+        maxAge: 60 * 60 * 24 * 7, 
+        
     }
 };

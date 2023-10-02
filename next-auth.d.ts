@@ -13,6 +13,7 @@ declare module "next-auth" {
     }
 
     interface User extends DefaultUser {
+        username: string
         role: string
         accessToken: string
         refreshToken: string
@@ -22,6 +23,7 @@ declare module "next-auth" {
 
 declare module "next-auth/jwt" {
     interface JWT extends DefaultJWT {
+        username: string
         role: string
         accessToken: string
         refreshToken: string

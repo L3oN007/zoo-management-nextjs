@@ -12,26 +12,20 @@ import { DataTableFacetedFilter } from "./data-table-faceted-filter"
 
 interface DataTableToolbarProps<TData> {
     table: Table<TData>
-    searchKey: string  
+    searchKey: string
+    filterOptions: {
+        label: string
+        value: string
+        icon?: React.ComponentType<{ className?: string }>
+    }[]
 }
 
 export function DataTableToolbar<TData>({
     table,
     searchKey,
+    filterOptions,
 }: DataTableToolbarProps<TData>) {
     const isFiltered = table.getState().columnFilters.length > 0
-    const statuses = [
-        {
-            value: "0",
-            label: "Active",
-            icon: CheckCircledIcon,
-        },
-        {
-            value: "1",
-            label: "Inactive",
-            icon: CrossCircledIcon,
-        },
-    ]
 
     return (
         <div className="flex items-center justify-between">
@@ -48,7 +42,14 @@ export function DataTableToolbar<TData>({
                     <DataTableFacetedFilter
                         column={table.getColumn("isDeleted")}
                         title="Status"
-                        options={statuses}
+                        options={filterOptions}
+                    />
+                )}
+                {table.getColumn("tags") && (
+                    <DataTableFacetedFilter
+                        column={table.getColumn("tags")}
+                        title="Tags"
+                        options={filterOptions}
                     />
                 )}
 

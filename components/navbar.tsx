@@ -1,10 +1,9 @@
-import { MainNav } from '@/components/main-nav';
-import { Avatar, AvatarImage } from './ui/avatar';
-import { ThemeToggle } from '@/components/theme-toggle';
-import { UserNav } from './user-nav';
-import Logo from './logo';
-import { getServerSession } from 'next-auth';
 import { options } from '@/app/api/auth/[...nextauth]/options';
+import { MainNav } from '@/components/main-nav';
+import { ThemeToggle } from '@/components/theme-toggle';
+import { getServerSession } from 'next-auth';
+import Logo from './logo';
+import { UserNav } from './user-nav';
 
 const Navbar = async () => {
 	const session = await getServerSession(options);
