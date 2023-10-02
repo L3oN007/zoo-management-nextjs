@@ -13,14 +13,14 @@ interface ManageAreaClientProps {
   data: any;
 }
 
-export const ManageAreaClient: FC<ManageAreaClientProps> = (data) => {
+export const ManageAreaClient: FC<ManageAreaClientProps> = ({ data }) => {
   const router = useRouter();
 
   return (
     <>
       <div className="flex items-center justify-between">
         <Heading
-          title={`Areas (${Object.keys(data.data).length})`}
+          title={`Areas (${Object.keys(data).length})`}
           description="Manage Areas in the zoo"
         />
 
@@ -30,7 +30,7 @@ export const ManageAreaClient: FC<ManageAreaClientProps> = (data) => {
         </Button>
       </div>
       <Separator />
-      <DataTable columns={columns} data={data.data} searchKey="name" />
+      <DataTable columns={columns} data={data} searchKey="name" filterOptions={null as any} />
     </>
   );
 };

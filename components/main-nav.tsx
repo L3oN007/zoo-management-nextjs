@@ -37,14 +37,9 @@ export function MainNav({ className, role, ...props }: React.HTMLAttributes<HTML
 	} else if (role === 'staff') {
 		routes = [
 			{
-				href: `/api/auth/signin`,
-				label: 'Login',
-				active: pathname === `/api/auth/signin`,
-			},
-			{
-				href: `/api/auth/signout`,
-				label: 'Logout',
-				active: pathname === `/api/auth/signout`,
+				href: `/staff/overview`,
+				label: 'Overview',
+				active: pathname === `/staff/overview`,
 			},
 			{
 				href: `/staff/manage-news`,
@@ -65,11 +60,6 @@ export function MainNav({ className, role, ...props }: React.HTMLAttributes<HTML
 				href: `/staff/manage-trainers-account`,
 				label: 'Manage Trainer Account',
 				active: pathname === `/staff/manage-trainers-account`,
-			},
-			{
-				href: `/${params.storeId}/billboards`,
-				label: 'XXXXXX',
-				active: pathname === `/${params.storeId}/billboards`,
 			},
 		];
 	}

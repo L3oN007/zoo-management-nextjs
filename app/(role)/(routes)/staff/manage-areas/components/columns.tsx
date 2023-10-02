@@ -26,8 +26,8 @@ export const columns: ColumnDef<NewsColumn>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Area's name
-          <ArrowUpDown className="ml-8 h-5 w-5" />
+          Area&rsquo;s name
+          <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },

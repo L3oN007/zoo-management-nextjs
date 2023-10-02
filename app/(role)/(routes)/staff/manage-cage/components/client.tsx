@@ -28,7 +28,7 @@ export const ManageCageClient: FC<ManageCageClientProps> = (data) => {
                 </Button>
             </div>
             <Separator />
-            <DataTable columns={columns} data={data.data} searchKey="name" />
+            <DataTable columns={columns} data={data.data} searchKey="name" filterOptions={null as any} />
 
         </>
     )
