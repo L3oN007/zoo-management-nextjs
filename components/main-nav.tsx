@@ -47,9 +47,19 @@ export function MainNav({ className, role, ...props }: React.HTMLAttributes<HTML
 				active: pathname === `/staff/manage-news`,
 			},
 			{
-				href: `/${params.storeId}/billboards`,
-				label: 'XXXXXX',
-				active: pathname === `/${params.storeId}/billboards`,
+				href: `/staff/manage-areas`,
+				label: 'Manage Areas',
+				active: pathname === `/staff/manage-areas`,
+			},
+			{
+				href: `/staff/manage-cage`,
+				label: 'Manage Cage',
+				active: pathname === `/staff/manage-cage`,
+			},
+			{
+				href: `/staff/manage-trainers-account`,
+				label: 'Manage Trainer Account',
+				active: pathname === `/staff/manage-trainers-account`,
 			},
 		];
 	}

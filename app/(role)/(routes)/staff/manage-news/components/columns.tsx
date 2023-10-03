@@ -65,7 +65,7 @@ export const columns: ColumnDef<NewsColumn>[] = [
         header: 'Tags',
         cell: (props) => {
             return (
-                <div className='flex flex-wrap max-w-[80%]'>
+                <div className='flex flex-wrap max-w-[100%]'>
                     {props.row.original.tags.map((tag, index) => {
                         return (
                             <span

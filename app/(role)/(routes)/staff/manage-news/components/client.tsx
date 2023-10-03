@@ -31,7 +31,7 @@ export const ManageNewsClient: FC<ManageNewsClientProps> = ({ data }) => {
 		<>
 			<div className='flex items-center justify-between'>
 				<Heading title={`News (${Object.keys(data).length})`} description='Manage News information in the zoo' />
-				<Button onClick={() => router.push('/admin/manage-staffs/new')}>
+				<Button onClick={() => router.push('/staff/manage-news/new')}>
 					<Plus className='mr-2 h-4 w-4' />
 					Add New
 				</Button>
