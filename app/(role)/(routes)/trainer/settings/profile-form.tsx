@@ -1,184 +1,233 @@
 'use client';
 
-import Link from 'next/link';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useFieldArray, useForm } from 'react-hook-form';
+import axios from 'axios';
+import { Trash } from 'lucide-react';
+import { useParams, useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { toast } from 'react-hot-toast';
 import * as z from 'zod';
 
-import { cn } from '@/lib/utils';
+import { AlertModal } from '@/components/modals/alert-modal';
 import { Button } from '@/components/ui/button';
-import {
-	Form,
-	FormControl,
-	FormDescription,
-	FormField,
-	FormItem,
-	FormLabel,
-	FormMessage,
-} from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Heading } from '@/components/ui/heading';
+import ImageUploadAvatar from '@/components/ui/image-upload-avatar';
 import { Input } from '@/components/ui/input';
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
-import { toast } from '@/components/ui/use-toast';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Separator } from '@/components/ui/separator';
 
-const profileFormSchema = z.object({
-	username: z
-		.string()
-		.min(2, {
-			message: 'Username must be at least 2 characters.',
-		})
-		.max(30, {
-			message: 'Username must not be longer than 30 characters.',
-		}),
-	email: z
-		.string({
-			required_error: 'Please select an email to display.',
-		})
-		.email(),
-	bio: z.string().max(160).min(4),
-	urls: z
-		.array(
-			z.object({
-				value: z.string().url({ message: 'Please enter a valid URL.' }),
-			})
-		)
-		.optional(),
+const formSchema = z.object({
+	image: z.string().nullable(),
+	fullName: z.string().min(1, { message: 'Full name must be between 1-50 characters.' }).max(50),
+	dob: z.string().min(1, { message: 'Date of birth is required.' }),
+	citizenId: z.string().min(1, { message: 'Citizen ID is required.' }),
+	email: z.string().email({ message: 'Invalid email address.' }),
+	phoneNumber: z.string().refine((value) => /^\d{10}$/.test(value), {
+		message: 'Phone number must be exactly 10 digits.',
+	}),
+	isDeleted: z.string(),
+	// isDeleted: z.string().refine((value) => value === '0' || value === '1', {
+	// 	message: "Status must be either '0' or '1'.",
+	// }),
 });
 
-type ProfileFormValues = z.infer<typeof profileFormSchema>;
+type ProfileFormValues = z.infer<typeof formSchema>;
 
-// This can come from your database or API.
-const defaultValues: Partial<ProfileFormValues> = {
-	bio: 'I own a computer.',
-	urls: [{ value: 'https://shadcn.com' }, { value: 'http://twitter.com/shadcn' }],
-};
+interface Profile {}
 
-export function ProfileForm() {
+interface ProfileFormProps {
+	initialData: Profile | null;
+}
+
+export const ProfileForm: React.FC<ProfileFormProps> = ({ initialData }) => {
+	const url = 'https://648867740e2469c038fda6cc.mockapi.io/staff';
+	const params = useParams();
+	const router = useRouter();
+
+	const [open, setOpen] = useState(false);
+	const [loading, setLoading] = useState(false);
+	const [selectedStatus, setSelectedStatus] = useState('');
+
+	const description = initialData ? 'Edit a staff account.' : 'Add a new staff account';
+	const toastMessage = initialData ? 'Staff account updated.' : 'Staff account created.';
+	const action = initialData ? 'Save changes' : 'Create';
+
 	const form = useForm<ProfileFormValues>({
-		resolver: zodResolver(profileFormSchema),
-		defaultValues,
-		mode: 'onChange',
+		resolver: zodResolver(formSchema),
+		defaultValues: initialData || {
+			image: '',
+			fullName: '',
+			dob: '',
+			citizenId: '',
+			email: '',
+			phoneNumber: '',
+			isDeleted: '',
+		},
 	});
 
-	const { fields, append } = useFieldArray({
-		name: 'urls',
-		control: form.control,
-	});
+	const onSubmit = async (data: ProfileFormValues) => {
+		try {
+			setLoading(true);
+			if (initialData) {
+				await axios.put(url + `/${params.staffId}`, data);
+			} else {
+				await axios.post(url, data);
+			}
+			router.refresh();
+			router.push(`/admin/manage-staff`);
+			toast.success(toastMessage);
+		} catch (error: any) {
+			toast.error('Something went wrong.');
+		} finally {
+			setLoading(false);
+		}
+	};
 
-	function onSubmit(data: ProfileFormValues) {
-		toast({
-			title: 'You submitted the following values:',
-			description: (
-				<pre className='mt-2 w-[340px] rounded-md bg-slate-950 p-4'>
-					<code className='text-white'>{JSON.stringify(data, null, 2)}</code>
-				</pre>
-			),
-		});
-	}
+	const onDelete = async () => {
+		try {
+			setLoading(true);
+			await axios.delete(url + `/${params.staffId}`);
+			router.refresh();
+			router.push(`/admin/manage-staff`);
+			toast.success('Staff deleted.');
+		} catch (error: any) {
+			toast.error('Fail to delete.');
+		} finally {
+			setLoading(false);
+			setOpen(false);
+		}
+	};
 
 	return (
-		<Form {...form}>
-			<form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
-				<FormField
-					control={form.control}
-					name='username'
-					render={({ field }) => (
-						<FormItem>
-							<FormLabel>Username</FormLabel>
-							<FormControl>
-								<Input placeholder='shadcn' {...field} />
-							</FormControl>
-							<FormDescription>
-								This is your public display name. It can be your real name or a pseudonym. You can
-								only change this once every 30 days.
-							</FormDescription>
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
-				<FormField
-					control={form.control}
-					name='email'
-					render={({ field }) => (
-						<FormItem>
-							<FormLabel>Email</FormLabel>
-							<Select onValueChange={field.onChange} defaultValue={field.value}>
+		<>
+			<AlertModal isOpen={open} onClose={() => setOpen(false)} onConfirm={onDelete} loading={loading} />
+			<div className='flex items-center justify-between'>
+				<Heading title={'Profile Settings'} description={'The Profile Settings Page is where you personalize and manage your account. '} />
+				{initialData && (
+					<Button disabled={loading} variant='destructive' size='sm' onClick={() => setOpen(true)}>
+						<Trash className='h-4 w-4' />
+					</Button>
+				)}
+			</div>
+			<Separator />
+			<Form {...form}>
+				<form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8 w-full'>
+					<FormField
+						control={form.control}
+						name='image'
+						render={({ field }) => (
+							<FormItem>
+								<FormLabel>Staff Avatar Image</FormLabel>
 								<FormControl>
-									<SelectTrigger>
-										<SelectValue placeholder='Select a verified email to display' />
-									</SelectTrigger>
+									<ImageUploadAvatar
+										value={field.value ? [field.value] : []}
+										disabled={loading}
+										onChange={(url) => field.onChange(url)}
+										onRemove={() => field.onChange('')}
+									/>
 								</FormControl>
-								<SelectContent>
-									<SelectItem value='m@example.com'>m@example.com</SelectItem>
-									<SelectItem value='m@google.com'>m@google.com</SelectItem>
-									<SelectItem value='m@support.com'>m@support.com</SelectItem>
-								</SelectContent>
-							</Select>
-							<FormDescription>
-								You can manage verified email addresses in your{' '}
-								<Link href='/examples/forms'>email settings</Link>.
-							</FormDescription>
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
-				<FormField
-					control={form.control}
-					name='bio'
-					render={({ field }) => (
-						<FormItem>
-							<FormLabel>Bio</FormLabel>
-							<FormControl>
-								<Textarea
-									placeholder='Tell us a little bit about yourself'
-									className='resize-none'
-									{...field}
-								/>
-							</FormControl>
-							<FormDescription>
-								You can <span>@mention</span> other users and organizations to link to them.
-							</FormDescription>
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
-				<div>
-					{fields.map((field, index) => (
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+					<div className='md:grid md:grid-cols-3 gap-8'>
 						<FormField
 							control={form.control}
-							key={field.id}
-							name={`urls.${index}.value`}
+							name='fullName'
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel className={cn(index !== 0 && 'sr-only')}>URLs</FormLabel>
-									<FormDescription className={cn(index !== 0 && 'sr-only')}>
-										Add links to your website, blog, or social media profiles.
-									</FormDescription>
+									<FormLabel>Full Name</FormLabel>
 									<FormControl>
-										<Input {...field} />
+										<Input disabled={loading} placeholder='Billboard label' {...field} />
 									</FormControl>
 									<FormMessage />
 								</FormItem>
 							)}
 						/>
-					))}
-					<Button
-						type='button'
-						variant='outline'
-						size='sm'
-						className='mt-2'
-						onClick={() => append({ value: '' })}>
-						Add URL
+						<FormField
+							control={form.control}
+							name='dob'
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Date of birth</FormLabel>
+									<FormControl>
+										<Input type='date' disabled={loading} placeholder='Billboard label' {...field} />
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						<FormField
+							control={form.control}
+							name='citizenId'
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Citizen ID:</FormLabel>
+									<FormControl>
+										<Input type='number' disabled={loading} placeholder='Billboard label' {...field} />
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						<FormField
+							control={form.control}
+							name='email'
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Email:</FormLabel>
+									<FormControl>
+										<Input type='email' disabled={loading} placeholder='Billboard label' {...field} />
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						<FormField
+							control={form.control}
+							name='phoneNumber'
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Phone:</FormLabel>
+									<FormControl>
+										<Input type='tel' disabled={loading} placeholder='Billboard label' {...field} />
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						<FormField
+							control={form.control}
+							name='isDeleted'
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Status:</FormLabel>
+									<Select disabled={loading} onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
+										<FormControl>
+											<SelectTrigger>
+												<SelectValue defaultValue={field.value} placeholder={field.value === '0' ? 'Active' : 'Inactive'} />
+											</SelectTrigger>
+										</FormControl>
+										<SelectContent>
+											<SelectGroup>
+												<SelectLabel>Status</SelectLabel>
+												<SelectItem value='0'>Active</SelectItem>
+												<SelectItem value='1'>Inactive</SelectItem>
+											</SelectGroup>
+										</SelectContent>
+									</Select>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+					</div>
+					<Button disabled={loading} className='ml-auto' type='submit'>
+						{action}
 					</Button>
-				</div>
-				<Button type='submit'>Update profile</Button>
-			</form>
-		</Form>
+				</form>
+			</Form>
+		</>
 	);
-}
+};
