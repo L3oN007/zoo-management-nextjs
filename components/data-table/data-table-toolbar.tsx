@@ -9,6 +9,8 @@ import { DataTableViewOptions } from "./data-table-view-options"
 
 
 import { DataTableFacetedFilter } from "./data-table-faceted-filter"
+import { DataTableDateFilter } from "./data-table-date-filter"
+
 
 interface DataTableToolbarProps<TData> {
     table: Table<TData>
@@ -52,6 +54,7 @@ export function DataTableToolbar<TData>({
                         options={filterOptions}
                     />
                 )}
+
 
                 {isFiltered && (
                     <Button

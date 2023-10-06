@@ -22,26 +22,24 @@ const formSchema = z.object({
 	image: z.string().nullable(),
 	fullName: z.string().min(1, { message: 'Full name must be between 1-50 characters.' }).max(50),
 	dob: z.string().min(1, { message: 'Date of birth is required.' }),
+	citizenId: z.string().min(1, { message: 'Citizen ID is required.' }),
 	email: z.string().email({ message: 'Invalid email address.' }),
 	phoneNumber: z.string().refine((value) => /^\d{10}$/.test(value), {
 		message: 'Phone number must be exactly 10 digits.',
 	}),
 	isDeleted: z.string(),
-	// isDeleted: z.string().refine((value) => value === '0' || value === '1', {
-	// 	message: "Status must be either '0' or '1'.",
-	// }),
 });
 
 type ManageTrainerFormValues = z.infer<typeof formSchema>;
 
-interface Trainer {}
+interface Trainer { }
 
 interface ManageTrainerFormProps {
 	initialData: Trainer | null;
 }
 
 export const ManageTrainerForm: React.FC<ManageTrainerFormProps> = ({ initialData }) => {
-	const url = 'https://651822f6582f58d62d356e1a.mockapi.io/trainer';
+	const url = 'https://651d776944e393af2d59dbd7.mockapi.io/trainer';
 	const params = useParams();
 	const router = useRouter();
 
@@ -60,6 +58,7 @@ export const ManageTrainerForm: React.FC<ManageTrainerFormProps> = ({ initialDat
 			image: '',
 			fullName: '',
 			dob: '',
+			citizenId: '',
 			email: '',
 			phoneNumber: '',
 			isDeleted: '',
@@ -75,7 +74,7 @@ export const ManageTrainerForm: React.FC<ManageTrainerFormProps> = ({ initialDat
 				await axios.post(url, data);
 			}
 			router.refresh();
-			router.push(`/staff/manage-trainers-account`);
+			router.push(`/staff/manage-trainers`);
 			toast.success(toastMessage);
 		} catch (error: any) {
 			toast.error('Something went wrong.');
@@ -89,7 +88,7 @@ export const ManageTrainerForm: React.FC<ManageTrainerFormProps> = ({ initialDat
 			setLoading(true);
 			await axios.delete(url + `/${params.trainerId}`);
 			router.refresh();
-			router.push(`/staff/manage-trainers-account`);
+			router.push(`/staff/manage-trainers`);
 			toast.success('Trainer deleted.');
 		} catch (error: any) {
 			toast.error('Fail to delete.');
@@ -118,7 +117,7 @@ export const ManageTrainerForm: React.FC<ManageTrainerFormProps> = ({ initialDat
 						name='image'
 						render={({ field }) => (
 							<FormItem>
-								<FormLabel>Trainer Avatar Image</FormLabel>
+								<FormLabel>Staff Avatar Image</FormLabel>
 								<FormControl>
 									<ImageUpload
 										value={field.value ? [field.value] : []}
@@ -158,7 +157,19 @@ export const ManageTrainerForm: React.FC<ManageTrainerFormProps> = ({ initialDat
 								</FormItem>
 							)}
 						/>
-						
+						<FormField
+							control={form.control}
+							name='citizenId'
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Citizen ID:</FormLabel>
+									<FormControl>
+										<Input type='number' disabled={loading} placeholder='Billboard label' {...field} />
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
 						<FormField
 							control={form.control}
 							name='email'

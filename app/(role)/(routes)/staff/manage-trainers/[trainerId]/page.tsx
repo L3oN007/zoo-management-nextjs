@@ -1,5 +1,5 @@
 import { format } from "date-fns";
-import { ManageTrainerForm } from "./components/manage-account-form";
+import { ManageTrainerForm } from "./components/manage-trainer-form";
 import axios from "axios";
 
 const ManageTrainerPage = async ({ params }: { params: { trainerId: string } }) => {

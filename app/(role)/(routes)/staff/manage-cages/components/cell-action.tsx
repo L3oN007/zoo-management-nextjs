@@ -16,10 +16,10 @@ import {
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 
-import { TrainerColumn } from "./columns";
+import { CageColumn } from "./columns";
 
 interface CellActionProps {
-    data: TrainerColumn;
+    data: CageColumn;
 }
 
 export const CellAction: React.FC<CellActionProps> = ({
@@ -33,8 +33,8 @@ export const CellAction: React.FC<CellActionProps> = ({
     const onConfirm = async () => {
         try {
             setLoading(true);
-            await axios.delete(`https://651822f6582f58d62d356e1a.mockapi.io/trainer/${data.id}`);
-            toast.success('Trainer deleted.');
+            await axios.delete(`https://651822f6582f58d62d356e1a.mockapi.io/cage/${data.id}`);
+            toast.success('Cage deleted.');
             router.refresh();
         } catch (error) {
             toast.error('Something went wrong');
@@ -46,7 +46,7 @@ export const CellAction: React.FC<CellActionProps> = ({
 
     const onCopy = (id: string) => {
         navigator.clipboard.writeText(id);
-        toast.success('Trainer ID copied to clipboard.');
+        toast.success('Cage ID copied to clipboard.');
     }
 
     return (
@@ -72,7 +72,7 @@ export const CellAction: React.FC<CellActionProps> = ({
                         <Copy className="mr-2 h-4 w-4" /> Copy Id
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                        onClick={() => router.push(`/staff/manage-trainers-account/${data.id}`)}
+                        onClick={() => router.push(`/staff/manage-cages/${data.id}`)}
                     >
                         <Edit className="mr-2 h-4 w-4" /> Update
                     </DropdownMenuItem>

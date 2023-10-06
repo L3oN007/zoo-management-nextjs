@@ -46,7 +46,7 @@ const formSchema = z.object({
 
 type ManageCageFormValues = z.infer<typeof formSchema>;
 
-interface Cage {}
+interface Cage { }
 
 interface ManageCageFormProps {
   initialData: Cage | null;
@@ -86,7 +86,7 @@ export const ManageAreasForm: React.FC<ManageCageFormProps> = ({
         await axios.post(url, data);
       }
       router.refresh();
-      router.push(`/staff/manage-cage`);
+      router.push(`/staff/manage-cages`);
       toast.success(toastMessage);
     } catch (error: any) {
       toast.error("Something went wrong.");
@@ -100,7 +100,7 @@ export const ManageAreasForm: React.FC<ManageCageFormProps> = ({
       setLoading(true);
       await axios.delete(url + `/${params.cageId}`);
       router.refresh();
-      router.push(`/staff/manage-cage`);
+      router.push(`/staff/manage-cages`);
       toast.success("Cage deleted.");
     } catch (error: any) {
       toast.error("Fail to delete.");

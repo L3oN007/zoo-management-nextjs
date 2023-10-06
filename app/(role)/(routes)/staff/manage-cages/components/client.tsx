@@ -22,7 +22,7 @@ export const ManageCageClient: FC<ManageCageClientProps> = (data) => {
             <div className="flex items-center justify-between">
                 <Heading title={`Cage (${Object.keys(data.data).length})`} description="Manage Cage information in the zoo" />
 
-                <Button onClick={() => router.push("/staff/manage-cage/new")}>
+                <Button onClick={() => router.push("/staff/manage-cages/new")}>
                     <Plus className="mr-2 h-4 w-4" />
                     Add New
                 </Button>
