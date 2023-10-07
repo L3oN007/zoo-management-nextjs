@@ -32,7 +32,7 @@ const formSchema = z.object({
 
 type ManageStaffFormValues = z.infer<typeof formSchema>;
 
-interface Staff {}
+interface Staff { }
 
 interface ManageStaffFormProps {
 	initialData: Staff | null;

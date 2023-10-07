@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import ErrorPage from "@/app/error/page";
 
 const ManageTrainerAccPage = async () => {
-  const url = `https://651822f6582f58d62d356e1a.mockapi.io/trainer`;
+  const url = `https://651d776944e393af2d59dbd7.mockapi.io/trainer`;
 
   try {
     // Make the GET request to fetch trainer data

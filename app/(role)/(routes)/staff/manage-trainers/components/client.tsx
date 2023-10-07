@@ -35,7 +35,7 @@ export const ManageTrainerClient: FC<ManageTrainerClientProps> = ({ data }) => {
             <div className="flex items-center justify-between">
                 <Heading title={`Trainer (${Object.keys(data).length})`} description="Manage Trainers' account in the zoo" />
 
-                <Button onClick={() => router.push("/staff/manage-trainers-account/new")}>
+                <Button onClick={() => router.push("/staff/manage-trainers/new")}>
                     <Plus className="mr-2 h-4 w-4" />
                     Add New
                 </Button>

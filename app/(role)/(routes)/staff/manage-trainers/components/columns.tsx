@@ -1,18 +1,17 @@
 'use client';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ColumnDef } from '@tanstack/react-table';
-import { ArrowUpDown, MoreHorizontal } from "lucide-react"
+import { ArrowUpDown } from "lucide-react";
 import { CellAction } from './cell-action';
-import { DataTableRowActions } from '@/components/data-table/data-table-row-actions';
 
 export type TrainerColumn = {
     id: string;
     img_url: string;
     fullName: string;
     dob: string;
+    citizenId: string;
     email: string;
     phoneNumber: string;
     isDeleted: string;
@@ -49,7 +48,10 @@ export const columns: ColumnDef<TrainerColumn>[] = [
         accessorKey: 'dob',
         header: 'Date of Birth',
     },
-
+    {
+        accessorKey: 'citizenId',
+        header: 'Citizen ID',
+    },
     {
         accessorKey: 'email',
         header: 'Email',
