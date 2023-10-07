@@ -19,6 +19,9 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 import { Separator } from '@/components/ui/separator';
 
 const formSchema = z.object({
+	id: z.string().refine((value) => /^E\d{3}$/.test(value), {
+		message: 'ID must be in the format EXXX where XXX is a 3-digit number.',
+	}),
 	image: z.string().nullable(),
 	fullName: z.string().min(1, { message: 'Full name must be between 1-50 characters.' }).max(50),
 	dob: z.string().min(1, { message: 'Date of birth is required.' }),
@@ -55,6 +58,7 @@ export const ManageTrainerForm: React.FC<ManageTrainerFormProps> = ({ initialDat
 	const form = useForm<ManageTrainerFormValues>({
 		resolver: zodResolver(formSchema),
 		defaultValues: initialData || {
+			id: '',
 			image: '',
 			fullName: '',
 			dob: '',
@@ -130,7 +134,20 @@ export const ManageTrainerForm: React.FC<ManageTrainerFormProps> = ({ initialDat
 							</FormItem>
 						)}
 					/>
-					<div className='md:grid md:grid-cols-3 gap-8'>
+					<div className='md:grid md:grid-cols-3 gap-8 w-[70%]'>
+						<FormField
+							control={form.control}
+							name='id'
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Trainer ID</FormLabel>
+									<FormControl>
+										<Input disabled={loading} placeholder='Trainer ID' {...field} />
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
 						<FormField
 							control={form.control}
 							name='fullName'
@@ -196,16 +213,25 @@ export const ManageTrainerForm: React.FC<ManageTrainerFormProps> = ({ initialDat
 								</FormItem>
 							)}
 						/>
+
+
 						<FormField
 							control={form.control}
 							name='isDeleted'
 							render={({ field }) => (
 								<FormItem>
 									<FormLabel>Status:</FormLabel>
-									<Select disabled={loading} onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
+									<Select
+										disabled={loading}
+										onValueChange={field.onChange}
+										value={field.value}
+										defaultValue={field.value}
+									>
 										<FormControl>
 											<SelectTrigger>
-												<SelectValue defaultValue={field.value} placeholder={field.value === '0' ? 'Active' : 'Inactive'} />
+												<SelectValue defaultValue={field.value == '0' ? 'Active' : 'Inactive'}>
+													{field.value == '0' ? 'Active' : 'Inactive'}
+												</SelectValue>
 											</SelectTrigger>
 										</FormControl>
 										<SelectContent>
@@ -220,6 +246,9 @@ export const ManageTrainerForm: React.FC<ManageTrainerFormProps> = ({ initialDat
 								</FormItem>
 							)}
 						/>
+
+
+
 					</div>
 					<Button disabled={loading} className='ml-auto' type='submit'>
 						{action}

@@ -117,28 +117,7 @@ export const ManageAreasForm: React.FC<ManageCageFormProps> = ({
       setOpen(false);
     }
   };
-  const frameworks = [
-    {
-      value: "next.js",
-      label: "Next.js",
-    },
-    {
-      value: "sveltekit",
-      label: "SvelteKit",
-    },
-    {
-      value: "nuxt.js",
-      label: "Nuxt.js",
-    },
-    {
-      value: "B",
-      label: "B",
-    },
-    {
-      value: "V",
-      label: "V",
-    },
-  ]
+
 
   return (
     <>

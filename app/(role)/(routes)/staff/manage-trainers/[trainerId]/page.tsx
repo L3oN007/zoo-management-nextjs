@@ -4,7 +4,7 @@ import axios from "axios";
 
 const ManageTrainerPage = async ({ params }: { params: { trainerId: string } }) => {
     // Construct the URL using the staffId from the params object
-    const url = `https://648867740e2469c038fda6cc.mockapi.io/staff/${params.trainerId}`;
+    const url = `https://651d776944e393af2d59dbd7.mockapi.io/trainer/${params.trainerId}`;
 
     try {
         // Make the GET request to fetch staff data
