@@ -31,7 +31,6 @@ const ManageStaffPage = async () => {
         if (Array.isArray(staffData)) {
             staffData.forEach((staff: any) => {
                 staff.dob = format(new Date(staff.dob), 'MMMM do, yyyy');
-                staff.isDeleted = staff.isDeleted.toString();
             });
         }
 

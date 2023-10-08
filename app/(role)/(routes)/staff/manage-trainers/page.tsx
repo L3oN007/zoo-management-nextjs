@@ -31,8 +31,7 @@ const ManageTrainerAccPage = async () => {
     // If trainerData is an array, loop through it and update date format and isDeleted property
     if (Array.isArray(trainerData)) {
       trainerData.forEach((trainer: any) => {
-        // trainer.dob = format(new Date(trainer.dob), "MMMM do, yyyy");
-        trainer.isDeleted = trainer.isDeleted.toString();
+        trainer.dob = format(new Date(trainer.dob), "MMMM do, yyyy");
       });
     }
 

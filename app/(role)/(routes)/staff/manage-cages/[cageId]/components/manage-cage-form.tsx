@@ -2,15 +2,16 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
-import { Trash } from "lucide-react";
+import { Check, ChevronsUpDown, Trash } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import * as z from "zod";
 
 import { AlertModal } from "@/components/modals/alert-modal";
 import { Button } from "@/components/ui/button";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
 import {
   Form,
   FormControl,
@@ -20,25 +21,17 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Heading } from "@/components/ui/heading";
-import ImageUpload from "@/components/ui/image-upload";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
+import { cn } from "@/lib/utils";
 
 const formSchema = z.object({
   name: z
     .string()
     .min(1, { message: "Name must be between 1-50 characters." })
     .max(50),
-  maxCapacity: z.string().refine((value) => value > "0", {
+  maxCapacity: z.coerce.number().refine((value) => value > 0, {
     message: "Capacity must be greater than 0.",
   }),
   areaID: z.string().min(1, { message: "Area ID is required." }).max(50),
@@ -52,7 +45,7 @@ interface ManageCageFormProps {
   initialData: Cage | null;
 }
 
-export const ManageAreasForm: React.FC<ManageCageFormProps> = ({
+export const ManageCageForm: React.FC<ManageCageFormProps> = ({
   initialData,
 }) => {
   const url = "https://651822f6582f58d62d356e1a.mockapi.io/cage";
@@ -60,8 +53,23 @@ export const ManageAreasForm: React.FC<ManageCageFormProps> = ({
   const router = useRouter();
 
   const [open, setOpen] = useState(false);
+  const [openComboBox, setOpenComboBox] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [selectedStatus, setSelectedStatus] = useState("");
+  const [value, setValue] = useState("");
+  const [areaIDData, setAreaIDData] = useState([]); // Store the API data
+
+  useEffect(() => {
+    // Fetch only the "areaID" values from the API
+    axios.get(url)
+      .then((response) => {
+        // Extract the "areaID" values from the API response
+        const areaIDs = response.data.map((item: any) => item.areaID);
+        setAreaIDData(areaIDs);
+      })
+      .catch((error) => {
+        console.error('Error fetching data from API:', error);
+      });
+  }, []);
 
   const title = initialData ? "Edit cage" : "Create new cage";
   const description = initialData ? "Edit cage." : "Add a new cage";
@@ -71,7 +79,7 @@ export const ManageAreasForm: React.FC<ManageCageFormProps> = ({
   const form = useForm<ManageCageFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: initialData || {
-      maxCapacity: "",
+      maxCapacity: 0,
       name: "",
       areaID: "",
     },
@@ -110,6 +118,7 @@ export const ManageAreasForm: React.FC<ManageCageFormProps> = ({
     }
   };
 
+
   return (
     <>
       <AlertModal
@@ -135,7 +144,7 @@ export const ManageAreasForm: React.FC<ManageCageFormProps> = ({
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-8 w-full"
+          className="space-y-8 w-[50%]"
         >
           <div className="md:grid md:grid-cols-3 gap-8">
             <FormField
@@ -163,6 +172,7 @@ export const ManageAreasForm: React.FC<ManageCageFormProps> = ({
                   <FormLabel>Max Capacity</FormLabel>
                   <FormControl>
                     <Input
+                      type="number"
                       disabled={loading}
                       placeholder="Billboard label"
                       {...field}
@@ -175,20 +185,60 @@ export const ManageAreasForm: React.FC<ManageCageFormProps> = ({
             <FormField
               control={form.control}
               name="areaID"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Area ID</FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={loading}
-                      placeholder="Billboard label"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              render={({ field }) => {
+                return (
+                  <FormItem>
+                    <FormLabel>Area ID</FormLabel>
+                    <FormControl>
+                      <Popover open={openComboBox} onOpenChange={setOpenComboBox}>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="outline"
+                            role="combobox"
+                            aria-expanded={open}
+                            className="w-full flex items-center justify-between"
+                          >
+                            <div>
+                              {field.value ? areaIDData.find((item) => item === field.value) : "Select AreaID..."}
+                            </div>
+                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-[200px] p-0">
+                          <Command>
+                            <CommandInput placeholder="Search Area ID..." />
+                            <CommandEmpty>No Area ID found.</CommandEmpty>
+                            <CommandGroup>
+                              {areaIDData.map((item) => (
+                                <CommandItem
+                                  key={item}
+                                  onSelect={() => {
+                                    // Set the selected value in the field
+                                    field.onChange(item === field.value ? "" : item);
+                                    setOpenComboBox(false);
+                                  }}
+                                >
+                                  <Check
+                                    className={cn(
+                                      "mr-2 h-4 w-4",
+                                      item === field.value ? "opacity-100" : "opacity-0"
+                                    )}
+                                  />
+                                  {item}
+                                </CommandItem>
+                              ))}
+                            </CommandGroup>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                );
+              }}
             />
+
+
           </div>
           <Button disabled={loading} className="ml-auto" type="submit">
             {action}
