@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import ErrorPage from "@/app/error/page";
 
 const ManageAreaPage = async () => {
-  const url = `https://6511a76d829fa0248e4086dc.mockapi.io/areas`;
+  const url = `http://localhost:5000/api/Areas/load-areas`;
 
   try {
     // Make the GET request to fetch area data
