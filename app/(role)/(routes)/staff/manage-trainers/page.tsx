@@ -5,10 +5,10 @@ import axios from "axios";
 import { format, set } from "date-fns";
 import { Button } from "@/components/ui/button";
 import ErrorPage from "@/app/error/page";
+import { string } from "zod";
 
 const ManageTrainerAccPage = async () => {
-  const url = `https://651d776944e393af2d59dbd7.mockapi.io/trainer`;
-
+  const url = process.env.API_LOAD_TRAINERS;
   try {
     // Make the GET request to fetch trainer data
     const response = await axios.get(url);
@@ -31,7 +31,7 @@ const ManageTrainerAccPage = async () => {
     // If trainerData is an array, loop through it and update date format and isDeleted property
     if (Array.isArray(trainerData)) {
       trainerData.forEach((trainer: any) => {
-        trainer.dob = format(new Date(trainer.dob), "MMMM do, yyyy");
+        // trainer.dob = format(new Date(trainer.dob), "MMMM do, yyyy");
         trainer.isDeleted = trainer.isDeleted.toString();
       });
     }
