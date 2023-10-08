@@ -20,7 +20,6 @@ const EditStaffPage = async ({ params }: { params: { staffId: string } }) => {
             // If staffData is an array, loop through it and update date format and isDeleted property
             staffData.forEach((staff: any) => {
                 staff.dob = format(new Date(staff.dob), 'MMMM do, yyyy');
-                staff.isDeleted = staff.isDeleted.toString();
             });
         }
 

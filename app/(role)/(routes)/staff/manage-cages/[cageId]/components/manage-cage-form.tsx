@@ -31,7 +31,7 @@ const formSchema = z.object({
     .string()
     .min(1, { message: "Name must be between 1-50 characters." })
     .max(50),
-  maxCapacity: z.string().refine((value) => value > "0", {
+  maxCapacity: z.coerce.number().refine((value) => value > 0, {
     message: "Capacity must be greater than 0.",
   }),
   areaID: z.string().min(1, { message: "Area ID is required." }).max(50),
@@ -45,7 +45,7 @@ interface ManageCageFormProps {
   initialData: Cage | null;
 }
 
-export const ManageAreasForm: React.FC<ManageCageFormProps> = ({
+export const ManageCageForm: React.FC<ManageCageFormProps> = ({
   initialData,
 }) => {
   const url = "https://651822f6582f58d62d356e1a.mockapi.io/cage";
@@ -79,7 +79,7 @@ export const ManageAreasForm: React.FC<ManageCageFormProps> = ({
   const form = useForm<ManageCageFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: initialData || {
-      maxCapacity: "",
+      maxCapacity: 0,
       name: "",
       areaID: "",
     },
@@ -117,28 +117,7 @@ export const ManageAreasForm: React.FC<ManageCageFormProps> = ({
       setOpen(false);
     }
   };
-  const frameworks = [
-    {
-      value: "next.js",
-      label: "Next.js",
-    },
-    {
-      value: "sveltekit",
-      label: "SvelteKit",
-    },
-    {
-      value: "nuxt.js",
-      label: "Nuxt.js",
-    },
-    {
-      value: "B",
-      label: "B",
-    },
-    {
-      value: "V",
-      label: "V",
-    },
-  ]
+
 
   return (
     <>
@@ -193,6 +172,7 @@ export const ManageAreasForm: React.FC<ManageCageFormProps> = ({
                   <FormLabel>Max Capacity</FormLabel>
                   <FormControl>
                     <Input
+                      type="number"
                       disabled={loading}
                       placeholder="Billboard label"
                       {...field}

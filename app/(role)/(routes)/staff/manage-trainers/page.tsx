@@ -32,7 +32,6 @@ const ManageTrainerAccPage = async () => {
     if (Array.isArray(trainerData)) {
       trainerData.forEach((trainer: any) => {
         trainer.dob = format(new Date(trainer.dob), "MMMM do, yyyy");
-        trainer.isDeleted = trainer.isDeleted.toString();
       });
     }
 

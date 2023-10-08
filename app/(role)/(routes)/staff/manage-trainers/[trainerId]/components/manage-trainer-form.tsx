@@ -19,6 +19,9 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 import { Separator } from '@/components/ui/separator';
 
 const formSchema = z.object({
+	id: z.string().refine((value) => /^E\d{3}$/.test(value), {
+		message: 'ID must be in the format EXXX where XXX is a 3-digit number.',
+	}),
 	image: z.string().nullable(),
 	fullName: z.string().min(1, { message: 'Full name must be between 1-50 characters.' }).max(50),
 	dob: z.string().min(1, { message: 'Date of birth is required.' }),
@@ -27,7 +30,7 @@ const formSchema = z.object({
 	phoneNumber: z.string().refine((value) => /^\d{10}$/.test(value), {
 		message: 'Phone number must be exactly 10 digits.',
 	}),
-	isDeleted: z.string(),
+	isDeleted: z.coerce.number(),
 });
 
 type ManageTrainerFormValues = z.infer<typeof formSchema>;
@@ -55,13 +58,14 @@ export const ManageTrainerForm: React.FC<ManageTrainerFormProps> = ({ initialDat
 	const form = useForm<ManageTrainerFormValues>({
 		resolver: zodResolver(formSchema),
 		defaultValues: initialData || {
+			id: '',
 			image: '',
 			fullName: '',
 			dob: '',
 			citizenId: '',
 			email: '',
 			phoneNumber: '',
-			isDeleted: '',
+			isDeleted: 0,
 		},
 	});
 
@@ -130,7 +134,20 @@ export const ManageTrainerForm: React.FC<ManageTrainerFormProps> = ({ initialDat
 							</FormItem>
 						)}
 					/>
-					<div className='md:grid md:grid-cols-3 gap-8'>
+					<div className='md:grid md:grid-cols-3 gap-8 w-[70%]'>
+						<FormField
+							control={form.control}
+							name='id'
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Trainer ID</FormLabel>
+									<FormControl>
+										<Input disabled={loading} placeholder='Trainer ID' {...field} />
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
 						<FormField
 							control={form.control}
 							name='fullName'
@@ -202,10 +219,17 @@ export const ManageTrainerForm: React.FC<ManageTrainerFormProps> = ({ initialDat
 							render={({ field }) => (
 								<FormItem>
 									<FormLabel>Status:</FormLabel>
-									<Select disabled={loading} onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
+									<Select
+										disabled={loading}
+										onValueChange={field.onChange}
+										value={field.value.toString()} // Convert the value to a string here
+										defaultValue={field.value.toString()} // Convert the default value to a string
+									>
 										<FormControl>
 											<SelectTrigger>
-												<SelectValue defaultValue={field.value} placeholder={field.value === '0' ? 'Active' : 'Inactive'} />
+												<SelectValue defaultValue={field.value === 0 ? 'Active' : 'Inactive'}>
+													{field.value === 0 ? 'Active' : 'Inactive'}
+												</SelectValue>
 											</SelectTrigger>
 										</FormControl>
 										<SelectContent>

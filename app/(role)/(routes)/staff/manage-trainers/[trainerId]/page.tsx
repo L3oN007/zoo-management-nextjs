@@ -4,7 +4,7 @@ import axios from "axios";
 
 const ManageTrainerPage = async ({ params }: { params: { trainerId: string } }) => {
     // Construct the URL using the staffId from the params object
-    const url = `https://648867740e2469c038fda6cc.mockapi.io/staff/${params.trainerId}`;
+    const url = `https://651d776944e393af2d59dbd7.mockapi.io/trainer/${params.trainerId}`;
 
     try {
         // Make the GET request to fetch staff data
@@ -20,7 +20,6 @@ const ManageTrainerPage = async ({ params }: { params: { trainerId: string } }) 
             // If trainerData is an array, loop through it and update date format and isDeleted property
             trainerData.forEach((staff: any) => {
                 staff.dob = format(new Date(staff.dob), 'MMMM do, yyyy');
-                staff.isDeleted = staff.isDeleted.toString();
             });
         }
 
