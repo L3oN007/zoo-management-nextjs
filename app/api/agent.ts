@@ -9,42 +9,15 @@ axios.defaults.withCredentials = true;
 
 const responseBody = (response: AxiosResponse) => response.data;
 
-// axios.interceptors.response.use(
-//     async (response) => {
-//         await sleep();
-//         return response;
-//     },
-//     (error: AxiosError) => {
-//         const { data, status } = error.response as AxiosResponse;
-//         switch (status) {
-//             case 400:
-//                 if (data.errors) {
-//                     const modelStateError: string[] = [];
-//                     for (const key in data.errors) {
-//                         if (data.errors[key]) {
-//                             modelStateError.push(data.errors[key]);
-//                         }
-//                     }
-//                     throw modelStateError.flat();
-//                 }
-//                 toast.error(data.title);
-//                 break;
-//             case 401:
-//                 toast.error(data.title);
-//                 break;
-//             case 404:
-//                 toast.error(data.title);
-//                 break;
-//             // case 500:
-//             //     router.navigate("/server-error", { state: { error: data } });
-//             //     break;
-//             default:
-//                 toast.error("Something unexpected went wrong");
-//                 break;
-//         }
-//         return Promise.reject(error.response);
-//     }
-// );
+axios.interceptors.response.use(
+    async (response) => {
+        await sleep();
+        return response;
+    },
+    (error: AxiosError) => {
+        return Promise.reject(error.response);
+    }
+);
 
 const requests = {
     get: (url: string) => axios.get(url).then(responseBody),
@@ -58,7 +31,7 @@ const Cages = {
     // details: (id: number) => requests.get(`News/get-news?id=${id}`),
     // create: (news: {}) => requests.post("/news", news),
     // update: (news: {}) => requests.put("/news", news),
-    delete: (id: string) => requests.delete(`/news/${id}`),
+    delete: (id: string) => requests.delete(`Cages/delete?cageId=${id}`),
 };
 
 const agent = {

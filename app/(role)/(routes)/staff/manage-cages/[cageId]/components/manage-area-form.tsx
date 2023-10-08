@@ -25,16 +25,18 @@ import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
+import { CageObj } from "@/app/models/cage";
 
 const formSchema = z.object({
+  id: z.string(),
   name: z
     .string()
     .min(1, { message: "Name must be between 1-50 characters." })
     .max(50),
-  maxCapacity: z.string().refine((value) => value > "0", {
+  maxCapacity: z.number().refine((value) => value > 0, {
     message: "Capacity must be greater than 0.",
   }),
-  areaID: z.string().min(1, { message: "Area ID is required." }).max(50),
+  areaId: z.string().min(1, { message: "Area ID is required." }).max(50),
 });
 
 type ManageCageFormValues = z.infer<typeof formSchema>;
@@ -48,7 +50,7 @@ interface ManageCageFormProps {
 export const ManageAreasForm: React.FC<ManageCageFormProps> = ({
   initialData,
 }) => {
-  const url = "https://651822f6582f58d62d356e1a.mockapi.io/cage";
+  const url = "http://localhost:5000/api/Cages";
   const params = useParams();
   const router = useRouter();
 
@@ -59,11 +61,10 @@ export const ManageAreasForm: React.FC<ManageCageFormProps> = ({
   const [areaIDData, setAreaIDData] = useState([]); // Store the API data
 
   useEffect(() => {
-    // Fetch only the "areaID" values from the API
-    axios.get(url)
+    axios.get("http://localhost:5000/api/Areas/load-areas")
       .then((response) => {
-        // Extract the "areaID" values from the API response
-        const areaIDs = response.data.map((item: any) => item.areaID);
+        const areaIDs = response.data.map((item: any) => item.id);
+        console.log(areaIDs);
         setAreaIDData(areaIDs);
       })
       .catch((error) => {
@@ -79,9 +80,10 @@ export const ManageAreasForm: React.FC<ManageCageFormProps> = ({
   const form = useForm<ManageCageFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: initialData || {
-      maxCapacity: "",
+      id: "",
+      maxCapacity: 0,
       name: "",
-      areaID: "",
+      areaId: "",
     },
   });
 
@@ -89,7 +91,7 @@ export const ManageAreasForm: React.FC<ManageCageFormProps> = ({
     try {
       setLoading(true);
       if (initialData) {
-        await axios.put(url + `/${params.cageId}`, data);
+        await axios.put(url + `/update-cage?cageId=${params.cageId}`, data);
       } else {
         await axios.post(url, data);
       }
@@ -98,6 +100,8 @@ export const ManageAreasForm: React.FC<ManageCageFormProps> = ({
       toast.success(toastMessage);
     } catch (error: any) {
       toast.error("Something went wrong.");
+      console.log(error);
+      
     } finally {
       setLoading(false);
     }
@@ -106,12 +110,12 @@ export const ManageAreasForm: React.FC<ManageCageFormProps> = ({
   const onDelete = async () => {
     try {
       setLoading(true);
-      await axios.delete(url + `/${params.cageId}`);
+      await axios.delete(url + `/delete?cageId=${params.cageId}`);
       router.refresh();
       router.push(`/staff/manage-cages`);
       toast.success("Cage deleted.");
     } catch (error: any) {
-      toast.error("Fail to delete.");
+      toast.error(error.response.data.title);
     } finally {
       setLoading(false);
       setOpen(false);
@@ -170,6 +174,24 @@ export const ManageAreasForm: React.FC<ManageCageFormProps> = ({
           <div className="md:grid md:grid-cols-3 gap-8">
             <FormField
               control={form.control}
+              name="id"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Cage Id</FormLabel>
+                  <FormControl>
+                    <Input
+                      disabled={loading}
+                      placeholder="Billboard label"
+                      readOnly={initialData? true : false}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
               name="name"
               render={({ field }) => (
                 <FormItem>
@@ -204,11 +226,11 @@ export const ManageAreasForm: React.FC<ManageCageFormProps> = ({
             />
             <FormField
               control={form.control}
-              name="areaID"
+              name="areaId"
               render={({ field }) => {
                 return (
                   <FormItem>
-                    <FormLabel>Area ID</FormLabel>
+                    <FormLabel>Area Id</FormLabel>
                     <FormControl>
                       <Popover open={openComboBox} onOpenChange={setOpenComboBox}>
                         <PopoverTrigger asChild>

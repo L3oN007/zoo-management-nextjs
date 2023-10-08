@@ -1,6 +1,6 @@
 "use client";
 
-import axios from "axios";
+import axios, { Axios, AxiosError } from "axios";
 import { Copy, Edit, MoreHorizontal, Trash } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
@@ -33,11 +33,13 @@ export const CellAction: React.FC<CellActionProps> = ({
     const onConfirm = async () => {
         try {
             setLoading(true);
-            await axios.delete(`https://651822f6582f58d62d356e1a.mockapi.io/cage/${data.id}`);
+            await axios.delete(`http://localhost:5000/api/Cages/delete?cageId=${data.id}`);
             toast.success('Cage deleted.');
             router.refresh();
-        } catch (error) {
-            toast.error('Something went wrong');
+        } catch (error: any) {
+            toast.error(error.response.data.title);
+            console.log(error);
+
         } finally {
             setLoading(false);
             setOpen(false);

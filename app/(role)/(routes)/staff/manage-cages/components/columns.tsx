@@ -7,20 +7,21 @@ import { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown, MoreHorizontal } from "lucide-react"
 import { CellAction } from './cell-action';
 import { DataTableRowActions } from '@/components/data-table/data-table-row-actions';
+import { AreaObj } from '@/app/models/area';
 
 export type CageColumn = {
     id: string;
     name: string;
     maxCapacity: number;
-    areaID: string;
-
+    areaId: string;
+    area: AreaObj
 };
 
 export const columns: ColumnDef<CageColumn>[] = [
     {
         accessorKey: 'id',
         header: 'Cage ID',
-        
+
     },
     {
         accessorKey: 'name',
@@ -39,13 +40,13 @@ export const columns: ColumnDef<CageColumn>[] = [
     {
         accessorKey: 'maxCapacity',
         header: 'Max Capacity',
-    
+
     },
-    
+
     {
-        accessorKey: 'areaID',
+        accessorKey: 'area.name',
         header: 'Area ID',
-        
+
     },
     {
         id: "actions",
