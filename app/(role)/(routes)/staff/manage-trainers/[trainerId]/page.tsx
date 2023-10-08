@@ -20,7 +20,6 @@ const ManageTrainerPage = async ({ params }: { params: { trainerId: string } }) 
             // If trainerData is an array, loop through it and update date format and isDeleted property
             trainerData.forEach((staff: any) => {
                 staff.dob = format(new Date(staff.dob), 'MMMM do, yyyy');
-                staff.isDeleted = staff.isDeleted.toString();
             });
         }
 

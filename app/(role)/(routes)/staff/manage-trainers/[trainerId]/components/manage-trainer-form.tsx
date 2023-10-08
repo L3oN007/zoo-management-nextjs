@@ -30,7 +30,7 @@ const formSchema = z.object({
 	phoneNumber: z.string().refine((value) => /^\d{10}$/.test(value), {
 		message: 'Phone number must be exactly 10 digits.',
 	}),
-	isDeleted: z.string(),
+	isDeleted: z.coerce.number(),
 });
 
 type ManageTrainerFormValues = z.infer<typeof formSchema>;
@@ -65,7 +65,7 @@ export const ManageTrainerForm: React.FC<ManageTrainerFormProps> = ({ initialDat
 			citizenId: '',
 			email: '',
 			phoneNumber: '',
-			isDeleted: '',
+			isDeleted: 0,
 		},
 	});
 
@@ -213,8 +213,6 @@ export const ManageTrainerForm: React.FC<ManageTrainerFormProps> = ({ initialDat
 								</FormItem>
 							)}
 						/>
-
-
 						<FormField
 							control={form.control}
 							name='isDeleted'
@@ -224,13 +222,13 @@ export const ManageTrainerForm: React.FC<ManageTrainerFormProps> = ({ initialDat
 									<Select
 										disabled={loading}
 										onValueChange={field.onChange}
-										value={field.value}
-										defaultValue={field.value}
+										value={field.value.toString()} // Convert the value to a string here
+										defaultValue={field.value.toString()} // Convert the default value to a string
 									>
 										<FormControl>
 											<SelectTrigger>
-												<SelectValue defaultValue={field.value == '0' ? 'Active' : 'Inactive'}>
-													{field.value == '0' ? 'Active' : 'Inactive'}
+												<SelectValue defaultValue={field.value === 0 ? 'Active' : 'Inactive'}>
+													{field.value === 0 ? 'Active' : 'Inactive'}
 												</SelectValue>
 											</SelectTrigger>
 										</FormControl>
@@ -246,9 +244,6 @@ export const ManageTrainerForm: React.FC<ManageTrainerFormProps> = ({ initialDat
 								</FormItem>
 							)}
 						/>
-
-
-
 					</div>
 					<Button disabled={loading} className='ml-auto' type='submit'>
 						{action}

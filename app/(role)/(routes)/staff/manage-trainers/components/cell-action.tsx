@@ -33,7 +33,7 @@ export const CellAction: React.FC<CellActionProps> = ({
     const onConfirm = async () => {
         try {
             setLoading(true);
-            await axios.delete(`https://651822f6582f58d62d356e1a.mockapi.io/trainer/${data.id}`);
+            await axios.delete(`https://651d776944e393af2d59dbd7.mockapi.io/trainer/${data.id}`);
             toast.success('Trainer deleted.');
             router.refresh();
         } catch (error) {
