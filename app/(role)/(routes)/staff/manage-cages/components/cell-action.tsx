@@ -39,7 +39,6 @@ export const CellAction: React.FC<CellActionProps> = ({
         } catch (error: any) {
             toast.error(error.response.data.title);
             console.log(error);
-
         } finally {
             setLoading(false);
             setOpen(false);

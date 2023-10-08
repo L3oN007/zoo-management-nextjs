@@ -28,12 +28,18 @@ import { cn } from "@/lib/utils";
 import { CageObj } from "@/app/models/cage";
 
 const formSchema = z.object({
-  id: z.string(),
+  id: z.string().trim().refine(value => {
+    const regex = /^[A-Z]\d{4}$/
+    return regex.test(value) 
+  }, {
+    message: 'ID must be in format AXXXX with A being an uppercase letter and XXXX being a 4 digit number'  
+  }),
   name: z
     .string()
+    .trim()
     .min(1, { message: "Name must be between 1-50 characters." })
     .max(50),
-  maxCapacity: z.number().refine((value) => value > 0, {
+  maxCapacity: z.coerce.number().refine((value) => value > 0, {
     message: "Capacity must be greater than 0.",
   }),
   areaId: z.string().min(1, { message: "Area ID is required." }).max(50),
@@ -88,20 +94,20 @@ export const ManageAreasForm: React.FC<ManageCageFormProps> = ({
   });
 
   const onSubmit = async (data: ManageCageFormValues) => {
+    debugger;
     try {
       setLoading(true);
       if (initialData) {
         await axios.put(url + `/update-cage?cageId=${params.cageId}`, data);
       } else {
-        await axios.post(url, data);
+        await axios.post(url + `/create-cage`, data);
       }
       router.refresh();
       router.push(`/staff/manage-cages`);
       toast.success(toastMessage);
     } catch (error: any) {
-      toast.error("Something went wrong.");
+      toast.error(error.response.data.title);
       console.log(error);
-      
     } finally {
       setLoading(false);
     }
@@ -169,9 +175,9 @@ export const ManageAreasForm: React.FC<ManageCageFormProps> = ({
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-8 w-[50%]"
+          className="space-y-8 w-full"
         >
-          <div className="md:grid md:grid-cols-3 gap-8">
+          <div className="md:grid md:grid-cols-4 gap-8">
             <FormField
               control={form.control}
               name="id"
@@ -181,7 +187,7 @@ export const ManageAreasForm: React.FC<ManageCageFormProps> = ({
                   <FormControl>
                     <Input
                       disabled={loading}
-                      placeholder="Billboard label"
+                      placeholder="ex: A0009"
                       readOnly={initialData? true : false}
                       {...field}
                     />
@@ -199,7 +205,7 @@ export const ManageAreasForm: React.FC<ManageCageFormProps> = ({
                   <FormControl>
                     <Input
                       disabled={loading}
-                      placeholder="Billboard label"
+                      placeholder="ex: Panda"
                       {...field}
                     />
                   </FormControl>
@@ -215,6 +221,7 @@ export const ManageAreasForm: React.FC<ManageCageFormProps> = ({
                   <FormLabel>Max Capacity</FormLabel>
                   <FormControl>
                     <Input
+                      type="number"
                       disabled={loading}
                       placeholder="Billboard label"
                       {...field}
