@@ -12,7 +12,6 @@ const ManageTrainerAccPage = async () => {
   try {
     // Make the GET request to fetch trainer data
     const response = await axios.get(url);
-
     // Check if the response contains data
     if (response.data === null) {
       // trainer not found, set trainerData to null
@@ -29,11 +28,11 @@ const ManageTrainerAccPage = async () => {
     let trainerData = response.data;
 
     // If trainerData is an array, loop through it and update date format and isDeleted property
-    if (Array.isArray(trainerData)) {
-      trainerData.forEach((trainer: any) => {
-        trainer.dob = format(new Date(trainer.dob), "MMMM do, yyyy");
-      });
-    }
+    // if (Array.isArray(trainerData)) {
+    //   trainerData.forEach((trainer: any) => {
+    //     trainer.dob = format(new Date(trainer.dob), "MMMM do, yyyy");
+    //   });
+    // }
 
     return (
       <div className="flex-col">
