@@ -42,7 +42,6 @@ const formSchema = z.object({
     .string()
     .min(1, { message: "Full name must be between 1-50 characters." })
     .max(50),
-  dob: z.string().min(1, { message: "Date of birth is required." }),
   citizenId: z.string().min(1, { message: "Citizen ID is required." }),
   email: z.string().email({ message: "Invalid email address." }),
   phoneNumber: z.string().refine((value) => /^\d{10}$/.test(value), {
@@ -53,7 +52,7 @@ const formSchema = z.object({
 
 type ManageTrainerFormValues = z.infer<typeof formSchema>;
 
-interface Trainer {}
+interface Trainer { }
 
 interface ManageTrainerFormProps {
   initialData: Trainer | null;
@@ -88,7 +87,6 @@ export const ManageTrainerForm: React.FC<ManageTrainerFormProps> = ({
       id: "",
       image: "",
       fullName: "",
-      dob: "",
       citizenId: "",
       email: "",
       phoneNumber: "",
@@ -183,6 +181,8 @@ export const ManageTrainerForm: React.FC<ManageTrainerFormProps> = ({
                   <FormLabel>Trainer ID</FormLabel>
                   <FormControl>
                     <Input
+                      className="read-only:bg-gray-100"
+                      readOnly={!!initialData}
                       disabled={loading}
                       placeholder="Trainer ID"
                       {...field}
@@ -211,31 +211,13 @@ export const ManageTrainerForm: React.FC<ManageTrainerFormProps> = ({
             />
             <FormField
               control={form.control}
-              name="dob"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Date of birth</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="date"
-                      disabled={loading}
-                      placeholder="Billboard label"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
               name="citizenId"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Citizen ID:</FormLabel>
                   <FormControl>
                     <Input
-                      type="number"
+                      type="text"
                       disabled={loading}
                       placeholder="Billboard label"
                       {...field}

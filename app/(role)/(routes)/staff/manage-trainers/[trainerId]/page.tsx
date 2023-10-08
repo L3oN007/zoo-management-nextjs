@@ -15,17 +15,7 @@ const ManageTrainerPage = async ({
 
     // Extract trainerData from the response
     let trainerData = response.data;
-    console.log(trainerData);
 
-    // If trainerData is null or undefined, set it to null
-    if (trainerData == null) {
-      trainerData = null;
-    } else if (Array.isArray(trainerData)) {
-      // If trainerData is an array, loop through it and update date format and isDeleted property
-      trainerData.forEach((staff: any) => {
-        staff.dob = format(new Date(staff.dob), "MMMM do, yyyy");
-      });
-    }
 
     return (
       <div className="flex-col">

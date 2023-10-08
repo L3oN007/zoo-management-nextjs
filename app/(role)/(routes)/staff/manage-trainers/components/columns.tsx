@@ -13,7 +13,7 @@ export type TrainerColumn = {
   citizenId: string;
   email: string;
   phoneNumber: string;
-  isDeleted: string;
+  isDeleted: number;
 };
 
 export const columns: ColumnDef<TrainerColumn>[] = [
