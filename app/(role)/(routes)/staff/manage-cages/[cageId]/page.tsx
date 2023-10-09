@@ -3,7 +3,7 @@ import { ManageAreasForm } from "./components/manage-area-form";
 import axios from "axios";
 
 const ManageAreasPage = async ({ params }: { params: { cageId: string } }) => {
-  const url = `http://localhost:5000/api/Cages/get-cage-by-id?id=${params.cageId}`;
+  const url = process.env.NEXT_PUBLIC_API_GET_CAGE + `?id=${params.cageId}`;
 
   try {
     const response = await axios.get(url);

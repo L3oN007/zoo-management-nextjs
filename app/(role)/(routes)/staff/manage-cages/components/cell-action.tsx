@@ -33,7 +33,7 @@ export const CellAction: React.FC<CellActionProps> = ({
     const onConfirm = async () => {
         try {
             setLoading(true);
-            await axios.delete(`http://localhost:5000/api/Cages/delete?cageId=${data.id}`);
+            await axios.delete(process.env.NEXT_PUBLIC_API_DELETE_CAGE + `?cageId=${data.id}`);
             toast.success('Cage deleted.');
             router.refresh();
         } catch (error: any) {

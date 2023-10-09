@@ -10,10 +10,10 @@ import agent from '@/app/api/agent';
 
 
 const ManageCagePage = async () => {
-    const url = `http://localhost:5000/api/Cages/load-cages`;
+    const url = process.env.NEXT_PUBLIC_API_LOAD_CAGES;
 
     try {
-        const response = await axios.get(url);
+        const response = await axios.get(url!);
         var cages = response.data;
         // var cages = agent.Cages.list();
         console.log(cages);

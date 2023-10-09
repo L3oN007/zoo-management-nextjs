@@ -56,7 +56,6 @@ interface ManageCageFormProps {
 export const ManageAreasForm: React.FC<ManageCageFormProps> = ({
   initialData,
 }) => {
-  const url = "http://localhost:5000/api/Cages";
   const params = useParams();
   const router = useRouter();
 
@@ -67,7 +66,7 @@ export const ManageAreasForm: React.FC<ManageCageFormProps> = ({
   const [areaIDData, setAreaIDData] = useState([]); // Store the API data
 
   useEffect(() => {
-    axios.get("http://localhost:5000/api/Areas/load-areas")
+    axios.get(process.env.NEXT_PUBLIC_API_LOAD_AREAS!)
       .then((response) => {
         const areaIDs = response.data.map((item: any) => item.id);
         console.log(areaIDs);
@@ -98,9 +97,9 @@ export const ManageAreasForm: React.FC<ManageCageFormProps> = ({
     try {
       setLoading(true);
       if (initialData) {
-        await axios.put(url + `/update-cage?cageId=${params.cageId}`, data);
+        await axios.put(process.env.NEXT_PUBLIC_API_UPDATE_CAGE + `?cageId=${params.cageId}`, data);
       } else {
-        await axios.post(url + `/create-cage`, data);
+        await axios.post(process.env.NEXT_PUBLIC_API_CREATE_CAGE!, data);
       }
       router.refresh();
       router.push(`/staff/manage-cages`);
@@ -116,7 +115,7 @@ export const ManageAreasForm: React.FC<ManageCageFormProps> = ({
   const onDelete = async () => {
     try {
       setLoading(true);
-      await axios.delete(url + `/delete?cageId=${params.cageId}`);
+      await axios.delete(process.env.NEXT_PUBLIC_API_DELETE_CAGE! + `?cageId=${params.cageId}`);
       router.refresh();
       router.push(`/staff/manage-cages`);
       toast.success("Cage deleted.");
