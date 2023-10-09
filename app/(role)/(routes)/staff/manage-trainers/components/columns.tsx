@@ -47,10 +47,6 @@ export const columns: ColumnDef<TrainerColumn>[] = [
     },
   },
   {
-    accessorKey: "dob",
-    header: "Date of Birth",
-  },
-  {
     accessorKey: "citizenId",
     header: "Citizen ID",
   },

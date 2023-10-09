@@ -27,15 +27,13 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const [open, setOpen] = useState(false);
   const router = useRouter();
   const params = useParams();
+  const url = process.env.NEXT_PUBLIC_API_DELETE_TRAINER;
 
   const onConfirm = async () => {
     try {
       setLoading(true);
       console.log(params);
-      await axios.put(
-        "http://localhost:5000/api/Employees/trainer/status/resource-id" +
-          `?id=${data.id}`
-      );
+      await axios.put(url + `?id=${data.id}`);
       toast.success("Trainer deleted.");
       router.refresh();
     } catch (error) {

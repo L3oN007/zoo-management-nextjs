@@ -1,5 +1,6 @@
 "use client";
 
+import dotenv from "dotenv";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { Trash } from "lucide-react";
@@ -33,6 +34,8 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 
+dotenv.config();
+
 const formSchema = z.object({
   id: z.string().refine((value) => /^E\d{3}$/.test(value), {
     message: "ID must be in the format EXXX where XXX is a 3-digit number.",
@@ -61,10 +64,9 @@ interface ManageTrainerFormProps {
 export const ManageTrainerForm: React.FC<ManageTrainerFormProps> = ({
   initialData,
 }) => {
-  // const urlPut = process.env.API_UPDATE_TRAINER;
-  const urlPut = "http://localhost:5000/api/Employees/trainer/resource-id";
-  const urlPost = process.env.API_CREATE_TRAINER;
-  const urlDelete = process.env.API_DELETE_TRAINER;
+  const urlPut = process.env.NEXT_PUBLIC_API_UPDATE_TRAINER;
+  const urlPost = process.env.NEXT_PUBLIC_API_CREATE_TRAINER;
+  const urlDelete = process.env.NEXT_PUBLIC_API_DELETE_TRAINER;
 
   const params = useParams();
   const router = useRouter();
@@ -102,7 +104,9 @@ export const ManageTrainerForm: React.FC<ManageTrainerFormProps> = ({
         console.log(initialData);
         await axios.put(urlPut + `?id=${params.trainerId}`, data);
       } else {
-        await axios.post("http://localhost:5000/api/Employees/trainer", data);
+        // console.log(data);
+        // console.log(urlPost);
+        await axios.post(urlPost, data);
       }
       router.refresh();
       router.push(`/staff/manage-trainers`);
@@ -120,7 +124,6 @@ export const ManageTrainerForm: React.FC<ManageTrainerFormProps> = ({
       await axios.put(urlDelete + `?id=${params.trainerId}`);
       router.refresh();
       router.push(`/staff/manage-trainers`);
-      // BUG:????
       toast.success("Trainer deleted.");
     } catch (error: any) {
       toast.error("Fail to delete.");
