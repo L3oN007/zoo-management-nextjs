@@ -31,8 +31,10 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const onConfirm = async () => {
     try {
       setLoading(true);
-      await axios.delete(
-        process.env.API_DELETE_TRAINER + `?id=${params.trainerId}`
+      console.log(params);
+      await axios.put(
+        "http://localhost:5000/api/Employees/trainer/status/resource-id" +
+          `?id=${data.id}`
       );
       toast.success("Trainer deleted.");
       router.refresh();

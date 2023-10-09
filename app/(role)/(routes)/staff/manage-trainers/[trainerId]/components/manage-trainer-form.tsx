@@ -52,7 +52,7 @@ const formSchema = z.object({
 
 type ManageTrainerFormValues = z.infer<typeof formSchema>;
 
-interface Trainer { }
+interface Trainer {}
 
 interface ManageTrainerFormProps {
   initialData: Trainer | null;
@@ -61,8 +61,9 @@ interface ManageTrainerFormProps {
 export const ManageTrainerForm: React.FC<ManageTrainerFormProps> = ({
   initialData,
 }) => {
-  const urlPut = process.env.API_UPDATE_TRAINER;
-  const urlPost = process.env.API_UPDATE_TRAINER;
+  // const urlPut = process.env.API_UPDATE_TRAINER;
+  const urlPut = "http://localhost:5000/api/Employees/trainer/resource-id";
+  const urlPost = process.env.API_CREATE_TRAINER;
   const urlDelete = process.env.API_DELETE_TRAINER;
 
   const params = useParams();
@@ -98,15 +99,16 @@ export const ManageTrainerForm: React.FC<ManageTrainerFormProps> = ({
     try {
       setLoading(true);
       if (initialData) {
+        console.log(initialData);
         await axios.put(urlPut + `?id=${params.trainerId}`, data);
       } else {
-        await axios.post(urlPost, data);
+        await axios.post("http://localhost:5000/api/Employees/trainer", data);
       }
       router.refresh();
       router.push(`/staff/manage-trainers`);
       toast.success(toastMessage);
     } catch (error: any) {
-      toast.error("Something went wrong.");
+      toast.error(error.response.data.title);
     } finally {
       setLoading(false);
     }
@@ -115,9 +117,10 @@ export const ManageTrainerForm: React.FC<ManageTrainerFormProps> = ({
   const onDelete = async () => {
     try {
       setLoading(true);
-      await axios.delete(urlDelete + `/?id=${params.trainerId}`);
+      await axios.put(urlDelete + `?id=${params.trainerId}`);
       router.refresh();
       router.push(`/staff/manage-trainers`);
+      // BUG:????
       toast.success("Trainer deleted.");
     } catch (error: any) {
       toast.error("Fail to delete.");
