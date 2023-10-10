@@ -4,7 +4,7 @@ import axios from "axios";
 
 const ManageAreasPage = async ({ params }: { params: { areasId: string } }) => {
   // Construct the URL using the staffId from the params object
-  const url = `http://localhost:5000/api/Areas/areas-by-id?areaId=${params.areasId}`;
+  const url = process.env.NEXT_PUBLIC_API_GET_AREA + `${params.areasId}`;
 
   try {
     // Make the GET request to fetch staff data

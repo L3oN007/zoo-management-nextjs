@@ -24,6 +24,7 @@ interface CellActionProps {
 }
 
 export const CellAction: React.FC<CellActionProps> = ({ data }) => {
+  const url = process.env.NEXT_PUBLIC_API_DELETE_AREAS;
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const router = useRouter();
@@ -32,9 +33,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const onConfirm = async () => {
     try {
       setLoading(true);
-      await axios.delete(
-        `http://localhost:5000/api/Areas/delete-area?areaId=${data.id}`
-      );
+      await axios.delete(url + `${data.id}`);
       toast.success("Areas deleted.");
       router.refresh();
     } catch (error: any) {

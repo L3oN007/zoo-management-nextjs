@@ -7,11 +7,11 @@ import { Button } from "@/components/ui/button";
 import ErrorPage from "@/app/error/page";
 
 const ManageAreaPage = async () => {
-  const url = `http://localhost:5000/api/Areas/load-areas`;
+  const url = process.env.NEXT_PUBLIC_API_LOAD_AREAS;
 
   try {
     // Make the GET request to fetch area data
-    const response = await axios.get(url);
+    const response = await axios.get(url + ``);
 
     // Check if the response contains data
     if (response.data === null) {

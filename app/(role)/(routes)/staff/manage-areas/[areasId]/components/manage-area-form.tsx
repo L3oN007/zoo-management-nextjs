@@ -52,26 +52,16 @@ interface ManageAreasFormProps {
 export const ManageAreasForm: React.FC<ManageAreasFormProps> = ({
   initialData,
 }) => {
-  const url = "http://localhost:5000/api/Areas";
+  const urlDelete = process.env.NEXT_PUBLIC_API_DELETE_AREAS;
+  const urlUpdate = process.env.NEXT_PUBLIC_API_UPDATE_AREAS;
+  const urlCreate = process.env.NEXT_PUBLIC_API_CREATE_AREAS;
+
   const params = useParams();
   const router = useRouter();
 
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState("");
-
-  useEffect(() => {
-    axios
-      .get("http://localhost:5000/api/Areas/load-areas")
-      .then((response) => {
-        const areaIDs = response.data.map((item: any) => item.id);
-        console.log(areaIDs);
-        setAreaIDData(areaIDs);
-      })
-      .catch((error) => {
-        console.error("Error fetching data from API:", error);
-      });
-  }, []);
 
   const title = initialData ? "Edit a Areas" : "Create new Areas";
   const description = initialData ? "Edit a  areas." : "Add a new areas";
@@ -89,13 +79,9 @@ export const ManageAreasForm: React.FC<ManageAreasFormProps> = ({
   const onSubmit = async (data: ManageAreasFormValues) => {
     try {
       if (initialData) {
-        console.log(data);
-        console.log(url + `/update-area?areaId=${params.areasId}`);
-        await axios.put(url + `/update-area?areaId=${params.areasId}`, data);
+        await axios.put(urlUpdate + `${params.areasId}`, data);
       } else {
-        console.log(data);
-
-        await axios.post(url + `/create-area`, data);
+        await axios.post(urlCreate + ``, data);
       }
       router.refresh();
       router.push(`/staff/manage-areas`);
@@ -110,7 +96,7 @@ export const ManageAreasForm: React.FC<ManageAreasFormProps> = ({
   const onDelete = async () => {
     try {
       setLoading(true);
-      await axios.delete(url + `/delete-area?areaId=${params.areasId}`);
+      await axios.delete(urlDelete + `${params.areasId}`);
       router.refresh();
       router.push(`/staff/manage-areas`);
       toast.success("Areas deleted.");
