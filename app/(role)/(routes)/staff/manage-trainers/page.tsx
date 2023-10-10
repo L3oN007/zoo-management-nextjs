@@ -26,6 +26,12 @@ const ManageTrainerAccPage = async () => {
 
     let trainerData = response.data;
 
+    if (Array.isArray(trainerData)) {
+      trainerData.forEach((trainer: any) => {
+        trainer.isDeleted = trainer.isDeleted.toString();
+      });
+    }
+
     return (
       <div className="flex-col">
         <div className="flex-1 space-y-4 p-8 pt-6">

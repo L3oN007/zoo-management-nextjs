@@ -285,10 +285,10 @@ export const ManageTrainerForm: React.FC<ManageTrainerFormProps> = ({
                       <SelectTrigger>
                         <SelectValue
                           defaultValue={
-                            field.value === 0 ? "Active" : "Inactive"
+                            field.value == 0 ? "Active" : "Inactive"
                           }
                         >
-                          {field.value === 0 ? "Active" : "Inactive"}
+                          {field.value == 0 ? "Active" : "Inactive"}
                         </SelectValue>
                       </SelectTrigger>
                     </FormControl>
