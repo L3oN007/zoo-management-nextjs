@@ -55,7 +55,7 @@ const formSchema = z.object({
 
 type ManageTrainerFormValues = z.infer<typeof formSchema>;
 
-interface Trainer {}
+interface Trainer { }
 
 interface ManageTrainerFormProps {
   initialData: Trainer | null;
@@ -65,7 +65,7 @@ export const ManageTrainerForm: React.FC<ManageTrainerFormProps> = ({
   initialData,
 }) => {
   const urlPut = process.env.NEXT_PUBLIC_API_UPDATE_TRAINER;
-  const urlPost = process.env.NEXT_PUBLIC_API_CREATE_TRAINER;
+  const urlPost = process.env.NEXT_PUBLIC_API_CREATE_TRAINER || "";
   const urlDelete = process.env.NEXT_PUBLIC_API_DELETE_TRAINER;
 
   const params = useParams();
@@ -101,11 +101,8 @@ export const ManageTrainerForm: React.FC<ManageTrainerFormProps> = ({
     try {
       setLoading(true);
       if (initialData) {
-        console.log(initialData);
         await axios.put(urlPut + `?id=${params.trainerId}`, data);
       } else {
-        // console.log(data);
-        // console.log(urlPost);
         await axios.post(urlPost, data);
       }
       router.refresh();

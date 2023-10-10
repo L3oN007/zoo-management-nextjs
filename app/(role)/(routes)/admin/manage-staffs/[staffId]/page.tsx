@@ -13,15 +13,6 @@ const EditStaffPage = async ({ params }: { params: { staffId: string } }) => {
     // Extract staffData from the response
     let staffData = response.data;
 
-    // If staffData is null or undefined, set it to null
-    if (staffData == null) {
-      staffData = null;
-    } else if (Array.isArray(staffData)) {
-      // If staffData is an array, loop through it and update date format and isDeleted property
-      // staffData.forEach((staff: any) => {
-      //     staff.dob = format(new Date(staff.dob), 'MMMM do, yyyy');
-      // });
-    }
 
     return (
       <div className="flex-col">

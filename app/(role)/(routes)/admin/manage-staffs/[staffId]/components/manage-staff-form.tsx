@@ -1,5 +1,6 @@
 "use client";
 
+import dotenv from "dotenv";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { Trash } from "lucide-react";
@@ -33,6 +34,8 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 
+dotenv.config();
+
 const formSchema = z.object({
   id: z.string().refine((value) => /^E\d{3}$/.test(value), {
     message: "ID must be in the format EXXX where XXX is a 3-digit number.",
@@ -42,7 +45,6 @@ const formSchema = z.object({
     .string()
     .min(1, { message: "Full name must be between 1-50 characters." })
     .max(50),
-  dob: z.string().min(1, { message: "Date of birth is required." }),
   citizenId: z.string().min(1, { message: "Citizen ID is required." }),
   email: z.string().email({ message: "Invalid email address." }),
   phoneNumber: z.string().refine((value) => /^\d{10}$/.test(value), {
@@ -53,7 +55,7 @@ const formSchema = z.object({
 
 type ManageStaffFormValues = z.infer<typeof formSchema>;
 
-interface Staff {}
+interface Staff { }
 
 interface ManageStaffFormProps {
   initialData: Staff | null;
@@ -66,8 +68,6 @@ export const ManageStaffForm: React.FC<ManageStaffFormProps> = ({
   const urlPut = process.env.NEXT_PUBLIC_API_UPDATE_STAFF;
   const urlDelete = process.env.NEXT_PUBLIC_API_DELETE_STAFF;
 
-  //   console.log(urlPut);
-
   const params = useParams();
   const router = useRouter();
 
@@ -77,8 +77,8 @@ export const ManageStaffForm: React.FC<ManageStaffFormProps> = ({
 
   const title = initialData ? "Edit Staff Account" : "Create Staff Account";
   const description = initialData
-    ? "Edit a staff account."
-    : "Add a new staff account";
+    ? "Edit a Staff account."
+    : "Add a new Staff account";
   const toastMessage = initialData
     ? "Staff account updated."
     : "Staff account created.";
@@ -101,7 +101,6 @@ export const ManageStaffForm: React.FC<ManageStaffFormProps> = ({
     try {
       setLoading(true);
       if (initialData) {
-        console.log(initialData);
         await axios.put(urlPut + `?id=${params.staffId}`, data);
       } else {
         await axios.post(urlPost, data);
@@ -188,7 +187,7 @@ export const ManageStaffForm: React.FC<ManageStaffFormProps> = ({
                       className="read-only:bg-gray-100"
                       readOnly={!!initialData}
                       disabled={loading}
-                      placeholder="Trainer ID"
+                      placeholder="Staff ID"
                       {...field}
                     />
                   </FormControl>
