@@ -9,86 +9,86 @@ import { toast } from "react-hot-toast";
 import { AlertModal } from "@/components/modals/alert-modal";
 import { Button } from "@/components/ui/button";
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuTrigger
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
 import { TrainerColumn } from "./columns";
 
 interface CellActionProps {
-    data: TrainerColumn;
+  data: TrainerColumn;
 }
 
-export const CellAction: React.FC<CellActionProps> = ({
-    data,
-}) => {
-    const [loading, setLoading] = useState(false);
-    const [open, setOpen] = useState(false);
-    const router = useRouter();
-    const params = useParams();
+export const CellAction: React.FC<CellActionProps> = ({ data }) => {
+  const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false);
+  const router = useRouter();
+  const params = useParams();
+  const url = process.env.NEXT_PUBLIC_API_DELETE_TRAINER;
 
-    const onConfirm = async () => {
-        try {
-            setLoading(true);
-            await axios.delete(`https://651d776944e393af2d59dbd7.mockapi.io/trainer/${data.id}`);
-            toast.success('Trainer deleted.');
-            router.refresh();
-        } catch (error) {
-            toast.error('Something went wrong');
-        } finally {
-            setLoading(false);
-            setOpen(false);
-        }
-    };
-
-    const onCopy = (id: string) => {
-        navigator.clipboard.writeText(id);
-        toast.success('Trainer ID copied to clipboard.');
+  const onConfirm = async () => {
+    try {
+      setLoading(true);
+      console.log(params);
+      await axios.put(url + `?id=${data.id}`);
+      toast.success("Trainer deleted.");
+      router.refresh();
+    } catch (error) {
+      toast.error("Something went wrong");
+    } finally {
+      setLoading(false);
+      setOpen(false);
     }
+  };
 
-    return (
-        <>
-            <AlertModal
-                isOpen={open}
-                onClose={() => setOpen(false)}
-                onConfirm={onConfirm}
-                loading={loading}
-            />
-            <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="h-8 w-8 p-0">
-                        <span className="sr-only">Open menu</span>
-                        <MoreHorizontal className="h-4 w-4" />
-                    </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                    <DropdownMenuItem
-                        onClick={() => onCopy(data.id)}
-                    >
-                        <Copy className="mr-2 h-4 w-4" /> Copy Id
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                        onClick={() => router.push(`/staff/manage-trainers/${data.id}`)}
-                    >
-                        <Edit className="mr-2 h-4 w-4" /> Update
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                        onClick={() => router.push(`/staff/manage-trainers/${data.id}/trainer-schedule`)}
-                    >
-                        <Calendar className="mr-2 h-4 w-4" /> Schedule
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                        onClick={() => setOpen(true)}
-                        className="text-red-500"
-                    >
-                        <Trash className="mr-2 h-4 w-4" /> Delete
-                    </DropdownMenuItem>
-                </DropdownMenuContent>
-            </DropdownMenu>
-        </>
-    );
+  const onCopy = (id: string) => {
+    navigator.clipboard.writeText(id);
+    toast.success("Trainer ID copied to clipboard.");
+  };
+
+  return (
+    <>
+      <AlertModal
+        isOpen={open}
+        onClose={() => setOpen(false)}
+        onConfirm={onConfirm}
+        loading={loading}
+      />
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="h-8 w-8 p-0">
+            <span className="sr-only">Open menu</span>
+            <MoreHorizontal className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+          <DropdownMenuItem onClick={() => onCopy(data.id)}>
+            <Copy className="mr-2 h-4 w-4" /> Copy Id
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => router.push(`/staff/manage-trainers/${data.id}`)}
+          >
+            <Edit className="mr-2 h-4 w-4" /> Update
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() =>
+              router.push(`/staff/manage-trainers/${data.id}/trainer-schedule`)
+            }
+          >
+            <Calendar className="mr-2 h-4 w-4" /> Schedule
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => setOpen(true)}
+            className="text-red-500"
+          >
+            <Trash className="mr-2 h-4 w-4" /> Delete
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </>
+  );
 };
