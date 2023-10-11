@@ -33,7 +33,7 @@ export const CellAction: React.FC<CellActionProps> = ({
     const onConfirm = async () => {
         try {
             setLoading(true);
-            await axios.delete(process.env.NEXT_PUBLIC_API_DELETE_CAGE + `?cageId=${data.id}`);
+            await axios.delete(process.env.NEXT_PUBLIC_API_DELETE_CAGE + `?cageId=${data.cageId}`);
             toast.success('Cage deleted.');
             router.refresh();
         } catch (error: any) {
@@ -68,12 +68,12 @@ export const CellAction: React.FC<CellActionProps> = ({
                 <DropdownMenuContent align="end">
                     <DropdownMenuLabel>Actions</DropdownMenuLabel>
                     <DropdownMenuItem
-                        onClick={() => onCopy(data.id)}
+                        onClick={() => onCopy(data.cageId)}
                     >
                         <Copy className="mr-2 h-4 w-4" /> Copy Id
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                        onClick={() => router.push(`/staff/manage-cages/${data.id}`)}
+                        onClick={() => router.push(`/staff/manage-cages/${data.cageId}`)}
                     >
                         <Edit className="mr-2 h-4 w-4" /> Update
                     </DropdownMenuItem>

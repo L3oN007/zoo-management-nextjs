@@ -17,7 +17,7 @@ interface ManageCageClientProps {
 export const ManageCageClient: FC<ManageCageClientProps> = (data) => {
     const router = useRouter();
 
-    return (
+    return (    
         <>
             <div className="flex items-center justify-between">
                 <Heading title={`Cage (${Object.keys(data.data).length})`} description="Manage Cage information in the zoo" />

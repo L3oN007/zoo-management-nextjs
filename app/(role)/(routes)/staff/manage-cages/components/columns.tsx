@@ -10,7 +10,7 @@ import { DataTableRowActions } from '@/components/data-table/data-table-row-acti
 import { AreaObj } from '@/app/models/area';
 
 export type CageColumn = {
-    id: string;
+    cageId: string;
     name: string;
     maxCapacity: number;
     areaId: string;
@@ -19,7 +19,7 @@ export type CageColumn = {
 
 export const columns: ColumnDef<CageColumn>[] = [
     {
-        accessorKey: 'id',
+        accessorKey: 'cageId',
         header: 'Cage ID',
 
     },
@@ -44,7 +44,7 @@ export const columns: ColumnDef<CageColumn>[] = [
     },
 
     {
-        accessorKey: 'area.name',
+        accessorKey: 'area.areaName',
         header: 'Area ID',
 
     },
