@@ -8,11 +8,10 @@ import { CellAction } from "./cell-action";
 
 export type TrainerColumn = {
   employeeId: string;
+  image: string;
   fullName: string;
   email: string;
   phoneNumber: string;
-  citizenId: string;
-  image: string;
   employeeStatus: number;
 };
 
@@ -59,7 +58,7 @@ export const columns: ColumnDef<TrainerColumn>[] = [
     header: "Phone",
   },
   {
-    accessorKey: "isDeleted",
+    accessorKey: "employeeStatus",
     header: "Status",
     cell: (props) => (
       <div className="flex items-center">

@@ -8,7 +8,7 @@ import ErrorPage from "@/app/error/page";
 import { string } from "zod";
 
 const ManageTrainerAccPage = async () => {
-  const url = process.env.NEXT_PUBLIC_API_LOAD_TRAINERS;
+  const url = process.env.NEXT_PUBLIC_API_LOAD_TRAINERS || "";
   try {
     // Make the GET request to fetch trainer data
     const response = await axios.get(url + ``);
@@ -28,7 +28,7 @@ const ManageTrainerAccPage = async () => {
 
     if (Array.isArray(trainerData)) {
       trainerData.forEach((trainer: any) => {
-        trainer.isDeleted = trainer.isDeleted.toString();
+        trainer.employeeStatus = trainer.employeeStatus.toString();
       });
     }
 
