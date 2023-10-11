@@ -15,8 +15,6 @@ const ManageCagePage = async () => {
     try {
         const response = await axios.get(url!);
         var cages = response.data;
-        // var cages = agent.Cages.list();
-        console.log(cages);
 
         if (cages === null) {
             return (
