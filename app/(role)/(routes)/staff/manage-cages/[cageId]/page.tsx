@@ -1,5 +1,5 @@
 import { format } from "date-fns";
-import { ManageAreasForm } from "./components/manage-area-form";
+import { ManageCageForm } from "./components/manage-cage-form";
 import axios from "axios";
 
 const ManageAreasPage = async ({ params }: { params: { cageId: string } }) => {
@@ -18,13 +18,13 @@ const ManageAreasPage = async ({ params }: { params: { cageId: string } }) => {
       cageData = null;
     } else if (Array.isArray(cageData)) {
       // If cageId is an array, loop through it
-      cageData.forEach((staff: any) => {});
+      cageData.forEach((staff: any) => { });
     }
 
     return (
       <div className="flex-col">
         <div className="flex-1 space-y-4 p-8 pt-6">
-          <ManageAreasForm initialData={cageData} />
+          <ManageCageForm initialData={cageData} />
         </div>
       </div>
     );
@@ -32,7 +32,7 @@ const ManageAreasPage = async ({ params }: { params: { cageId: string } }) => {
     return (
       <div className="flex-col">
         <div className="flex-1 space-y-4 p-8 pt-6">
-          <ManageAreasForm initialData={null} />
+          <ManageCageForm initialData={null} />
         </div>
       </div>
     );

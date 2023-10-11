@@ -1,7 +1,7 @@
 "use client";
 
 import axios from "axios";
-import { Copy, Edit, MoreHorizontal, Trash } from "lucide-react";
+import { Calendar, Copy, Edit, MoreHorizontal, Trash } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
@@ -16,10 +16,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { StaffColumn } from "./columns";
+import { TrainerColumn } from "./columns";
 
 interface CellActionProps {
-  data: StaffColumn;
+  data: TrainerColumn;
 }
 
 export const CellAction: React.FC<CellActionProps> = ({ data }) => {
@@ -27,13 +27,14 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const [open, setOpen] = useState(false);
   const router = useRouter();
   const params = useParams();
+  const url = process.env.NEXT_PUBLIC_API_DELETE_TRAINER;
 
-  const url = process.env.NEXT_PUBLIC_API_DELETE_STAFF;
   const onConfirm = async () => {
     try {
       setLoading(true);
+      console.log(params);
       await axios.put(url + `?id=${data.id}`);
-      toast.success("Staff deleted.");
+      toast.success("Trainer deleted.");
       router.refresh();
     } catch (error) {
       toast.error("Something went wrong");
@@ -45,7 +46,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
 
   const onCopy = (id: string) => {
     navigator.clipboard.writeText(id);
-    toast.success("Staff ID copied to clipboard.");
+    toast.success("Trainer ID copied to clipboard.");
   };
 
   return (
@@ -69,9 +70,16 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
             <Copy className="mr-2 h-4 w-4" /> Copy Id
           </DropdownMenuItem>
           <DropdownMenuItem
-            onClick={() => router.push(`/admin/manage-staffs/${data.id}`)}
+            onClick={() => router.push(`/staff/manage-trainers/${data.id}`)}
           >
             <Edit className="mr-2 h-4 w-4" /> Update
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() =>
+              router.push(`/staff/manage-trainers/${data.id}/trainer-schedule`)
+            }
+          >
+            <Calendar className="mr-2 h-4 w-4" /> Schedule
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => setOpen(true)}

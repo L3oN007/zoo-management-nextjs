@@ -5,14 +5,13 @@ import axios from "axios";
 import { format, set } from "date-fns";
 import { Button } from "@/components/ui/button";
 import ErrorPage from "@/app/error/page";
+import { string } from "zod";
 
 const ManageTrainerAccPage = async () => {
-  const url = `https://651822f6582f58d62d356e1a.mockapi.io/trainer`;
-
+  const url = process.env.NEXT_PUBLIC_API_LOAD_TRAINERS;
   try {
     // Make the GET request to fetch trainer data
     const response = await axios.get(url);
-
     // Check if the response contains data
     if (response.data === null) {
       // trainer not found, set trainerData to null
@@ -25,13 +24,10 @@ const ManageTrainerAccPage = async () => {
       );
     }
 
-    // Extract trainerData from the response
     let trainerData = response.data;
 
-    // If trainerData is an array, loop through it and update date format and isDeleted property
     if (Array.isArray(trainerData)) {
       trainerData.forEach((trainer: any) => {
-        trainer.dob = format(new Date(trainer.dob), "MMMM do, yyyy");
         trainer.isDeleted = trainer.isDeleted.toString();
       });
     }

@@ -6,7 +6,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import { CellAction } from "./cell-action";
 
-export type StaffColumn = {
+export type TrainerColumn = {
   id: string;
   img_url: string;
   fullName: string;
@@ -16,7 +16,7 @@ export type StaffColumn = {
   isDeleted: number;
 };
 
-export const columns: ColumnDef<StaffColumn>[] = [
+export const columns: ColumnDef<TrainerColumn>[] = [
   {
     accessorKey: "Avatar",
     header: "Avatar",

@@ -53,20 +53,20 @@ const formSchema = z.object({
   isDeleted: z.coerce.number(),
 });
 
-type ManageStaffFormValues = z.infer<typeof formSchema>;
+type ManageTrainerFormValues = z.infer<typeof formSchema>;
 
-interface Staff { }
+interface Trainer { }
 
-interface ManageStaffFormProps {
-  initialData: Staff | null;
+interface ManageTrainerFormProps {
+  initialData: Trainer | null;
 }
 
-export const ManageStaffForm: React.FC<ManageStaffFormProps> = ({
+export const ManageTrainerForm: React.FC<ManageTrainerFormProps> = ({
   initialData,
 }) => {
-  const urlPost = process.env.NEXT_PUBLIC_API_CREATE_STAFF || "";
-  const urlPut = process.env.NEXT_PUBLIC_API_UPDATE_STAFF;
-  const urlDelete = process.env.NEXT_PUBLIC_API_DELETE_STAFF;
+  const urlPut = process.env.NEXT_PUBLIC_API_UPDATE_TRAINER;
+  const urlPost = process.env.NEXT_PUBLIC_API_CREATE_TRAINER || "";
+  const urlDelete = process.env.NEXT_PUBLIC_API_DELETE_TRAINER;
 
   const params = useParams();
   const router = useRouter();
@@ -75,16 +75,16 @@ export const ManageStaffForm: React.FC<ManageStaffFormProps> = ({
   const [loading, setLoading] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState("");
 
-  const title = initialData ? "Edit Staff Account" : "Create Staff Account";
+  const title = initialData ? "Edit Trainer Account" : "Create Trainer Account";
   const description = initialData
-    ? "Edit a Staff account."
-    : "Add a new Staff account";
+    ? "Edit a Trainer account."
+    : "Add a new Trainer account";
   const toastMessage = initialData
-    ? "Staff account updated."
-    : "Staff account created.";
+    ? "Trainer account updated."
+    : "Trainer account created.";
   const action = initialData ? "Save changes" : "Create";
 
-  const form = useForm<ManageStaffFormValues>({
+  const form = useForm<ManageTrainerFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: initialData || {
       id: "",
@@ -97,16 +97,16 @@ export const ManageStaffForm: React.FC<ManageStaffFormProps> = ({
     },
   });
 
-  const onSubmit = async (data: ManageStaffFormValues) => {
+  const onSubmit = async (data: ManageTrainerFormValues) => {
     try {
       setLoading(true);
       if (initialData) {
-        await axios.put(urlPut + `?id=${params.staffId}`, data);
+        await axios.put(urlPut + `?id=${params.trainerId}`, data);
       } else {
         await axios.post(urlPost, data);
       }
       router.refresh();
-      router.push(`/admin/manage-staffs`);
+      router.push(`/staff/manage-trainers`);
       toast.success(toastMessage);
     } catch (error: any) {
       toast.error(error.response.data.title);
@@ -118,10 +118,10 @@ export const ManageStaffForm: React.FC<ManageStaffFormProps> = ({
   const onDelete = async () => {
     try {
       setLoading(true);
-      await axios.put(urlDelete + `?id=${params.staffId}`);
+      await axios.put(urlDelete + `?id=${params.trainerId}`);
       router.refresh();
-      router.push(`/admin/manage-staffs`);
-      toast.success("Staff deleted.");
+      router.push(`/staff/manage-trainers`);
+      toast.success("Trainer deleted.");
     } catch (error: any) {
       toast.error("Fail to delete.");
     } finally {
@@ -181,13 +181,13 @@ export const ManageStaffForm: React.FC<ManageStaffFormProps> = ({
               name="id"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Staff ID</FormLabel>
+                  <FormLabel>Trainer ID</FormLabel>
                   <FormControl>
                     <Input
                       className="read-only:bg-gray-100"
                       readOnly={!!initialData}
                       disabled={loading}
-                      placeholder="Staff ID"
+                      placeholder="Trainer ID"
                       {...field}
                     />
                   </FormControl>

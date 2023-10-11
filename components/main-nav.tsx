@@ -52,14 +52,14 @@ export function MainNav({ className, role, ...props }: React.HTMLAttributes<HTML
 				active: pathname === `/staff/manage-areas`,
 			},
 			{
-				href: `/staff/manage-cage`,
-				label: 'Manage Cage',
-				active: pathname === `/staff/manage-cage`,
+				href: `/staff/manage-cages`,
+				label: 'Manage Cages',
+				active: pathname === `/staff/manage-cages`,
 			},
 			{
-				href: `/staff/manage-trainers-account`,
-				label: 'Manage Trainer Account',
-				active: pathname === `/staff/manage-trainers-account`,
+				href: `/staff/manage-trainers`,
+				label: 'Manage Trainers',
+				active: pathname === `/staff/manage-trainers`,
 			},
 		];
 	}
