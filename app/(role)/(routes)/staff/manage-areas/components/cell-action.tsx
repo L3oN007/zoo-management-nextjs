@@ -33,7 +33,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const onConfirm = async () => {
     try {
       setLoading(true);
-      await axios.delete(url + `${data.id}`);
+      await axios.delete(url + `${data.areaId}`);
       toast.success("Areas deleted.");
       router.refresh();
     } catch (error: any) {
@@ -45,8 +45,8 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
     }
   };
 
-  const onCopy = (id: string) => {
-    navigator.clipboard.writeText(id);
+  const onCopy = (AreaId: string) => {
+    navigator.clipboard.writeText(AreaId);
     toast.success("Areas ID copied to clipboard.");
   };
 
@@ -67,11 +67,11 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
-          <DropdownMenuItem onClick={() => onCopy(data.id)}>
+          <DropdownMenuItem onClick={() => onCopy(data.areaId)}>
             <Copy className="mr-2 h-4 w-4" /> Copy Id
           </DropdownMenuItem>
           <DropdownMenuItem
-            onClick={() => router.push(`/staff/manage-areas/${data.id}`)}
+            onClick={() => router.push(`/staff/manage-areas/${data.areaId}`)}
           >
             <Edit className="mr-2 h-4 w-4" /> Update
           </DropdownMenuItem>

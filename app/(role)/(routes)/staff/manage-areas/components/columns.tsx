@@ -9,17 +9,17 @@ import { CellAction } from "./cell-action";
 import { DataTableRowActions } from "@/components/data-table/data-table-row-actions";
 
 export type NewsColumn = {
-  id: string;
-  name: string;
+  areaId: string;
+  areaName: string;
 };
 
 export const columns: ColumnDef<NewsColumn>[] = [
   {
-    accessorKey: "id",
+    accessorKey: "areaId",
     header: "AreaID",
   },
   {
-    accessorKey: "name",
+    accessorKey: "areaName",
     header: ({ column }) => {
       return (
         <Button

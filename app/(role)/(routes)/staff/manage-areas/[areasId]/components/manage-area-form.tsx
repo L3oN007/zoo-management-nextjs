@@ -34,8 +34,8 @@ import {
 import { Separator } from "@/components/ui/separator";
 
 const formSchema = z.object({
-  id: z.string().min(1, { message: "Id must have Alphabet" }).max(1),
-  name: z
+  areaId: z.string().min(1, { message: "Id must have Alphabet" }).max(1),
+  areaName: z
     .string()
     .min(1, { message: "Title must be between 1-50 characters." })
     .max(50),
@@ -71,8 +71,8 @@ export const ManageAreasForm: React.FC<ManageAreasFormProps> = ({
   const form = useForm<ManageAreasFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: initialData || {
-      id: "",
-      name: "",
+      areaId: "",
+      areaName: "",
     },
   });
 
@@ -138,7 +138,7 @@ export const ManageAreasForm: React.FC<ManageAreasFormProps> = ({
           <div className="md:grid md:grid-cols-3 gap-8">
             <FormField
               control={form.control}
-              name="id"
+              name="areaId"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Area Id</FormLabel>
@@ -156,7 +156,7 @@ export const ManageAreasForm: React.FC<ManageAreasFormProps> = ({
             />
             <FormField
               control={form.control}
-              name="name"
+              name="areaName"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Name</FormLabel>
