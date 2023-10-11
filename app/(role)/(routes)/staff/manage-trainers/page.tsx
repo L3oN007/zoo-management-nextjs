@@ -11,7 +11,7 @@ const ManageTrainerAccPage = async () => {
   const url = process.env.NEXT_PUBLIC_API_LOAD_TRAINERS;
   try {
     // Make the GET request to fetch trainer data
-    const response = await axios.get(url);
+    const response = await axios.get(url + ``);
     // Check if the response contains data
     if (response.data === null) {
       // trainer not found, set trainerData to null

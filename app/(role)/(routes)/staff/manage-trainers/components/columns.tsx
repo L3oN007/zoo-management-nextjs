@@ -7,13 +7,13 @@ import { ArrowUpDown } from "lucide-react";
 import { CellAction } from "./cell-action";
 
 export type TrainerColumn = {
-  id: string;
-  img_url: string;
+  employeeId: string;
   fullName: string;
-  citizenId: string;
   email: string;
   phoneNumber: string;
-  isDeleted: number;
+  citizenId: string;
+  image: string;
+  employeeStatus: number;
 };
 
 export const columns: ColumnDef<TrainerColumn>[] = [
@@ -65,12 +65,12 @@ export const columns: ColumnDef<TrainerColumn>[] = [
       <div className="flex items-center">
         <span
           className={
-            props.row.original.isDeleted == 0
+            props.row.original.employeeStatus == 0
               ? "bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
               : "bg-pink-100 text-pink-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-pink-900 dark:text-pink-300"
           }
         >
-          {props.row.original.isDeleted == 0 ? "Active" : "Inactive"}
+          {props.row.original.employeeStatus == 0 ? "Active" : "Inactive"}
         </span>
       </div>
     ),
