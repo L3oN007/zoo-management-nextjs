@@ -7,39 +7,38 @@ import { ArrowUpDown } from "lucide-react";
 import { CellAction } from "./cell-action";
 
 export type AnimalColumn = {
-  id: string;
-  img_url: string;
+  animalId: string;
+  image: string;
   name: string;
   region: string;
   behavior: string;
   gender: string;
-  birthDate: string;
+  birthDate: Date;
+  importDate: Date;
   healthStatus: number;
   rarity: string;
-  emp: {
-    id: string;
+  employee: {
+    employeeId: string;
     fullName: string;
     citizenId: string;
     email: string;
     phoneNumber: string;
     image: string;
     role: string;
-    isDeleted: number;
+    employeeStatus: number;
   };
   cage: {
-    id: string,
-      name: string,
-      maxCapacity: 0,
-      areaId: string,
-      area: {
-        id: string,
-        name: string
-  }};
+    cageId: string;
+    name: string;
+    maxCapacity: 0;
+    areaId: string;
+  };
+  animalSpecies: {
+    speciesId: number;
+    speciesName: string;
+  };
   isDeleted: number;
 };
-
-
-
 
 export const columns: ColumnDef<AnimalColumn>[] = [
   {
@@ -88,7 +87,10 @@ export const columns: ColumnDef<AnimalColumn>[] = [
     accessorKey: "birthDate",
     header: "Date of Birth",
   },
-
+  {
+    accessorKey: "importDate",
+    header: "Import Date",
+  },
   {
     accessorKey: "healthStatus",
     header: "Health Status",
@@ -118,11 +120,20 @@ export const columns: ColumnDef<AnimalColumn>[] = [
     },
   },
   {
-    accessorKey: "emp",
+    accessorKey: "employee",
     header: "Trainer",
     cell: (props) => (
       <div className="flex items-center">
-        <span>{props.row.original.emp.fullName}</span>
+        <span>{props.row.original.employee.fullName}</span>
+      </div>
+    ),
+  },
+  {
+    accessorKey: "animalSpecies",
+    header: "Species",
+    cell: (props) => (
+      <div className="flex items-center">
+        <span>{props.row.original.animalSpecies.speciesName}</span>
       </div>
     ),
   },
@@ -130,10 +141,10 @@ export const columns: ColumnDef<AnimalColumn>[] = [
     accessorKey: "cage",
     header: "Cage",
     cell: (props) => (
-        <div className="flex items-center">
-          
-        </div>
-      ),
+      <div className="flex items-center">
+        <span>{props.row.original.cage.name}</span>
+      </div>
+    ),
   },
   {
     id: "actions",

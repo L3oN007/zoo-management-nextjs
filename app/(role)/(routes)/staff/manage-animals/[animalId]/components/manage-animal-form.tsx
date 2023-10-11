@@ -41,14 +41,16 @@ const formSchema = z.object({
     .min(1, { message: "Full name must be between 1-50 characters." })
     .max(50),
   birthDate: z.string().min(1, { message: "Date of birth is required." }),
+  importDate: z.string().min(1, { message: "Import Date is required." }),
   region: z.string().min(1, { message: "Region is required." }),
   behavior: z.string().min(1, { message: "Behavior is required." }),
   healthStatus: z.coerce.number(),
   isDeleted: z.coerce.number(),
-  gender:z.string().min(1, { message: "Gender is required." }),
+  gender: z.string().min(1, { message: "Gender is required." }),
   rarity: z.string().min(1, { message: "Rarity is required." }),
-  empId: z.string().min(1, { message: "Trainer is required." }),
+  employeeId: z.string().min(1, { message: "Trainer is required." }),
   cageId: z.string().min(1, { message: "Cage is required." }),
+  speciesId: z.string().min(1, { message: "Species is required." }),
 });
 
 type ManageAnimalFormValues = z.infer<typeof formSchema>;
@@ -56,18 +58,24 @@ type ManageAnimalFormValues = z.infer<typeof formSchema>;
 interface Animal {}
 
 interface Trainer {
-    id: number;
-    fullName: string;
-    citizenId: string;
-    email: string;
-    phoneNumber: string;
-    image: string;
-    role: string;
-    isDeleted: number;
+  employeeId: string;
+  fullName: string;
+  citizenId: string;
+  email: string;
+  phoneNumber: string;
+  image: string;
+  role: string;
+  employeeStatus: number;
 }
 interface Cage {
-  id: number;
+  cageId: string;
   name: string;
+  maxCapacity: 0;
+  areaId: string;
+}
+interface Species {
+  speciesId: number;
+  speciesName: string;
 }
 interface ManageAnimalFormProps {
   initialData: Animal | null;
@@ -76,7 +84,9 @@ interface ManageAnimalFormProps {
 export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({
   initialData,
 }) => {
-  const url = "http://localhost:5000/api/Animals/update-animal?animalId=";
+  const deleteAPI = process.env.NEXT_PUBLIC_API_DELETE_ANIMALS;
+  const updateAPI = process.env.NEXT_PUBLIC_API_UPDATE_ANIMALS;
+  const createAPI = process.env.NEXT_PUBLIC_API_CREATE_ANIMALS;
   const params = useParams();
   const router = useRouter();
 
@@ -85,33 +95,36 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({
   const [selectedStatus, setSelectedStatus] = useState("");
   const [trainers, setTrainers] = useState<Trainer[]>([]);
   const [cages, setCages] = useState<Cage[]>([]);
+  const [species, setSpecies] = useState<Species[]>([]);
 
-  const getTrainerNameByID = (id: number | undefined) => {
-    return trainers.find((trainer) => trainer.id === id);
-    
+  const getTrainerNameByID = (id: string | undefined) => {
+    return trainers.find((trainer) => trainer.employeeId === id);
   };
 
-  
-useEffect(() => {
-        axios.get<Trainer[]>("http://localhost:5000/api/Employees/trainers")
-        .then((response) => setTrainers(response.data))
-        .catch(error => {
-          console.error('Lỗi khi lấy danh sách trainers:', error);
-          setLoading(false);
-        });
+  useEffect(() => {
+    axios
+      .get<Trainer[]>("http://localhost:5000/api/Employees/trainers")
+      .then((response) => setTrainers(response.data))
+      .catch((error) => {
+        console.error("Lỗi khi lấy danh sách trainers:", error);
+        setLoading(false);
+      });
 
-        axios.get<Cage[]>("http://localhost:5000/api/Cages/load-cages")
-        .then((response) => setCages(response.data))
-        .catch(error => {
-          console.error('Lỗi khi lấy danh sách Cages:', error);
-          setLoading(false);
- 
-        });
-
-
-    }, []); 
-
-    
+    axios
+      .get<Cage[]>("http://localhost:5000/api/Cages/load-cages")
+      .then((response) => setCages(response.data))
+      .catch((error) => {
+        console.error("Lỗi khi lấy danh sách Cages:", error);
+        setLoading(false);
+      });
+    axios
+      .get<Species[]>("http://localhost:5000/api/AnimalSpecies/species")
+      .then((response) => setSpecies(response.data))
+      .catch((error) => {
+        console.error("Lỗi khi lấy danh sách Species:", error);
+        setLoading(false);
+      });
+  }, []);
 
   const title = initialData ? "Edit Animal information" : "Import new animal";
   const description = initialData ? "Edit an animal." : "Import new animal";
@@ -126,14 +139,16 @@ useEffect(() => {
       image: "",
       name: "",
       birthDate: "",
+      importDate: "",
       region: "",
       behavior: "",
       healthStatus: 0,
       isDeleted: 0,
       gender: "",
       rarity: "",
-      empId: "",
+      employeeId: "",
       cageId: "",
+      speciesId: "",
     },
   });
 
@@ -141,12 +156,17 @@ useEffect(() => {
     try {
       setLoading(true);
       if (initialData) {
-        await axios.put(url + `${params.animalId}`, data).then((response) => {
-          console.log(response);
-        }).catch((error) => {console.log(error);});
+        await axios
+          .put(updateAPI + `${params.animalId}`, data)
+          .then((response) => {
+            console.log(response);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
         console.log(data);
       } else {
-        await axios.post(url, data);
+        await axios.post(createAPI + ``, data);
       }
       router.refresh();
       router.push(`/staff/manage-animals`);
@@ -161,7 +181,7 @@ useEffect(() => {
   const onDelete = async () => {
     try {
       setLoading(true);
-      await axios.delete(url + `/${params.animalId}`);
+      await axios.delete(deleteAPI + `${params.animalId}`);
       router.refresh();
       router.push(`/staff/manage-animals`);
       toast.success("Animal deleted.");
@@ -242,6 +262,24 @@ useEffect(() => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Date of birth</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="date"
+                      disabled={loading}
+                      placeholder="Billboard label"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="importDate"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>ImportDate</FormLabel>
                   <FormControl>
                     <Input
                       type="date"
@@ -395,7 +433,7 @@ useEffect(() => {
             />
             <FormField
               control={form.control}
-              name="empId"
+              name="employeeId"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Trainer:</FormLabel>
@@ -409,7 +447,7 @@ useEffect(() => {
                       <SelectValue>
                         {
                           trainers.find(
-                            (trainer) => trainer.id === parseInt(field.value)
+                            (trainer) => trainer.employeeId === field.value
                           )?.fullName
                         }
                       </SelectValue>
@@ -417,7 +455,10 @@ useEffect(() => {
                     <SelectContent>
                       <SelectGroup>
                         {trainers.map((trainer) => (
-                          <SelectItem key={trainer.id} value={trainer.id.toString()}>
+                          <SelectItem
+                            key={trainer.employeeId}
+                            value={trainer?.employeeId.toString()}
+                          >
                             {trainer.fullName}
                           </SelectItem>
                         ))}
@@ -444,17 +485,58 @@ useEffect(() => {
                     <SelectTrigger>
                       <SelectValue>
                         {
-                          cages.find(
-                            (cages) => cages.id === parseInt(field.value)
-                          )?.name
+                          cages.find((cages) => cages.cageId === field.value)
+                            ?.name
                         }
                       </SelectValue>
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
                         {cages.map((cage) => (
-                          <SelectItem key={cage.id} value={cage?.id.toString()}>
+                          <SelectItem
+                            key={cage.cageId}
+                            value={cage?.cageId.toString()}
+                          >
                             {cage.name}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="speciesId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Species:</FormLabel>
+                  <Select
+                    disabled={loading}
+                    onValueChange={field.onChange}
+                    value={field.value} // Convert the value to a string here
+                    defaultValue={field.value} // Convert the default value to a string
+                  >
+                    <SelectTrigger>
+                      <SelectValue>
+                        {
+                          species.find(
+                            (species) =>
+                              species.speciesId === parseInt(field.value)
+                          )?.speciesName
+                        }
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        {species.map((species) => (
+                          <SelectItem
+                            key={species.speciesId}
+                            value={species?.speciesId.toString()}
+                          >
+                            {species.speciesName}
                           </SelectItem>
                         ))}
                       </SelectGroup>
