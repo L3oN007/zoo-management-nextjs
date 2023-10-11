@@ -37,7 +37,7 @@ import { Separator } from "@/components/ui/separator";
 dotenv.config();
 
 const formSchema = z.object({
-  id: z.string().refine((value) => /^E\d{3}$/.test(value), {
+  employeeId: z.string().refine((value) => /^E\d{3}$/.test(value), {
     message: "ID must be in the format EXXX where XXX is a 3-digit number.",
   }),
   image: z.string().nullable(),
@@ -50,12 +50,12 @@ const formSchema = z.object({
   phoneNumber: z.string().refine((value) => /^\d{10}$/.test(value), {
     message: "Phone number must be exactly 10 digits.",
   }),
-  isDeleted: z.coerce.number(),
+  employeeStatus: z.coerce.number(),
 });
 
 type ManageTrainerFormValues = z.infer<typeof formSchema>;
 
-interface Trainer { }
+interface Trainer {}
 
 interface ManageTrainerFormProps {
   initialData: Trainer | null;
@@ -87,13 +87,13 @@ export const ManageTrainerForm: React.FC<ManageTrainerFormProps> = ({
   const form = useForm<ManageTrainerFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: initialData || {
-      id: "",
+      employeeId: "",
       image: "",
       fullName: "",
       citizenId: "",
       email: "",
       phoneNumber: "",
-      isDeleted: 0,
+      employeeStatus: 0,
     },
   });
 
@@ -178,7 +178,7 @@ export const ManageTrainerForm: React.FC<ManageTrainerFormProps> = ({
           <div className="md:grid md:grid-cols-3 gap-8 w-[70%]">
             <FormField
               control={form.control}
-              name="id"
+              name="employeeId"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Trainer ID</FormLabel>
@@ -268,7 +268,7 @@ export const ManageTrainerForm: React.FC<ManageTrainerFormProps> = ({
             />
             <FormField
               control={form.control}
-              name="isDeleted"
+              name="employeeStatus"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Status:</FormLabel>
