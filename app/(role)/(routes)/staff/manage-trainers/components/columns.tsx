@@ -12,6 +12,7 @@ export type TrainerColumn = {
   fullName: string;
   email: string;
   phoneNumber: string;
+  citizenId: string;
   employeeStatus: number;
 };
 
