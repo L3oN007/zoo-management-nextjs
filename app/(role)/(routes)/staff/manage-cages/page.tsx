@@ -6,18 +6,19 @@ import axios from 'axios';
 import { format, set } from "date-fns";
 import { Button } from '@/components/ui/button';
 import ErrorPage from '@/app/error/page';
+import agent from '@/app/api/agent';
 
 
 const ManageCagePage = async () => {
-    const url = `https://651822f6582f58d62d356e1a.mockapi.io/cage`;
+    const url = process.env.NEXT_PUBLIC_API_LOAD_CAGES;
 
     try {
-        // Make the GET request to fetch cage data
-        const response = await axios.get(url);
+        const response = await axios.get(url!);
+        var cages = response.data;
+        // var cages = agent.Cages.list();
+        console.log(cages);
 
-        // Check if the response contains data
-        if (response.data === null) {
-            // Cage not found, set cageData to null
+        if (cages === null) {
             return (
                 <div className='flex-col'>
                     <div className='flex-1 space-y-4 p-8 pt-6'>
@@ -27,20 +28,10 @@ const ManageCagePage = async () => {
             );
         }
 
-        // Extract cageData from the response
-        let cageData = response.data;
-
-        // If cageData is an array, loop through it 
-        if (Array.isArray(cageData)) {
-            cageData.forEach((cage: any) => {
-
-            });
-        }
-
         return (
             <div className="flex-col">
                 <div className="flex-1 space-y-4 p-8 pt-6">
-                    <ManageCageClient data={cageData} />
+                    <ManageCageClient data={cages} />
                 </div>
             </div>
         );
