@@ -7,11 +7,11 @@ import { Button } from "@/components/ui/button";
 import ErrorPage from "@/app/error/page";
 
 const ManageAreaPage = async () => {
-  const url = `https://6511a76d829fa0248e4086dc.mockapi.io/areas`;
+  const url = process.env.NEXT_PUBLIC_API_LOAD_AREAS;
 
   try {
     // Make the GET request to fetch area data
-    const response = await axios.get(url);
+    const response = await axios.get(url + ``);
 
     // Check if the response contains data
     if (response.data === null) {
