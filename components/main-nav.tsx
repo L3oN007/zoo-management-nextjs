@@ -61,7 +61,21 @@ export function MainNav({ className, role, ...props }: React.HTMLAttributes<HTML
 				label: 'Manage Trainers',
 				active: pathname === `/staff/manage-trainers`,
 			},
+			{
+				href: `/staff/manage-animals`,
+				label: 'Manage Animals',
+				active: pathname === `/staff/manage-animals`,
+			},
 		];
+	} else if(role === 'trainer'){
+		routes = [
+			{
+				href: `/trainer/manage-animals`,
+				label: 'Manage Animals',
+				active: pathname === `/trainer/manage-animals`,
+			},
+			
+		]
 	}
 
 	return (

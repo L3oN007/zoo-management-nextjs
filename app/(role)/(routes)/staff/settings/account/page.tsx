@@ -11,7 +11,7 @@ export default function SettingsAccountPage() {
 				</p>
 			</div> */}
 			{/* <Separator /> */}
-			<AccountForm />
+			<AccountForm initialData={null} />
 		</div>
 	);
 }
