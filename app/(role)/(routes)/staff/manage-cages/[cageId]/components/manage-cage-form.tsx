@@ -38,7 +38,7 @@ import { cn } from '@/lib/utils';
 import { CageObj } from '@/app/models/cage';
 
 const formSchema = z.object({
-	id: z
+	cageId: z
 		.string()
 		.trim()
 		.refine(
@@ -86,7 +86,7 @@ export const ManageCageForm: React.FC<ManageCageFormProps> = ({
 		axios
 			.get(process.env.NEXT_PUBLIC_API_LOAD_AREAS!)
 			.then((response) => {
-				const areaIDs = response.data.map((item: any) => item.id);
+				const areaIDs = response.data.map((item: any) => item.areaId);
 				console.log(areaIDs);
 				setAreaIDData(areaIDs);
 			})
@@ -103,7 +103,7 @@ export const ManageCageForm: React.FC<ManageCageFormProps> = ({
 	const form = useForm<ManageCageFormValues>({
 		resolver: zodResolver(formSchema),
 		defaultValues: initialData || {
-			id: '',
+			cageId: '',
 			maxCapacity: 0,
 			name: '',
 			areaId: '',
@@ -178,7 +178,7 @@ export const ManageCageForm: React.FC<ManageCageFormProps> = ({
 					<div className='md:grid md:grid-cols-4 gap-8'>
 						<FormField
 							control={form.control}
-							name='id'
+							name='cageId'
 							render={({ field }) => (
 								<FormItem>
 									<FormLabel>Cage Id</FormLabel>
