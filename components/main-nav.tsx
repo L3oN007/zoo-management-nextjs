@@ -74,7 +74,11 @@ export function MainNav({ className, role, ...props }: React.HTMLAttributes<HTML
 				label: 'Manage Animals',
 				active: pathname === `/trainer/manage-animals`,
 			},
-			
+			{
+				href: `/trainer/manage-species`,
+				label: 'Manage Species',
+				active: pathname === `/trainer/manage-species`,
+			},
 		]
 	}
 
