@@ -13,7 +13,7 @@ const ManageAnimalPage = async () => {
 
     // Check if the response contains data
     if (response.data === null) {
-      // Staff not found, set animalData to null
+      // animal not found, set animalData to null
       return (
         <div className="flex-col">
           <div className="flex-1 space-y-4 p-8 pt-6">
@@ -30,6 +30,7 @@ const ManageAnimalPage = async () => {
     if (Array.isArray(animalData)) {
       animalData.forEach((animal: any) => {
         animal.birthDate = format(new Date(animal.birthDate), "MM/dd/yyyy");
+        animal.importDate = format(new Date(animal.importDate), "MM/dd/yyyy");
       });
     }
 

@@ -124,7 +124,7 @@ export const columns: ColumnDef<AnimalColumn>[] = [
     header: "Trainer",
     cell: (props) => (
       <div className="flex items-center">
-        <span>{props.row.original.employee.fullName}</span>
+        <span>{props.row.original.employee?.fullName}</span>
       </div>
     ),
   },
@@ -133,7 +133,7 @@ export const columns: ColumnDef<AnimalColumn>[] = [
     header: "Species",
     cell: (props) => (
       <div className="flex items-center">
-        <span>{props.row.original.animalSpecies.speciesName}</span>
+        <span>{props.row.original.animalSpecies?.speciesName}</span>
       </div>
     ),
   },
@@ -142,7 +142,7 @@ export const columns: ColumnDef<AnimalColumn>[] = [
     header: "Cage",
     cell: (props) => (
       <div className="flex items-center">
-        <span>{props.row.original.cage.name}</span>
+        <span>{props.row.original.cage?.name}</span>
       </div>
     ),
   },
