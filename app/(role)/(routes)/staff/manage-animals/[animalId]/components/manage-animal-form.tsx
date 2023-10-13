@@ -50,7 +50,7 @@ const formSchema = z.object({
   rarity: z.string().min(1, { message: "Rarity is required." }),
   employeeId: z.string().min(1, { message: "Trainer is required." }),
   cageId: z.string().min(1, { message: "Cage is required." }),
-  speciesId: z.string().min(1, { message: "Species is required." }),
+  speciesId: z.number().min(1, { message: "Species is required." }),
 });
 
 type ManageAnimalFormValues = z.infer<typeof formSchema>;
@@ -148,7 +148,7 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({
       rarity: "",
       employeeId: "",
       cageId: "",
-      speciesId: "",
+      speciesId: 0,
     },
   });
 
@@ -343,18 +343,18 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({
                       <SelectTrigger>
                         <SelectValue
                           defaultValue={
-                            field.value === 0 ? "Healthy" : "Unhealthy"
+                            field.value === 1 ? "Checked" : "Unchecked"
                           }
                         >
-                          {field.value === 0 ? "Healthy" : "Unhealthy"}
+                          {field.value === 1 ? "Checked" : "Unchecked"}
                         </SelectValue>
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
                       <SelectGroup>
                         <SelectLabel>Health Status</SelectLabel>
-                        <SelectItem value="0">Healthy</SelectItem>
-                        <SelectItem value="1">Unhealthy</SelectItem>
+                        <SelectItem value="1">Healthy</SelectItem>
+                        <SelectItem value="0">Unhealthy</SelectItem>
                       </SelectGroup>
                     </SelectContent>
                   </Select>
@@ -515,16 +515,15 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({
                   <FormLabel>Species:</FormLabel>
                   <Select
                     disabled={loading}
-                    onValueChange={field.onChange}
-                    value={field.value} // Convert the value to a string here
-                    defaultValue={field.value} // Convert the default value to a string
+                    onValueChange={(value) => field.onChange(Number(value))}
+                    value={String(field.value)} // Convert the value to a string here
+                    defaultValue={String(field.value)} // Convert the default value to a string
                   >
                     <SelectTrigger>
                       <SelectValue>
                         {
                           species.find(
-                            (species) =>
-                              species.speciesId === parseInt(field.value)
+                            (species) => species.speciesId === field.value
                           )?.speciesName
                         }
                       </SelectValue>
