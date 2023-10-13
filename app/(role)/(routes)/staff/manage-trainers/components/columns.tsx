@@ -10,9 +10,9 @@ export type TrainerColumn = {
   employeeId: string;
   image: string;
   fullName: string;
-  citizenId: string;
   email: string;
   phoneNumber: string;
+  citizenId: string;
   employeeStatus: number;
 };
 
