@@ -28,9 +28,7 @@ const ManageSpeciesPage = async () => {
 
     // If animalData is an array, loop through it and update date format and isDeleted property
     if (Array.isArray(animalData)) {
-      animalData.forEach((animal: any) => {
-       
-      });
+      animalData.forEach((animal: any) => {});
     }
 
     return (
