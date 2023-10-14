@@ -45,7 +45,7 @@ export const columns: ColumnDef<CageColumn>[] = [
 
     {
         accessorKey: 'area.areaName',
-        header: 'Area ID',
+        header: 'Area',
 
     },
     {
