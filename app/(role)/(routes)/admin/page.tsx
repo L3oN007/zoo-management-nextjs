@@ -28,7 +28,7 @@ export default async function DashboardPage() {
           <div className="flex items-center justify-between space-y-2">
             <Heading
               title="Dashboard"
-              description={`Welcome back ${session?.user.username}`}
+              description={`Welcome back ${session?.user.fullName}`}
             />
             <div className="flex items-center space-x-2">
               <Button>Download</Button>

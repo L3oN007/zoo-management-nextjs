@@ -7,7 +7,7 @@ export const options: NextAuthOptions = {
         CredentialsProvider({
             name: 'Credentials',
             credentials: {
-                username: {
+                email: {
                     label: 'Username:',
                     type: 'text',
                     placeholder: 'your-cool-username',
@@ -21,8 +21,8 @@ export const options: NextAuthOptions = {
             async authorize(credentials) {
                 try {
                     // Make an HTTP request to your server to fetch user data
-                    const response = await axios.post('http://localhost:5500/auth/login', {
-                        username: credentials!.username,
+                    const response = await axios.post(process.env.NEXT_PUBLIC_API_AUTHENTICATE || "", {
+                        email: credentials!.email,
                         password: credentials!.password,
                     });
 
@@ -32,8 +32,7 @@ export const options: NextAuthOptions = {
                         // Include accessToken and refreshToken in the token object
                         return {
                             ...user,
-                            accessToken: user.accessToken,
-                            refreshToken: user.refreshToken,
+                            token: user.token,
                         };
                     } else {
                         return "null";
@@ -49,20 +48,26 @@ export const options: NextAuthOptions = {
         // Include accessToken and refreshToken in the token object
         async jwt({ token, user }) {
             if (user) {
-                token.username = user.username;
+                token.fullName = user.fullName;
+                token.citizenId = user.citizenId;
+                token.email = user.email;
+                token.phoneNumber = user.phoneNumber;
+                token.image = user.image;
                 token.role = user.role;
-                token.accessToken = user.accessToken;
-                token.refreshToken = user.refreshToken;
+                token.token = user.token;
             }
             return token;
         },
         // If you want to use the role, accessToken, and refreshToken in client components
         async session({ session, token }) {
             if (session?.user) {
-                session.user.username = token.username;
+                session.user.fullName = token.fullName;
+                session.user.citizenId = token.citizenId;
+                session.user.email = token.email;
+                session.user.phoneNumber = token.phoneNumber;
+                session.user.image = token.image;
                 session.user.role = token.role;
-                session.user.accessToken = token.accessToken;
-                session.user.refreshToken = token.refreshToken;
+                session.user.token = token.token;
             }
             return session;
         },
@@ -73,7 +78,7 @@ export const options: NextAuthOptions = {
         error: "Username or Password is incorrect"     
     },
     session:{
-        maxAge: 60 * 60 * 24 * 7, 
+        maxAge: 60 * 60 * 24, 
         
     }
 };

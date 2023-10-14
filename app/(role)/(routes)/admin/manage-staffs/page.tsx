@@ -5,9 +5,10 @@ import axios from "axios";
 import { format } from "date-fns";
 
 const ManageStaffPage = async () => {
-  const url = process.env.NEXT_PUBLIC_API_LOAD_STAFF;
+  const url = process.env.NEXT_PUBLIC_API_LOAD_STAFF || "";
   try {
     // Make the GET request to fetch staff data
+    console.log(url);
     const response = await axios.get(url);
 
     // Check if the response contains data
@@ -27,7 +28,7 @@ const ManageStaffPage = async () => {
 
     if (Array.isArray(staffData)) {
       staffData.forEach((staff: any) => {
-        staff.isDeleted = staff.isDeleted.toString();
+        staff.employeeStatus = staff.employeeStatus.toString();
       });
     }
 

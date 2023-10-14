@@ -33,7 +33,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
     try {
       setLoading(true);
       console.log(params);
-      await axios.put(url + `?id=${data.id}`);
+      await axios.put(url + `?id=${data.employeeId}`);
       toast.success("Trainer deleted.");
       router.refresh();
     } catch (error) {
@@ -66,17 +66,21 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
-          <DropdownMenuItem onClick={() => onCopy(data.id)}>
+          <DropdownMenuItem onClick={() => onCopy(data.employeeId)}>
             <Copy className="mr-2 h-4 w-4" /> Copy Id
           </DropdownMenuItem>
           <DropdownMenuItem
-            onClick={() => router.push(`/staff/manage-trainers/${data.id}`)}
+            onClick={() =>
+              router.push(`/staff/manage-trainers/${data.employeeId}`)
+            }
           >
             <Edit className="mr-2 h-4 w-4" /> Update
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() =>
-              router.push(`/staff/manage-trainers/${data.id}/trainer-schedule`)
+              router.push(
+                `/staff/manage-trainers/${data.employeeId}/trainer-schedule`
+              )
             }
           >
             <Calendar className="mr-2 h-4 w-4" /> Schedule
