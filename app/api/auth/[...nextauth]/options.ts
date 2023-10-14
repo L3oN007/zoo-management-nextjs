@@ -53,6 +53,7 @@ export const options: NextAuthOptions = {
                 token.email = user.email;
                 token.phoneNumber = user.phoneNumber;
                 token.image = user.image;
+                token.id = user.id;
                 token.role = user.role;
                 token.token = user.token;
             }
@@ -66,6 +67,7 @@ export const options: NextAuthOptions = {
                 session.user.email = token.email;
                 session.user.phoneNumber = token.phoneNumber;
                 session.user.image = token.image;
+                session.user.id = token.id;
                 session.user.role = token.role;
                 session.user.token = token.token;
             }

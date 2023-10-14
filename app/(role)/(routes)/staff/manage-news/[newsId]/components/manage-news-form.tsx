@@ -3,23 +3,15 @@
 import { AlertModal } from '@/components/modals/alert-modal';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import {
-	Form,
-	FormControl,
-	FormField,
-	FormItem,
-	FormLabel,
-	FormMessage,
-} from '@/components/ui/form';
-import {
-	HoverCard,
-	HoverCardContent,
-	HoverCardTrigger,
-} from '@/components/ui/hover-card';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from '@/components/ui/command';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
 import ImageUploadNews from '@/components/ui/image-upload-news';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
+import { cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios';
 import { format } from 'date-fns';
@@ -31,125 +23,120 @@ import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import * as z from 'zod';
 import Editor, { EditorContentChanged } from './editor';
-import { Input } from '@/components/ui/input';
-import {
-	Popover,
-	PopoverContent,
-	PopoverTrigger,
-} from '@/components/ui/popover';
-import {
-	Command,
-	CommandEmpty,
-	CommandGroup,
-	CommandInput,
-	CommandItem,
-} from '@/components/ui/command';
-import { cn } from '@/lib/utils';
 
 const formSchema = z.object({
-	thumbnailImg: z.string().nullable(),
+	title: z.string().min(1, { message: 'Title must be between 1-50 characters.' }),
 	content: z.string().nullable(),
-	tag: z.string().nullable(),
-	// content: z.string().min(1, { message: 'Content of news is required.' }),
-	title: z
-		.string()
-		.min(1, { message: 'Title must be between 1-50 characters.' }),
-	description: z
-		.string()
-		.min(1, { message: 'Description of news is required.' }),
-	createDate: z.string().nullable(),
-	author: z.string().nullable(),
+	writingDate: z.string().nullable(),
+	image: z.string().nullable(),
+	employeeId: z.string().nullable(),
+	speciesId: z.number().nullable(),
+	animalId: z.string().nullable(),
+	newsId: z.number()
 });
 
 type ManageNewsFormValues = z.infer<typeof formSchema>;
 
 interface News {
 	content: string;
+	newsId: number;
 }
 
 interface ManageNewsFormProps {
 	initialData: News | null;
 }
 
-export const ManageNewsForm: React.FC<ManageNewsFormProps> = ({
-	initialData,
-}) => {
-	const url = 'https://648867740e2469c038fda6cc.mockapi.io/news';
-	const specieUrl = 'https://651d776944e393af2d59dbd7.mockapi.io/specie';
+export const ManageNewsForm: React.FC<ManageNewsFormProps> = ({ initialData }) => {
+	const specieUrl = process.env.NEXT_PUBLIC_API_LOAD_SPECIES;
+	const animalUrl = process.env.NEXT_PUBLIC_API_LOAD_ANIMALS;
 	const params = useParams();
 	const router = useRouter();
 	const session = useSession();
 
+	console.log("jjj", initialData);
+	
+
 	const [open, setOpen] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const [specieData, setSpecieData] = useState([]);
-	const [openComboBox, setOpenComboBox] = useState(false);
+	const [animalData, setAnimalData] = useState([]);
+	const [openComboBoxSpecie, setOpenComboBoxSpecie] = useState(false);
+	const [openComboBoxAnimal, setOpenComboBoxAnimal] = useState(false);
 	useEffect(() => {
 		axios
-			.get(specieUrl)
+			.get(specieUrl!)
 			.then((response) => {
-				const species = response.data.map((specie: any) => specie.name);
+				console.log("list species:", response.data);
+				
+				const species = response.data.map((specie: any) => 
+					specie.speciesId
+				);
 				setSpecieData(species);
+			})
+			.catch((error) => {
+				console.error('Error fetching data from API:', error);
+			});
+		axios
+			.get(animalUrl!)
+			.then((response) => {
+				console.log("list animal:", response.data)
+				const animals = response.data.map((animal: any) => animal.animalId);
+				setAnimalData(animals);
 			})
 			.catch((error) => {
 				console.error('Error fetching data from API:', error);
 			});
 	}, []);
 	const [previewContent, setPreviewContent] = useState<string>('');
-	const [editorContent, setEditorContent] = useState<string>(
-		initialData ? initialData.content : ''
-	);
+	const [editorContent, setEditorContent] = useState<string>(initialData ? initialData.content : '');
 
-	// Define a callback function that matches the EditorContentChanged type
 	const handleEditorChange = (changes: EditorContentChanged) => {
-		setPreviewContent(changes.html); // You can access the HTML content from changes
+		setPreviewContent(changes.html);
 		setEditorContent(changes.html);
 	};
 	const displayHTMLTags = () => {
 		if (typeof editorContent === 'string') {
-			const encodedHTML = editorContent
-				.replace(/</g, '&lt;')
-				.replace(/>/g, '&gt;');
+			const encodedHTML = editorContent.replace(/</g, '&lt;').replace(/>/g, '&gt;');
 			return { __html: encodedHTML };
 		}
 		return { __html: '' };
 	};
 
 	const title = initialData ? 'Edit Staff Account' : 'Create Staff Account';
-	const description = initialData
-		? 'Edit a staff account.'
-		: 'Add a new staff account';
-	const toastMessage = initialData
-		? 'Staff account updated.'
-		: 'Staff account created.';
+	const description = initialData ? 'Edit a staff account.' : 'Add a new staff account';
+	const toastMessage = initialData ? 'News updated.' : 'News created.';
 	const action = initialData ? 'Save changes' : 'Create';
 
 	const form = useForm<ManageNewsFormValues>({
 		resolver: zodResolver(formSchema),
 		defaultValues: initialData || {
-			thumbnailImg: '',
+			image: '',
 			title: '',
-			tag: '',
-			description: '',
 			content: '',
-			createDate: '',
-			author: '',
+			writingDate: '',
+			employeeId: '',
+			speciesId: 0,
+			animalId: '',
+			newsId: 0,
 		},
 	});
 
 	const onSubmit = async (data: ManageNewsFormValues) => {
 		try {
-			const currentDate = format(new Date(), 'yyyy-MM-dd HH:mm');
-			data.createDate = currentDate;
-
-			data.author = session.data?.user.username!;
+			const currentDate = format(new Date(), 'yyyy-MM-dd');
+			data.writingDate = currentDate;
+			data.employeeId = session.data?.user.id!;
 			data.content = editorContent;
 
 			setLoading(true);
 			if (initialData) {
-				await axios.put(url + `/${params.newsId}`, data);
+				data.newsId = initialData.newsId;
+				await axios.put(process.env.NEXT_PUBLIC_API_UPDATE_NEWS + `?id=${params.newsId}`, data);
 			} else {
-				await axios.post(url, data);
+				if (data.animalId == "") {
+					data.animalId = null;
+				}
+				await axios.post(process.env.NEXT_PUBLIC_API_CREATE_NEWS!, data);
 			}
 			router.refresh();
 			router.push(`/staff/manage-news`);
@@ -164,7 +151,7 @@ export const ManageNewsForm: React.FC<ManageNewsFormProps> = ({
 	const onDelete = async () => {
 		try {
 			setLoading(true);
-			await axios.delete(url + `/${params.newsId}`);
+			await axios.delete(process.env.NEXT_PUBLIC_API_DELETE_NEWS + `?id=${params.newsId}`);
 			router.refresh();
 			router.push(`/staff/manage-news`);
 			toast.success('Staff deleted.');
@@ -178,24 +165,14 @@ export const ManageNewsForm: React.FC<ManageNewsFormProps> = ({
 
 	return (
 		<>
-			<AlertModal
-				isOpen={open}
-				onClose={() => setOpen(false)}
-				onConfirm={onDelete}
-				loading={loading}
-			/>
+			<AlertModal isOpen={open} onClose={() => setOpen(false)} onConfirm={onDelete} loading={loading} />
 			<div className='hidden h-full flex-col md:flex'>
 				<div className='container flex flex-col items-start justify-between space-y-2 py-4 sm:flex-row sm:items-center sm:space-y-0 md:h-16'>
-					<h2 className='text-lg font-semibold overflow-hidden whitespace-nowrap'>
-						News Editor
-					</h2>
+					<h2 className='text-lg font-semibold overflow-hidden whitespace-nowrap'>News Editor</h2>
 					<div className='ml-auto flex w-[90%] space-x-2 sm:justify-end'>
 						<Button variant={'secondary'}>Save</Button>
 						{initialData && (
-							<Button
-								disabled={loading}
-								variant='destructive'
-								onClick={() => setOpen(true)}>
+							<Button disabled={loading} variant='destructive' onClick={() => setOpen(true)}>
 								<Trash className='h-4 w-4 mr-2' /> Delete
 							</Button>
 						)}
@@ -204,26 +181,18 @@ export const ManageNewsForm: React.FC<ManageNewsFormProps> = ({
 				<Separator />
 				<Tabs defaultValue='raw' className='flex-1 h-auto mb-3'>
 					<Form {...form}>
-						<form
-							onSubmit={form.handleSubmit(onSubmit)}
-							className='space-y-8 w-full'>
+						<form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8 w-full'>
 							<div className='container h-full py-6 mb-3'>
 								<div className='grid h-full items-stretch gap-6 md:grid-cols-[1fr_300px]'>
 									<div className='hidden flex-col space-y-6 sm:flex md:order-2'>
 										<div className='grid gap-2'>
 											<HoverCard openDelay={200}>
 												<HoverCardTrigger asChild>
-													<span className='text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70'>
-														Mode
-													</span>
+													<span className='text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70'>Mode</span>
 												</HoverCardTrigger>
-												<HoverCardContent
-													className='w-[320px] text-sm'
-													side='left'>
-													Choose the interface that best suits your task. You
-													can provide: a simple prompt to complete, starting and
-													ending text to insert a completion within, or some
-													text with instructions to edit it.
+												<HoverCardContent className='w-[320px] text-sm' side='left'>
+													Choose the interface that best suits your task. You can provide: a simple prompt to complete, starting and ending text to
+													insert a completion within, or some text with instructions to edit it.
 												</HoverCardContent>
 											</HoverCard>
 											<TabsList className='grid grid-cols-2'>
@@ -241,7 +210,7 @@ export const ManageNewsForm: React.FC<ManageNewsFormProps> = ({
 										<div className='space-y-2'>
 											<FormField
 												control={form.control}
-												name='thumbnailImg'
+												name='image'
 												render={({ field }) => (
 													<FormItem>
 														<FormLabel>Thumbnail image</FormLabel>
@@ -264,87 +233,47 @@ export const ManageNewsForm: React.FC<ManageNewsFormProps> = ({
 													<FormItem>
 														<FormLabel>News Title</FormLabel>
 														<FormControl>
-															<Textarea
-																disabled={loading}
-																placeholder='News title here'
-																className='max-h-[100px]'
-																{...field}
-															/>
+															<Textarea disabled={loading} placeholder='News title here' className='max-h-[100px]' {...field} />
 														</FormControl>
 														<FormMessage />
 													</FormItem>
 												)}
 											/>
+
 											<FormField
 												control={form.control}
-												name='description'
-												render={({ field }) => (
-													<FormItem>
-														<FormLabel>News Description</FormLabel>
-														<FormControl>
-															<Textarea
-																disabled={loading}
-																placeholder='News title here'
-																className='max-h-[120px] h-[120px]'
-																{...field}
-															/>
-														</FormControl>
-														<FormMessage />
-													</FormItem>
-												)}
-											/>
-											<FormField
-												control={form.control}
-												name='tag'
+												name='speciesId'
 												render={({ field }) => {
 													return (
 														<FormItem>
-															<FormLabel>Area ID</FormLabel>
+															<FormLabel>Species</FormLabel>
 															<FormControl>
-																<Popover
-																	open={openComboBox}
-																	onOpenChange={setOpenComboBox}>
+																<Popover open={openComboBoxSpecie} onOpenChange={setOpenComboBoxSpecie}>
 																	<PopoverTrigger asChild>
 																		<Button
 																			variant='outline'
 																			role='combobox'
 																			aria-expanded={open}
-																			className='w-full flex items-center justify-between'>
-																			<div>
-																				{field.value
-																					? specieData.find(
-																							(item) => item === field.value
-																					  )
-																					: 'Select AreaID...'}
-																			</div>
+																			className='w-full flex items-center justify-between'
+																		>
+																			<div>{field.value ? specieData.find((item) => item === field.value) : 'Select species id...'}</div>
 																			<ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
 																		</Button>
 																	</PopoverTrigger>
 																	<PopoverContent className='w-[200px] p-0'>
 																		<Command>
-																			<CommandInput placeholder='Search Area ID...' />
-																			<CommandEmpty>
-																				No Area ID found.
-																			</CommandEmpty>
+																			<CommandInput placeholder='Search Specie ID...' />
+																			<CommandEmpty>No Specie ID found.</CommandEmpty>
 																			<CommandGroup>
 																				{specieData.map((item) => (
 																					<CommandItem
 																						key={item}
 																						onSelect={() => {
-																							// Set the selected value in the field
-																							field.onChange(
-																								item === field.value ? '' : item
-																							);
-																							setOpenComboBox(false);
-																						}}>
-																						<Check
-																							className={cn(
-																								'mr-2 h-4 w-4',
-																								item === field.value
-																									? 'opacity-100'
-																									: 'opacity-0'
-																							)}
-																						/>
+																							field.onChange(item === field.value ? '' : item);
+																							setOpenComboBoxSpecie(false);
+																						}}
+																					>
+																						<Check className={cn('mr-2 h-4 w-4', item === field.value ? 'opacity-100' : 'opacity-0')} />
 																						{item}
 																					</CommandItem>
 																				))}
@@ -358,26 +287,62 @@ export const ManageNewsForm: React.FC<ManageNewsFormProps> = ({
 													);
 												}}
 											/>
-
-											<Button
-												disabled={loading}
-												className='ml-auto'
-												type='submit'>
-												Submit
+											<FormField
+												control={form.control}
+												name='animalId'
+												render={({ field }) => {
+													return (
+														<FormItem>
+															<FormLabel>Animal</FormLabel>
+															<FormControl>
+																<Popover open={openComboBoxAnimal} onOpenChange={setOpenComboBoxAnimal}>
+																	<PopoverTrigger asChild>
+																		<Button
+																			variant='outline'
+																			role='combobox'
+																			aria-expanded={open}
+																			className='w-full flex items-center justify-between'
+																		>
+																			<div>{field.value ? animalData.find((item) => item === field.value) : 'Select animal id...'}</div>
+																			<ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
+																		</Button>
+																	</PopoverTrigger>
+																	<PopoverContent className='w-[200px] p-0'>
+																		<Command>
+																			<CommandInput placeholder='Search Specie ID...' />
+																			<CommandEmpty>No Specie ID found.</CommandEmpty>
+																			<CommandGroup>
+																				{animalData.map((item) => (
+																					<CommandItem
+																						key={item}
+																						onSelect={() => {
+																							field.onChange(item === field.value ? '' : item);
+																							setOpenComboBoxAnimal(false);
+																						}}
+																					>
+																						<Check className={cn('mr-2 h-4 w-4', item === field.value ? 'opacity-100' : 'opacity-0')} />
+																						{item}
+																					</CommandItem>
+																				))}
+																			</CommandGroup>
+																		</Command>
+																	</PopoverContent>
+																</Popover>
+															</FormControl>
+															<FormMessage />
+														</FormItem>
+													);
+												}}
+											/>
+											<Button disabled={loading} className='ml-auto' type='submit'>
+												{action}
 											</Button>
 										</div>
 									</div>
 									<div className='md:order-1'>
 										<TabsContent value='raw' className='mt-0 border-0 p-0'>
 											<div className='flex h-full flex-col space-y-4'>
-												{/* <Textarea
-                                                    placeholder="Write a tagline for an ice cream shop"
-                                                    className="min-h-[400px] flex-1 p-4 md:min-h-[700px] lg:min-h-[700px]"
-                                                /> */}
-												<Editor
-													onChange={handleEditorChange}
-													value={editorContent}
-												/>
+												<Editor onChange={handleEditorChange} value={editorContent} />
 											</div>
 										</TabsContent>
 										{/* TODO: Preview here */}
