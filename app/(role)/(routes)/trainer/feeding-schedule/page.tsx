@@ -12,7 +12,8 @@ import {
   ViewDirective,
   ViewsDirective,
   TimelineViews,
-  TimelineMonth
+  TimelineMonth,
+  Resize
 } from '@syncfusion/ej2-react-schedule';
 import { registerLicense } from '@syncfusion/ej2-base';
 registerLicense('Ngo9BigBOggjHTQxAR8/V1NHaF5cXmVCf1JpRGBGfV5yd0VDalhRTnVZUj0eQnxTdEZiWX5bcXZWRmFUVUR2Ww==');
@@ -40,12 +41,27 @@ const SchedulePage: React.FC = () => {
     axios
       .get<Event[]>('https://651d776944e393af2d59dbd7.mockapi.io/schedule')
       .then((response) => {
-        // Update events with IsReadonly property based on the current day
         const currentDate = new Date();
-        const updatedEvents = response.data.map((event) => ({
-          ...event,
-          IsReadonly: new Date(event.StartTime) < currentDate
-        }));
+        const updatedEvents = response.data.map((event) => {
+          // Convert event times from UTC to local time zone
+          const startTime = new Date(event.StartTime);
+          const endTime = new Date(event.EndTime);
+
+          // Set the time zone offset (in minutes) to UTC
+          const timeZoneOffset = new Date().getTimezoneOffset();
+
+          // Adjust start and end times to local time zone
+          startTime.setHours(startTime.getHours() + timeZoneOffset / 60);
+          endTime.setHours(endTime.getHours() + timeZoneOffset / 60);
+
+          return {
+            ...event,
+            StartTime: startTime.toISOString(),
+            EndTime: endTime.toISOString(),
+            IsReadonly: startTime < currentDate
+          };
+        });
+
         setEvents(updatedEvents);
       })
       .catch((error) => {
@@ -53,10 +69,30 @@ const SchedulePage: React.FC = () => {
       });
   };
 
+  const processEventTimezone = (event: Event) => {
+    // Convert event times to UTC before sending to the API
+    const startTime = new Date(event.StartTime);
+    const endTime = new Date(event.EndTime);
+
+    // Set the time zone offset (in minutes) to UTC
+    const timeZoneOffset = new Date().getTimezoneOffset();
+
+    // Adjust start and end times to UTC
+    startTime.setHours(startTime.getHours() - timeZoneOffset / 60);
+    endTime.setHours(endTime.getHours() - timeZoneOffset / 60);
+
+    return {
+      ...event,
+      StartTime: startTime.toISOString(),
+      EndTime: endTime.toISOString()
+    };
+  };
+
   const addEvent = (newEvent: Event) => {
-    console.log(newEvent);
+    const adjustedEvent = processEventTimezone(newEvent);
+
     axios
-      .post<Event[]>('https://651d776944e393af2d59dbd7.mockapi.io/schedule', newEvent)
+      .post<Event[]>('https://651d776944e393af2d59dbd7.mockapi.io/schedule', adjustedEvent)
       .then(() => {
         fetchEvents();
       })
@@ -66,8 +102,10 @@ const SchedulePage: React.FC = () => {
   };
 
   const updateEvent = (updatedEvent: Event) => {
+    const adjustedEvent = processEventTimezone(updatedEvent);
+
     axios
-      .put(`https://651d776944e393af2d59dbd7.mockapi.io/schedule/${updatedEvent.id}`, updatedEvent)
+      .put(`https://651d776944e393af2d59dbd7.mockapi.io/schedule/${adjustedEvent.id}`, adjustedEvent)
       .then(() => {
         fetchEvents();
       })
@@ -109,7 +147,7 @@ const SchedulePage: React.FC = () => {
           <ViewDirective option="TimelineDay"></ViewDirective>
           <ViewDirective option="TimelineMonth"></ViewDirective>
         </ViewsDirective>
-        <Inject services={[Day, Week, Month, DragAndDrop, Agenda, TimelineViews, TimelineMonth]} />
+        <Inject services={[Day, Week, Month, DragAndDrop, Agenda, TimelineViews, TimelineMonth, Resize]} />
       </ScheduleComponent>
     </div>
   );
