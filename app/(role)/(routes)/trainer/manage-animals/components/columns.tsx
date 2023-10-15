@@ -48,7 +48,7 @@ export const columns: ColumnDef<AnimalColumn>[] = [
       <div className="flex items-center">
         <Avatar>
           <AvatarImage
-            src={"https://github.com/shadcn.png"}
+            src={props.row.original.image}
             alt={props.row.original.name}
           />
           <AvatarFallback>A</AvatarFallback>

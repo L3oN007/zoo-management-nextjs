@@ -33,15 +33,29 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { log } from "console";
+import { da } from "date-fns/locale";
 
 const formSchema = z.object({
-  image: z.string().nullable(),
+  animalId: z
+    .string()
+    .trim()
+    .refine(
+      (value) => {
+        const regex = /^ANI\d{3}/;
+        return regex.test(value);
+      },
+      {
+        message:
+          "ID must be in format ANIXXX with A being an uppercase letter and XXX being a 3 digit number",
+      }
+    ),
+  image: z.object({ url: z.string() }).array() || z.string().optional(),
   name: z
     .string()
     .min(1, { message: "Full name must be between 1-50 characters." })
     .max(50),
-  birthDate: z.string().min(1, { message: "Date of birth is required." }),
-  importDate: z.string().min(1, { message: "Import Date is required." }),
+  birthDate: z.string().min(1, { message: "Region is required." }),
+  importDate: z.string().min(1, { message: "Region is required." }),
   region: z.string().min(1, { message: "Region is required." }),
   behavior: z.string().min(1, { message: "Behavior is required." }),
   healthStatus: z.coerce.number(),
@@ -80,7 +94,6 @@ interface Species {
 interface ManageAnimalFormProps {
   initialData: Animal | null;
 }
-
 export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({
   initialData,
 }) => {
@@ -136,7 +149,8 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({
   const form = useForm<ManageAnimalFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: initialData || {
-      image: "",
+      animalId: "",
+      image: [] || "",
       name: "",
       birthDate: "",
       importDate: "",
@@ -153,6 +167,8 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({
   });
 
   const onSubmit = async (data: ManageAnimalFormValues) => {
+    const arrayimg = data.image.map((obj) => obj.url);
+    data.image = arrayimg.toString();
     try {
       setLoading(true);
       if (initialData) {
@@ -166,13 +182,15 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({
           });
         console.log(data);
       } else {
+        console.log(data);
+
         await axios.post(createAPI + ``, data);
       }
       router.refresh();
       router.push(`/staff/manage-animals`);
       toast.success(toastMessage);
     } catch (error: any) {
-      toast.error("Something went wrong.");
+      toast.error(error.response.data.title);
     } finally {
       setLoading(false);
     }
@@ -225,13 +243,19 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({
             name="image"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Animal Avatar Image</FormLabel>
+                <FormLabel>Images</FormLabel>
                 <FormControl>
                   <ImageUpload
-                    value={field.value ? [field.value] : []}
+                    value={field.value.map((image) => image.url)}
                     disabled={loading}
-                    onChange={(url) => field.onChange(url)}
-                    onRemove={() => field.onChange("")}
+                    onChange={(url) =>
+                      field.onChange([...field.value, { url }])
+                    }
+                    onRemove={(url) =>
+                      field.onChange([
+                        ...field.value.filter((current) => current.url !== url),
+                      ])
+                    }
                   />
                 </FormControl>
                 <FormMessage />
@@ -239,6 +263,24 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({
             )}
           />
           <div className="md:grid md:grid-cols-3 gap-8">
+            <FormField
+              control={form.control}
+              name="animalId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>AnimalId</FormLabel>
+                  <FormControl>
+                    <Input
+                      readOnly={!!initialData}
+                      disabled={loading}
+                      placeholder="Billboard label"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="name"
@@ -265,9 +307,8 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({
                   <FormControl>
                     <Input
                       type="date"
-                      disabled={loading}
-                      placeholder="Billboard label"
-                      {...field}
+                      value={field.value}
+                      onChange={(e) => field.onChange(e.target.value)}
                     />
                   </FormControl>
                   <FormMessage />
@@ -343,18 +384,18 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({
                       <SelectTrigger>
                         <SelectValue
                           defaultValue={
-                            field.value === 1 ? "Checked" : "Unchecked"
+                            field.value === 0 ? "Healthy" : "Unhealthy"
                           }
                         >
-                          {field.value === 1 ? "Checked" : "Unchecked"}
+                          {field.value === 0 ? "Healthy" : "Unhealthy"}
                         </SelectValue>
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
                       <SelectGroup>
                         <SelectLabel>Health Status</SelectLabel>
-                        <SelectItem value="1">Healthy</SelectItem>
-                        <SelectItem value="0">Unhealthy</SelectItem>
+                        <SelectItem value="0">Healthy</SelectItem>
+                        <SelectItem value="1">Unhealthy</SelectItem>
                       </SelectGroup>
                     </SelectContent>
                   </Select>

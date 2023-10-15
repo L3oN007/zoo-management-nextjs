@@ -31,6 +31,8 @@ const ManageAnimalPage = async () => {
       animalData.forEach((animal: any) => {
         animal.birthDate = format(new Date(animal.birthDate), "MM/dd/yyyy");
         animal.importDate = format(new Date(animal.importDate), "MM/dd/yyyy");
+        var img = animal.image.split(",");
+        animal.image = img[0];
       });
     }
 

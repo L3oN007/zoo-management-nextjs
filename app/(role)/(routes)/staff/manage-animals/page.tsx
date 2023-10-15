@@ -3,6 +3,7 @@ import { ManageAnimalClient } from "./components/client";
 import ErrorPage from "@/app/error/page";
 import axios from "axios";
 import { format } from "date-fns";
+import { any } from "zod";
 
 const ManageAnimalPage = async () => {
   const url = process.env.NEXT_PUBLIC_API_LOAD_ANIMALS;
@@ -31,6 +32,8 @@ const ManageAnimalPage = async () => {
       animalData.forEach((animal: any) => {
         animal.birthDate = format(new Date(animal.birthDate), "MM/dd/yyyy");
         animal.importDate = format(new Date(animal.importDate), "MM/dd/yyyy");
+        var img = animal.image.split(",");
+        animal.image = img[0];
       });
     }
 
