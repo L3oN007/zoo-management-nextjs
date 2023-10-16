@@ -31,7 +31,7 @@ interface Event {
 }
 
 const SchedulePage: React.FC = () => {
-  const [events, setEvents] = useState<Event[]>([]);
+  const [events, setEvents] = useState<Event[]>();
 
   useEffect(() => {
     fetchEvents();
@@ -70,21 +70,28 @@ const SchedulePage: React.FC = () => {
   };
 
   const processEventTimezone = (event: Event) => {
-    // Convert event times to UTC before sending to the API
     const startTime = new Date(event.StartTime);
     const endTime = new Date(event.EndTime);
 
-    // Set the time zone offset (in minutes) to UTC
-    const timeZoneOffset = new Date().getTimezoneOffset();
+    // Get UTC offset in minutes
+    const utcOffset = startTime.getTimezoneOffset();
 
-    // Adjust start and end times to UTC
-    startTime.setHours(startTime.getHours() - timeZoneOffset / 60);
-    endTime.setHours(endTime.getHours() - timeZoneOffset / 60);
+    // Convert times to UTC
+    startTime.setMinutes(startTime.getMinutes() - utcOffset);
+    endTime.setMinutes(endTime.getMinutes() - utcOffset);
+
+    // Add date to times
+    const date = new Date();
+    startTime.setFullYear(date.getFullYear(), date.getMonth(), date.getDate());
+    endTime.setFullYear(date.getFullYear(), date.getMonth(), date.getDate());
+
+    // Format date strings
+    function toIsoString(date: Date) {
+      return date.toISOString().slice(0, 16) + 'Z';
+    }
 
     return {
-      ...event,
-      StartTime: startTime.toISOString(),
-      EndTime: endTime.toISOString()
+      ...event
     };
   };
 
@@ -92,7 +99,7 @@ const SchedulePage: React.FC = () => {
     const adjustedEvent = processEventTimezone(newEvent);
 
     axios
-      .post<Event[]>('https://651d776944e393af2d59dbd7.mockapi.io/schedule', adjustedEvent)
+      .post<Event>('https://651d776944e393af2d59dbd7.mockapi.io/schedule', adjustedEvent)
       .then(() => {
         fetchEvents();
       })

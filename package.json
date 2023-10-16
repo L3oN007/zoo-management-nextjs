@@ -30,6 +30,7 @@
     "@radix-ui/react-toggle": "^1.0.3",
     "@syncfusion/ej2-data": "^23.1.36",
     "@syncfusion/ej2-react-grids": "^23.1.40",
+    "@syncfusion/ej2-react-navigations": "^23.1.40",
     "@syncfusion/ej2-react-schedule": "^23.1.40",
     "@tanstack/react-table": "^8.10.1",
     "@types/node": "20.6.3",
