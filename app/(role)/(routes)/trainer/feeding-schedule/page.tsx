@@ -47,12 +47,12 @@ const SchedulePage: React.FC = () => {
           const startTime = new Date(event.StartTime);
           const endTime = new Date(event.EndTime);
 
-          // Set the time zone offset (in minutes) to UTC
-          const timeZoneOffset = new Date().getTimezoneOffset();
+          // // Set the time zone offset (in minutes) to UTC
+          // const timeZoneOffset = new Date().getTimezoneOffset();
 
-          // Adjust start and end times to local time zone
-          startTime.setHours(startTime.getHours() + timeZoneOffset / 60);
-          endTime.setHours(endTime.getHours() + timeZoneOffset / 60);
+          // // Adjust start and end times to local time zone
+          // startTime.setHours(startTime.getHours() + timeZoneOffset / 60);
+          // endTime.setHours(endTime.getHours() + timeZoneOffset / 60);
 
           return {
             ...event,
@@ -99,7 +99,7 @@ const SchedulePage: React.FC = () => {
     const adjustedEvent = processEventTimezone(newEvent);
 
     axios
-      .post<Event>('https://651d776944e393af2d59dbd7.mockapi.io/schedule', adjustedEvent)
+      .post<Event>('https://651d776944e393af2d59dbd7.mockapi.io/schedule', adjustedEvent['0'])
       .then(() => {
         fetchEvents();
       })
