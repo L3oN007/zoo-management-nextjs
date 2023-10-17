@@ -26,7 +26,7 @@ export function UserNav({ userRole }: { userRole: string | undefined }) {
       <DropdownMenuTrigger asChild>
         <div className="flex cursor-pointer">
           <div className="flex-1 flex-col space-y-1 mr-2">
-            <p className="text-sm font-medium leading-none ml-1">Minh Nhat</p>
+            <p className="text-sm font-medium leading-none ml-1">{session.data?.user.fullName}</p>
             <span className="bg-green-100 text-green-800 text-xs font-medium ml-5 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">
               {userRole?.charAt(0).toUpperCase() + userRole!.slice(1)}{' '}
             </span>
@@ -52,8 +52,8 @@ export function UserNav({ userRole }: { userRole: string | undefined }) {
               <AvatarFallback>N</AvatarFallback>
             </Avatar>
             <div className="flex flex-col space-y-1">
-              <p className="text-sm font-medium leading-none">Minh Nhat</p>
-              <p className="text-xs leading-none text-muted-foreground mt-1">minhnhatt123@gmail.com </p>
+              <p className="text-sm font-medium leading-none">{session.data?.user.fullName}</p>
+              <p className="text-xs leading-none text-muted-foreground mt-1">{session.data?.user.email}</p>
             </div>
           </div>
         </DropdownMenuLabel>
