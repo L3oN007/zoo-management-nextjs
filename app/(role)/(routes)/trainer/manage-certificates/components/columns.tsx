@@ -5,50 +5,63 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown, MoreHorizontal } from "lucide-react"
-import { CellAction } from './cell-action';
 import { DataTableRowActions } from '@/components/data-table/data-table-row-actions';
 import { AreaObj } from '@/app/models/area';
+import { CellAction } from './cell-action';
 
-export type CertificateColumn = {
+
+export type empCertificateColumn = {
+    no: number;
+    empId: string;
     cerCode: string;
-    cerName: string;
-    level: string;
-    trainingInsti: string;
+    description: string;
 };
 
-export const columns: ColumnDef<CertificateColumn>[] = [
+
+export const empColumns: ColumnDef<empCertificateColumn>[] = [
     {
-        accessorKey: 'cerCode',
-        header: 'Certificate Code',
+        accessorKey: 'no',
+        header: 'Number',
 
     },
     {
-        accessorKey: 'cerName',
+        accessorKey: 'empId',
         header: ({ column }) => {
             return (
                 <Button
                     variant="ghost"
                     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                 >
-                    Certificate Name
+                    Employee ID
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
             )
         },
     },
     {
-        accessorKey: 'level',
-        header: 'Level',
-
+        accessorKey: 'cerCode',
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                >
+                    Certificate Code
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            )
+        },
     },
-
     {
-        accessorKey: 'trainingInsti',
-        header: 'Training Institution',
+        accessorKey: 'description',
+        header: 'Description',
 
     },
     {
         id: "actions",
         cell: ({ row }) => <CellAction data={row.original} />
     },
+    
+  
 ];
+

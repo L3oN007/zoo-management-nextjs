@@ -7,11 +7,11 @@ import { Separator } from "@/components/ui/separator"
 import { Plus } from "lucide-react"
 import { useParams, useRouter } from "next/navigation"
 import { FC, useState } from "react"
-import { columns } from "./columns"
+import {  empColumns } from "./columns"
 
 
 interface ManageCertificateClientProps {
-    data: any
+    data: any;
 }
 
 export const ManageCertificateClient: FC<ManageCertificateClientProps> = (data) => {
@@ -20,7 +20,7 @@ export const ManageCertificateClient: FC<ManageCertificateClientProps> = (data) 
     return (    
         <>
             <div className="flex items-center justify-between">
-                <Heading title={`Certificate (${Object.keys(data.data).length})`} description="Manage Certificate information of trainer" />
+                <Heading title={`Employee's Certificate (${Object.keys(data.data).length})`} description="Manage Certificate information of trainer" />
 
                 <Button onClick={() => router.push("/trainer/manage-certificates/new")}>
                     <Plus className="mr-2 h-4 w-4" />
@@ -28,7 +28,8 @@ export const ManageCertificateClient: FC<ManageCertificateClientProps> = (data) 
                 </Button>
             </div>
             <Separator />
-            <DataTable columns={columns} data={data.data} searchKey="cerName" filterOptions={null as any} />
+            <DataTable columns={empColumns} data={data.data} searchKey="cerCode" filterOptions={null as any} />
+
 
         </>
     )

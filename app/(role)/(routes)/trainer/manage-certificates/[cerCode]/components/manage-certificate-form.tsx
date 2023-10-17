@@ -41,14 +41,14 @@ const formSchema = z.object({
 	cerCode: z
 		.string()
 		.min(1, { message: 'Certificate code is required.' }),
-	cerName: z
+	empId: z
 		.string()
-		.min(1, { message: 'Certificate name is required.' }),
-	level: z
+		.min(1, { message: 'Employee ID is required.' }),
+	description: z
 	.string()
-	.min(1, { message: 'Certificate name is required.' }),
+	.min(1, { message: 'Description is required.' }),
 	
-	trainingInsti: z.string().min(1, { message: 'Training Institution is required.' }).max(50),
+
 });
 
 type ManageCertificateFormValues = z.infer<typeof formSchema>;
@@ -64,7 +64,7 @@ export const ManageCertificateForm: React.FC<ManageCertificateFormProps> = ({
 }) => {
 	const params = useParams();
 	const router = useRouter();
-	const url = "https://6525248067cfb1e59ce6b68f.mockapi.io/empCerti";
+	const url = "https://652d3b33f9afa8ef4b27101b.mockapi.io/empCertificate";
 	const [open, setOpen] = useState(false);
 	const [loading, setLoading] = useState(false);
 	
@@ -79,9 +79,9 @@ export const ManageCertificateForm: React.FC<ManageCertificateFormProps> = ({
 		resolver: zodResolver(formSchema),
 		defaultValues: initialData || {
 			cerCode: '',
-			cerName: '',
-			level: '',
-			trainingInsti: '',
+			empId: '',
+			description: '',
+
 		},
 	});
 
@@ -171,14 +171,14 @@ export const ManageCertificateForm: React.FC<ManageCertificateFormProps> = ({
 						/>
 						<FormField
 							control={form.control}
-							name='cerName'
+							name='empId'
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Certificate Name</FormLabel>
+									<FormLabel>Employee ID</FormLabel>
 									<FormControl>
 										<Input
 											disabled={loading}
-											placeholder='Certificate Name'
+											placeholder='Employee ID'
 											{...field}
 										/>
 									</FormControl>
@@ -188,15 +188,15 @@ export const ManageCertificateForm: React.FC<ManageCertificateFormProps> = ({
 						/>
 						<FormField
 							control={form.control}
-							name='level'
+							name='description'
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Level</FormLabel>
+									<FormLabel>Description</FormLabel>
 									<FormControl>
 										<Input
 										
 											disabled={loading}
-											placeholder='Level'
+											placeholder='Description'
 											{...field}
 										/>
 									</FormControl>
@@ -204,26 +204,8 @@ export const ManageCertificateForm: React.FC<ManageCertificateFormProps> = ({
 								</FormItem>
 							)}
 						/>
-						<FormField
-							control={form.control}
-							name='trainingInsti'
-							render={({ field }) => {
-								return (
-									<FormItem>
-										<FormLabel>Training Institution</FormLabel>
-										<FormControl>
-										<Input
-											
-											disabled={loading}
-											placeholder='Training institution'
-											{...field}
-										/>
-										</FormControl>
-										<FormMessage />
-									</FormItem>
-								);
-							}}
-						/>
+					
+					
 					</div>
 					<Button disabled={loading} className='ml-auto' type='submit'>
 						{action}
