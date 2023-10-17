@@ -63,6 +63,11 @@ export function UserNav({ userRole }: { userRole: string | undefined }) {
 						<PersonIcon className='mr-2' /> Manage Account
 					</DropdownMenuItem>
 				</DropdownMenuGroup>
+				<DropdownMenuGroup>
+					<DropdownMenuItem onClick={() => router.push(`/${session.data?.user.role}/manage-certificates`)}>
+						<PersonIcon className='mr-2' /> Manage Certificate
+					</DropdownMenuItem>
+				</DropdownMenuGroup>
 				<DropdownMenuSeparator />
 				<DropdownMenuItem onClick={() => router.push('/api/auth/signout')} className='text-red-500'>
 					<PinRightIcon className='mr-2' /> Log out
