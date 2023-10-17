@@ -110,16 +110,12 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({
   const [cages, setCages] = useState<Cage[]>([]);
   const [species, setSpecies] = useState<Species[]>([]);
 
-  const getTrainerNameByID = (id: string | undefined) => {
-    return trainers.find((trainer) => trainer.employeeId === id);
-  };
-
   useEffect(() => {
     axios
       .get<Trainer[]>("http://localhost:5000/api/Employees/trainers")
       .then((response) => setTrainers(response.data))
       .catch((error) => {
-        console.error("Lỗi khi lấy danh sách trainers:", error);
+        console.error(error);
         setLoading(false);
       });
 
@@ -127,24 +123,23 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({
       .get<Cage[]>("http://localhost:5000/api/Cages/load-cages")
       .then((response) => setCages(response.data))
       .catch((error) => {
-        console.error("Lỗi khi lấy danh sách Cages:", error);
+        console.error(error);
         setLoading(false);
       });
     axios
       .get<Species[]>("http://localhost:5000/api/AnimalSpecies/species")
       .then((response) => setSpecies(response.data))
       .catch((error) => {
-        console.error("Lỗi khi lấy danh sách Species:", error);
+        console.error(error);
         setLoading(false);
       });
   }, []);
 
-  const title = initialData ? "Edit Animal information" : "Import new animal";
-  const description = initialData ? "Edit an animal." : "Import new animal";
-  const toastMessage = initialData
-    ? "Animal information updated."
-    : "Animal imported.";
-  const action = initialData ? "Save changes" : "Import";
+  const title = "Edit Animal information";
+  const description = "Edit an animal.";
+  const toastMessage = "Animal information updated.";
+
+  const action = "Save changes";
 
   const form = useForm<ManageAnimalFormValues>({
     resolver: zodResolver(formSchema),
@@ -238,7 +233,7 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({
           onSubmit={form.handleSubmit(onSubmit)}
           className="space-y-8 w-full"
         >
-          <FormField
+          {/* <FormField
             control={form.control}
             name="image"
             render={({ field }) => (
@@ -261,7 +256,7 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({
                 <FormMessage />
               </FormItem>
             )}
-          />
+          /> */}
           <div className="md:grid md:grid-cols-3 gap-8">
             <FormField
               control={form.control}
@@ -301,39 +296,43 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({
             <FormField
               control={form.control}
               name="birthDate"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Date of birth</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="date"
-                      disabled={loading}
-                      placeholder="Billboard label"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              render={({ field }) => {
+                return (
+                  <FormItem>
+                    <FormLabel>Date of birth</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="date"
+                        value={field.value}
+                        onChange={(e) => field.onChange(e.target.value)}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                );
+              }}
             />
+
             <FormField
               control={form.control}
               name="importDate"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>ImportDate</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="date"
-                      disabled={loading}
-                      placeholder="Billboard label"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              render={({ field }) => {
+                return (
+                  <FormItem>
+                    <FormLabel>Import Date</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="date"
+                        value={field.value}
+                        onChange={(e) => field.onChange(e.target.value)}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                );
+              }}
             />
+
             <FormField
               control={form.control}
               name="region"
@@ -575,7 +574,7 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({
                         {species.map((species) => (
                           <SelectItem
                             key={species.speciesId}
-                            value={species?.speciesId.toString()}
+                            value={String(species.speciesId)}
                           >
                             {species.speciesName}
                           </SelectItem>
@@ -588,7 +587,11 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({
               )}
             />
           </div>
-          <Button disabled={loading} className="ml-auto" type="submit">
+          <Button
+            disabled={loading || !form.formState.isValid}
+            className="ml-auto"
+            type="submit"
+          >
             {action}
           </Button>
         </form>

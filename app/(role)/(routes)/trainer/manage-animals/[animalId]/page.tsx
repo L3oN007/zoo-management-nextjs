@@ -40,3 +40,6 @@ const EditAnimalPage = async ({ params }: { params: { animalId: string } }) => {
 };
 
 export default EditAnimalPage;
+function parseISO(arg0: Date): number | Date {
+  throw new Error("Function not implemented.");
+}

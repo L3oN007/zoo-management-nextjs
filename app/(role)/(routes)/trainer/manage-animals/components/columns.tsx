@@ -64,8 +64,8 @@ export const columns: ColumnDef<AnimalColumn>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Animal's Name
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          AnimalName
+          <ArrowUpDown className="ml-1 h-4 w-3" />
         </Button>
       );
     },
