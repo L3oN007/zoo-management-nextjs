@@ -168,7 +168,7 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({
 
   const onSubmit = async (data: ManageAnimalFormValues) => {
     const arrayimg = data.image.map((obj) => obj.url);
-    data.image = arrayimg.toString();
+    data.image = "[" + arrayimg.toString() + "]";
     try {
       setLoading(true);
       if (initialData) {
@@ -384,18 +384,18 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({
                       <SelectTrigger>
                         <SelectValue
                           defaultValue={
-                            field.value === 0 ? "Healthy" : "Unhealthy"
+                            field.value === 1 ? "Checked" : "Unchecked"
                           }
                         >
-                          {field.value === 0 ? "Healthy" : "Unhealthy"}
+                          {field.value === 1 ? "Checked" : "Unchecked"}
                         </SelectValue>
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
                       <SelectGroup>
                         <SelectLabel>Health Status</SelectLabel>
-                        <SelectItem value="0">Healthy</SelectItem>
-                        <SelectItem value="1">Unhealthy</SelectItem>
+                        <SelectItem value="1">Checked</SelectItem>
+                        <SelectItem value="0">Unchecked</SelectItem>
                       </SelectGroup>
                     </SelectContent>
                   </Select>

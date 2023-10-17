@@ -17,9 +17,12 @@ const EditAnimalPage = async ({ params }: { params: { animalId: string } }) => {
       new Date(animalData.importDate),
       "yyyy-MM-dd"
     );
-    animalData.image = animalData.image.split(",").map((item: any) => {
-      return { url: item.trim() };
-    });
+    animalData.image = animalData.image
+      .replace(/\[|\]|'/g, "")
+      .split(",")
+      .map((item: any) => {
+        return { url: item.trim() };
+      });
 
     return (
       <div className="flex-col">
