@@ -5,9 +5,9 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown, MoreHorizontal } from "lucide-react"
+import { CellAction } from './cell-action';
 import { DataTableRowActions } from '@/components/data-table/data-table-row-actions';
 import { AreaObj } from '@/app/models/area';
-import { CellAction } from './cell-action';
 
 
 export type empCertificateColumn = {
@@ -57,10 +57,7 @@ export const empColumns: ColumnDef<empCertificateColumn>[] = [
         header: 'Description',
 
     },
-    {
-        id: "actions",
-        cell: ({ row }) => <CellAction data={row.original} />
-    },
+
     
   
 ];

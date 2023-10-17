@@ -16,10 +16,10 @@ import {
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 
-import { empCertificateColumn } from "./columns";
+import { CertificateColumn } from "./columns";
 
 interface CellActionProps {
-    data: empCertificateColumn;
+    data: CertificateColumn;
 }
 
 export const CellAction: React.FC<CellActionProps> = ({
@@ -33,7 +33,7 @@ export const CellAction: React.FC<CellActionProps> = ({
     const onConfirm = async () => {
         try {
             setLoading(true);
-            await axios.delete("https://652d3b33f9afa8ef4b27101b.mockapi.io/empCertificate" + `/${data.cerCode}`);
+            await axios.delete("https://6525248067cfb1e59ce6b68f.mockapi.io/empCerti" + `/${data.cerCode}`);
             toast.success('Certificate deleted.');
             router.refresh();
         } catch (error: any) {
@@ -73,7 +73,7 @@ export const CellAction: React.FC<CellActionProps> = ({
                         <Copy className="mr-2 h-4 w-4" /> Copy Id
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                        onClick={() => router.push(`/trainer/manage-certificates/${data.cerCode}`)}
+                        onClick={() => router.push(`/staff/manage-certificates/${data.cerCode}`)}
                     >
                         <Edit className="mr-2 h-4 w-4" /> Update
                     </DropdownMenuItem>

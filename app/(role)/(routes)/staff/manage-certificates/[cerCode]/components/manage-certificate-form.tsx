@@ -41,14 +41,14 @@ const formSchema = z.object({
 	cerCode: z
 		.string()
 		.min(1, { message: 'Certificate code is required.' }),
-	empId: z
+	cerName: z
 		.string()
-		.min(1, { message: 'Employee ID is required.' }),
-	description: z
+		.min(1, { message: 'Certificate name is required.' }),
+	level: z
 	.string()
-	.min(1, { message: 'Description is required.' }),
+	.min(1, { message: 'Certificate name is required.' }),
 	
-
+	trainingInsti: z.string().min(1, { message: 'Training Institution is required.' }).max(50),
 });
 
 type ManageCertificateFormValues = z.infer<typeof formSchema>;
@@ -64,7 +64,7 @@ export const ManageCertificateForm: React.FC<ManageCertificateFormProps> = ({
 }) => {
 	const params = useParams();
 	const router = useRouter();
-	const url = "https://652d3b33f9afa8ef4b27101b.mockapi.io/empCertificate";
+	const url = "https://6525248067cfb1e59ce6b68f.mockapi.io/empCerti";
 	const [open, setOpen] = useState(false);
 	const [loading, setLoading] = useState(false);
 	
@@ -79,9 +79,9 @@ export const ManageCertificateForm: React.FC<ManageCertificateFormProps> = ({
 		resolver: zodResolver(formSchema),
 		defaultValues: initialData || {
 			cerCode: '',
-			empId: '',
-			description: '',
-
+			cerName: '',
+			level: '',
+			trainingInsti: '',
 		},
 	});
 
@@ -98,7 +98,7 @@ export const ManageCertificateForm: React.FC<ManageCertificateFormProps> = ({
 				await axios.post(url, data);
 			}
 			router.refresh();
-			router.push(`/trainer/manage-certificates`);
+			router.push(`/staff/manage-certificates`);
 			toast.success(toastMessage);
 		} catch (error: any) {
 			toast.error(error.response.data.title);
@@ -115,7 +115,7 @@ export const ManageCertificateForm: React.FC<ManageCertificateFormProps> = ({
 				url + `/${params.cerCode}`
 			);
 			router.refresh();
-			router.push(`/trainer/manage-certificates`);
+			router.push(`/staff/manage-certificates`);
 			toast.success('Certificate deleted.');
 		} catch (error: any) {
 			toast.error(error.response.data.title);
@@ -171,14 +171,14 @@ export const ManageCertificateForm: React.FC<ManageCertificateFormProps> = ({
 						/>
 						<FormField
 							control={form.control}
-							name='empId'
+							name='cerName'
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Employee ID</FormLabel>
+									<FormLabel>Certificate Name</FormLabel>
 									<FormControl>
 										<Input
 											disabled={loading}
-											placeholder='Employee ID'
+											placeholder='Certificate Name'
 											{...field}
 										/>
 									</FormControl>
@@ -188,15 +188,15 @@ export const ManageCertificateForm: React.FC<ManageCertificateFormProps> = ({
 						/>
 						<FormField
 							control={form.control}
-							name='description'
+							name='level'
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Description</FormLabel>
+									<FormLabel>Level</FormLabel>
 									<FormControl>
 										<Input
 										
 											disabled={loading}
-											placeholder='Description'
+											placeholder='Level'
 											{...field}
 										/>
 									</FormControl>
@@ -204,8 +204,26 @@ export const ManageCertificateForm: React.FC<ManageCertificateFormProps> = ({
 								</FormItem>
 							)}
 						/>
-					
-					
+						<FormField
+							control={form.control}
+							name='trainingInsti'
+							render={({ field }) => {
+								return (
+									<FormItem>
+										<FormLabel>Training Institution</FormLabel>
+										<FormControl>
+										<Input
+											
+											disabled={loading}
+											placeholder='Training institution'
+											{...field}
+										/>
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								);
+							}}
+						/>
 					</div>
 					<Button disabled={loading} className='ml-auto' type='submit'>
 						{action}
