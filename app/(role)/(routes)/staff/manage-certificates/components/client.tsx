@@ -27,7 +27,7 @@ export const ManageCertificateClient: FC<ManageCertificateClientProps> = ({data,
             <div className="flex items-center justify-between">
                 <Heading title={`Certificate (${Object.keys(data).length})`} description="Manage Certificate information of trainer" />
 
-                <Button onClick={() => router.push("/trainer/manage-certificates/new")}>
+                <Button onClick={() => router.push("/staff/manage-certificates/new")}>
                     <Plus className="mr-2 h-4 w-4" />
                     Add New
                 </Button>
