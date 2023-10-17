@@ -25,11 +25,13 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
     const onConfirm = async () => {
         try {
             setLoading(true);
-            await axios.delete(`https://648867740e2469c038fda6cc.mockapi.io/news/${data.id}`);
+            console.log(data);
+            
+            await axios.delete(process.env.NEXT_PUBLIC_API_DELETE_NEWS + `?id=${data.newsId}`);
             toast.success('News deleted.');
             router.refresh();
-        } catch (error) {
-            toast.error('Something went wrong');
+        } catch (error: any) {
+            toast.error(error.response.data.title);
         } finally {
             setLoading(false);
             setOpen(false);
@@ -53,10 +55,10 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align='end'>
                     <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                    <DropdownMenuItem onClick={() => onCopy(data.id)}>
+                    <DropdownMenuItem onClick={() => onCopy(data.id.toString())}>
                         <Copy className='mr-2 h-4 w-4' /> Copy Id
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => router.push(`/staff/manage-news/${data.id}`)}>
+                    <DropdownMenuItem onClick={() => router.push(`/staff/manage-news/${data.newsId}`)}>
                         <Edit className='mr-2 h-4 w-4' /> Update
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => setOpen(true)} className='text-red-500'>
