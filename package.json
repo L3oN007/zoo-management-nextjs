@@ -29,6 +29,8 @@
     "@radix-ui/react-toast": "^1.1.4",
     "@radix-ui/react-toggle": "^1.0.3",
     "@syncfusion/ej2-data": "^23.1.36",
+    "@syncfusion/ej2-react-calendars": "^23.1.40",
+    "@syncfusion/ej2-react-dropdowns": "^23.1.40",
     "@syncfusion/ej2-react-grids": "^23.1.40",
     "@syncfusion/ej2-react-navigations": "^23.1.40",
     "@syncfusion/ej2-react-schedule": "^23.1.40",

@@ -16,6 +16,10 @@ import {
   Resize
 } from '@syncfusion/ej2-react-schedule';
 import { registerLicense } from '@syncfusion/ej2-base';
+import { DateTimePicker, DateTimePickerComponent } from '@syncfusion/ej2-react-calendars';
+import { DropDownListComponent } from '@syncfusion/ej2-react-dropdowns';
+import { ScheduleModal } from '@/components/modals/schedule-modal';
+import { CustomScheduleEditor } from './components/CustomEditor/CustomEditor';
 registerLicense('Ngo9BigBOggjHTQxAR8/V1NHaF5cXmVCf1JpRGBGfV5yd0VDalhRTnVZUj0eQnxTdEZiWX5bcXZWRmFUVUR2Ww==');
 
 interface Event {
@@ -32,6 +36,7 @@ interface Event {
 
 const SchedulePage: React.FC = () => {
   const [events, setEvents] = useState<Event[]>();
+  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
 
   useEffect(() => {
     fetchEvents();
@@ -63,6 +68,7 @@ const SchedulePage: React.FC = () => {
         });
 
         setEvents(updatedEvents);
+        console.log('events', events);
       })
       .catch((error) => {
         console.error(error);
@@ -95,11 +101,23 @@ const SchedulePage: React.FC = () => {
     };
   };
 
+  const fetchEventDetails = (eventId: string) => {
+    axios
+      .get<Event>(`https://651d776944e393af2d59dbd7.mockapi.io/schedule/${eventId}`)
+      .then((response) => {
+        const detailedEvent = response.data;
+        setSelectedEvent(detailedEvent);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
   const addEvent = (newEvent: Event) => {
     const adjustedEvent = processEventTimezone(newEvent);
-
+    const newSchedule = { ...adjustedEvent['0'], Id: undefined };
     axios
-      .post<Event>('https://651d776944e393af2d59dbd7.mockapi.io/schedule', adjustedEvent['0'])
+      .post<Event>('https://651d776944e393af2d59dbd7.mockapi.io/schedule', newSchedule)
       .then(() => {
         fetchEvents();
       })
@@ -110,9 +128,11 @@ const SchedulePage: React.FC = () => {
 
   const updateEvent = (updatedEvent: Event) => {
     const adjustedEvent = processEventTimezone(updatedEvent);
+    const updateSchedule = { ...adjustedEvent, Id: undefined };
+    console.log(updateSchedule);
 
     axios
-      .put(`https://651d776944e393af2d59dbd7.mockapi.io/schedule/${adjustedEvent.id}`, adjustedEvent)
+      .put(`https://651d776944e393af2d59dbd7.mockapi.io/schedule/${adjustedEvent.id}`, updateSchedule)
       .then(() => {
         fetchEvents();
       })
@@ -138,6 +158,13 @@ const SchedulePage: React.FC = () => {
         width="100%"
         height="550px"
         eventSettings={{ dataSource: events }}
+        popupOpen={(args) => {
+          if (args.type === 'Editor' && args.data && args.data.id) {
+            const eventId = args.data.id;
+            console.log('Event id', eventId);
+            fetchEventDetails(eventId);
+          }
+        }}
         actionBegin={(args) => {
           if (args.requestType === 'eventCreate') {
             addEvent(args.data as Event);
@@ -147,6 +174,7 @@ const SchedulePage: React.FC = () => {
             deleteEvent((args.data[0] as Event).id);
           }
         }}
+        editorTemplate={(props) => <CustomScheduleEditor eventData={selectedEvent || props} />}
       >
         <ViewsDirective>
           <ViewDirective option="Day" startHour="06:00" endHour="19:00"></ViewDirective>
