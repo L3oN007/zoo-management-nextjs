@@ -1,25 +1,27 @@
-"use client";
-import React, { useState } from "react";
-import { ManageCertificateClient } from "./components/client";
+'use client';
+import React, { useState } from 'react';
+import { ManageCertificateClient } from './components/client';
 
-import axios from "axios";
-import { format, set } from "date-fns";
-import { Button } from "@/components/ui/button";
-import ErrorPage from "@/app/error/page";
-import agent from "@/app/api/agent";
-import { options } from "@/app/api/auth/[...nextauth]/options";
-import { Card } from "@/components/ui/card";
-import { Separator } from "@radix-ui/react-dropdown-menu";
-import { SidebarNav } from "./components/sidebar-nav";
+import axios from 'axios';
+import { format, set } from 'date-fns';
+import { Button } from '@/components/ui/button';
+import ErrorPage from '@/app/error/page';
+import agent from '@/app/api/agent';
+import { options } from '@/app/api/auth/[...nextauth]/options';
+import { Card } from '@/components/ui/card';
+import { Separator } from '@radix-ui/react-dropdown-menu';
+import { SidebarNav } from './components/sidebar-nav';
+import { useSession } from 'next-auth/react';
 
 // eslint-disable-next-line @next/next/no-async-client-component
 const ManageCertificatePage = async () => {
+  const session = useSession();
   const url = process.env.NEXT_PUBLIC_API_LOAD_EMPLOYEECERTIFICATEBYID;
 
   try {
-    const response = await axios.get(url!);
+    const response = await axios.get(url + `${session.data?.user.employeeId}`);
     var empCerti = response.data;
-    console.log(empCerti);
+    console.log(session.data?.user.employeeId);
     if (empCerti === null) {
       return (
         <div className="flex-col">

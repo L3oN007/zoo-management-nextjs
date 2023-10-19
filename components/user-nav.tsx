@@ -64,7 +64,7 @@ export function UserNav({ userRole }: { userRole: string | undefined }) {
             <PersonIcon className="mr-2" /> Manage Account
           </DropdownMenuItem>
         </DropdownMenuGroup>
-        {userRole === 'trainer' && (
+        {session.data?.user.role === 'trainer' && (
           <DropdownMenuGroup>
             <DropdownMenuItem onClick={() => router.push(`/trainer/manage-certificates`)}>
               <PersonIcon className="mr-2" /> Manage Certificate
