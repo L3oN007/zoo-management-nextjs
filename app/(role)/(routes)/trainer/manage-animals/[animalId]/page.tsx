@@ -12,17 +12,18 @@ const EditAnimalPage = async ({ params }: { params: { animalId: string } }) => {
 
     // Extract animalData from the response
     let animalData = response.data;
+    animalData.birthDate = format(new Date(animalData.birthDate), "yyyy-MM-dd");
+    animalData.importDate = format(new Date(animalData.importDate), "yyyy-MM-dd");
 
     // If animalData is null or undefined, set it to null
-    if (animalData == null) {
-      animalData = null;
-    } else if (Array.isArray(animalData)) {
-      // If animalData is an array, loop through it and update date format and isDeleted property
-      animalData.forEach((animal: any) => {
-        animal.birthDate = format(new Date(animal.birthDate), "MMMM do, yyyy");
-        animal.importDate = format(new Date(animal.importDate), "MM/dd/yyyy");
-      });
-    }
+    // if (animalData == null) {
+    //   animalData = null;
+    // } else if (Array.isArray(animalData)) {
+    //   // If animalData is an array, loop through it and update date format and isDeleted property
+    //   animalData.forEach((animal: any) => {
+       
+    //   });
+    // }
 
     return (
       <div className="flex-col">
@@ -43,3 +44,7 @@ const EditAnimalPage = async ({ params }: { params: { animalId: string } }) => {
 };
 
 export default EditAnimalPage;
+function parseISO(arg0: Date): number | Date {
+  throw new Error("Function not implemented.");
+}
+

@@ -66,6 +66,16 @@ export function MainNav({ className, role, ...props }: React.HTMLAttributes<HTML
 				label: 'Manage Animals',
 				active: pathname === `/staff/manage-animals`,
 			},
+			{
+				href: `/staff/manage-certificates`,
+				label: 'Manage Certificates',
+				active: pathname === `/staff/manage-certificates`,
+			},
+			{
+				href: `/staff/manage-foods`,
+				label: 'Manage Foods',
+				active: pathname === `/staff/manage-foods`,
+			},
 		];
 	} else if(role === 'trainer'){
 		routes = [
@@ -78,6 +88,11 @@ export function MainNav({ className, role, ...props }: React.HTMLAttributes<HTML
 				href: `/trainer/manage-species`,
 				label: 'Manage Species',
 				active: pathname === `/trainer/manage-species`,
+			},
+			{
+				href: `/trainer/manage-schedules`,
+				label: 'Manage Feeding Schedules',
+				active: pathname === `/trainer/manage-schedules`,
 			},
 		]
 	}
