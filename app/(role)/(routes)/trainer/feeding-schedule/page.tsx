@@ -15,7 +15,7 @@ import {
   TimelineMonth,
   Resize
 } from '@syncfusion/ej2-react-schedule';
-import { registerLicense } from '@syncfusion/ej2-base';
+import { registerLicense, Internationalization } from '@syncfusion/ej2-base';
 import { DateTimePicker, DateTimePickerComponent } from '@syncfusion/ej2-react-calendars';
 import { DropDownListComponent } from '@syncfusion/ej2-react-dropdowns';
 import { ScheduleModal } from '@/components/modals/schedule-modal';
@@ -36,7 +36,7 @@ interface Event {
 
 const SchedulePage: React.FC = () => {
   const [events, setEvents] = useState<Event[]>();
-  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+  const [summary, setSummary] = useState('');
 
   useEffect(() => {
     fetchEvents();
@@ -52,18 +52,11 @@ const SchedulePage: React.FC = () => {
           const startTime = new Date(event.StartTime);
           const endTime = new Date(event.EndTime);
 
-          // // Set the time zone offset (in minutes) to UTC
-          // const timeZoneOffset = new Date().getTimezoneOffset();
-
-          // // Adjust start and end times to local time zone
-          // startTime.setHours(startTime.getHours() + timeZoneOffset / 60);
-          // endTime.setHours(endTime.getHours() + timeZoneOffset / 60);
-
           return {
             ...event,
             StartTime: startTime.toISOString(),
-            EndTime: endTime.toISOString(),
-            IsReadonly: startTime < currentDate
+            EndTime: endTime.toISOString()
+            // IsReadonly: startTime < currentDate
           };
         });
 
@@ -101,18 +94,6 @@ const SchedulePage: React.FC = () => {
     };
   };
 
-  const fetchEventDetails = (eventId: string) => {
-    axios
-      .get<Event>(`https://651d776944e393af2d59dbd7.mockapi.io/schedule/${eventId}`)
-      .then((response) => {
-        const detailedEvent = response.data;
-        setSelectedEvent(detailedEvent);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
-
   const addEvent = (newEvent: Event) => {
     const adjustedEvent = processEventTimezone(newEvent);
     const newSchedule = { ...adjustedEvent['0'], Id: undefined };
@@ -129,7 +110,6 @@ const SchedulePage: React.FC = () => {
   const updateEvent = (updatedEvent: Event) => {
     const adjustedEvent = processEventTimezone(updatedEvent);
     const updateSchedule = { ...adjustedEvent, Id: undefined };
-    console.log(updateSchedule);
 
     axios
       .put(`https://651d776944e393af2d59dbd7.mockapi.io/schedule/${adjustedEvent.id}`, updateSchedule)
@@ -152,19 +132,51 @@ const SchedulePage: React.FC = () => {
       });
   };
 
+  let instance = new Internationalization();
+  const getTimeString = (value: any) => {
+    return instance.formatDate(value, { skeleton: 'hm' });
+  };
+
+  const eventTemplate = (props: any) => {
+    return (
+      <div className="template-wrap" style={{ background: props.SecondaryColor }}>
+        <div className="subject" style={{ background: props.PrimaryColor }}>
+          {props.Title}
+        </div>
+        <div className="time" style={{ background: props.PrimaryColor }}>
+          {' '}
+          Time: {getTimeString(props.StartTime)} - {getTimeString(props.EndTime)}
+        </div>
+
+        <div className="event-description">{props.Description}</div>
+        <div className="footer" style={{ background: props.PrimaryColor }}></div>
+        <span className="inline-flex items-center justify-center rounded-full bg-emerald-100 px-1 py-0.5 text-emerald-700">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth="1.5"
+            stroke="currentColor"
+            className="h-3 w-3 mr-1"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          <p className="whitespace-nowrap text-xs">Already Fed</p>
+        </span>
+      </div>
+    );
+  };
+
   return (
     <div>
       <ScheduleComponent
         width="100%"
         height="550px"
         eventSettings={{ dataSource: events }}
-        popupOpen={(args) => {
-          if (args.type === 'Editor' && args.data && args.data.id) {
-            const eventId = args.data.id;
-            console.log('Event id', eventId);
-            fetchEventDetails(eventId);
-          }
-        }}
         actionBegin={(args) => {
           if (args.requestType === 'eventCreate') {
             addEvent(args.data as Event);
@@ -174,11 +186,12 @@ const SchedulePage: React.FC = () => {
             deleteEvent((args.data[0] as Event).id);
           }
         }}
-        editorTemplate={(props) => <CustomScheduleEditor eventData={selectedEvent || props} />}
+        // editorTemplate={editorTemplate}
+        editorTemplate={(props: Event) => <CustomScheduleEditor eventData={props} />}
       >
         <ViewsDirective>
           <ViewDirective option="Day" startHour="06:00" endHour="19:00"></ViewDirective>
-          <ViewDirective option="Week" isSelected={true}></ViewDirective>
+          <ViewDirective option="Week" isSelected={true} eventTemplate={eventTemplate}></ViewDirective>
           <ViewDirective option="TimelineDay"></ViewDirective>
           <ViewDirective option="TimelineMonth"></ViewDirective>
         </ViewsDirective>
