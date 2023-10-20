@@ -20,10 +20,11 @@ import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 import { CageObj } from '@/app/models/cage';
 import { useSession } from 'next-auth/react';
+import { render } from 'react-dom';
 
 const formSchema = z.object({
   certificateCode: z.string().min(1, { message: 'Certificate code is required.' }),
-  employeeId: z.string().nullable(),
+  employeeId: z.string().min(1, { message: 'Employee ID is required.' }),
   description: z.string().min(1, { message: 'Description is required.' })
 });
 
@@ -122,76 +123,82 @@ export const ManageCertificateForm: React.FC<ManageCertificateFormProps> = ({ in
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
           <div className="md:grid md:grid-cols-4 gap-8">
-            <FormField
-              control={form.control}
-              name="certificateCode"
-              render={({ field }) => {
-                return (
+            {initialData ? (
+              <FormField
+                control={form.control}
+                name="certificateCode"
+                render={({ field }) => (
                   <FormItem>
-                    <FormLabel>CertificateName</FormLabel>
+                    <FormLabel>Certificate Code</FormLabel>
                     <FormControl>
-                      <Popover open={openComboBox} onOpenChange={setOpenComboBox}>
-                        <PopoverTrigger asChild>
-                          <Button
-                            variant="outline"
-                            role="combobox"
-                            aria-expanded={open}
-                            className="w-full flex items-center justify-between"
-                          >
-                            <div>
-                              {field.value ? certificateData.find((item) => item === field.value) : 'Select AreaID...'}
-                            </div>
-                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-[200px] p-0">
-                          <Command>
-                            <CommandInput placeholder="Search CertificateName..." />
-                            <CommandEmpty>No Area ID found.</CommandEmpty>
-                            <CommandGroup>
-                              {certificateData.map((item) => (
-                                <CommandItem
-                                  key={item}
-                                  onSelect={() => {
-                                    // Set the selected value in the field
-                                    field.onChange(item === field.value ? '' : item);
-                                    setOpenComboBox(false);
-                                  }}
-                                >
-                                  <Check
-                                    className={cn('mr-2 h-4 w-4', item === field.value ? 'opacity-100' : 'opacity-0')}
-                                  />
-                                  {item}
-                                </CommandItem>
-                              ))}
-                            </CommandGroup>
-                          </Command>
-                        </PopoverContent>
-                      </Popover>
+                      <Input
+                        disabled={loading}
+                        placeholder="Certificate Code"
+                        readOnly={initialData ? true : false}
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
-                );
-              }}
-            />
-            {/* <FormField
-              control={form.control}
-              name="certificateCode"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Certificate Code</FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={loading}
-                      placeholder="Certificate Code"
-                      readOnly={initialData ? true : false}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            /> */}
+                )}
+              />
+            ) : (
+              <FormField
+                control={form.control}
+                name="certificateCode"
+                render={({ field }) => {
+                  return (
+                    <FormItem>
+                      <FormLabel>CertificateName</FormLabel>
+                      <FormControl>
+                        <Popover open={openComboBox} onOpenChange={setOpenComboBox}>
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant="outline"
+                              role="combobox"
+                              aria-expanded={open}
+                              className="w-full flex items-center justify-between"
+                            >
+                              <div>
+                                {field.value
+                                  ? certificateData.find((item) => item === field.value)
+                                  : 'Select AreaID...'}
+                              </div>
+                              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-[200px] p-0">
+                            <Command>
+                              <CommandInput placeholder="Search CertificateName..." />
+                              <CommandEmpty>No CertificateName found.</CommandEmpty>
+                              <CommandGroup>
+                                {certificateData.map((item) => (
+                                  <CommandItem
+                                    key={item}
+                                    onSelect={() => {
+                                      // Set the selected value in the field
+                                      field.onChange(item === field.value ? '' : item);
+                                      setOpenComboBox(false);
+                                    }}
+                                  >
+                                    <Check
+                                      className={cn('mr-2 h-4 w-4', item === field.value ? 'opacity-100' : 'opacity-0')}
+                                    />
+                                    {item}
+                                  </CommandItem>
+                                ))}
+                              </CommandGroup>
+                            </Command>
+                          </PopoverContent>
+                        </Popover>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  );
+                }}
+              />
+            )}
+
             <FormField
               control={form.control}
               name="description"

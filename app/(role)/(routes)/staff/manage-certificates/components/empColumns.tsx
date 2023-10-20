@@ -11,6 +11,7 @@ import { AreaObj } from '@/app/models/area';
 
 export type empCertificateColumn = {
   no: number;
+  stt: number;
   employeeId: string;
   certificateCode: string;
   description: string;
@@ -25,7 +26,7 @@ export type empCertificateColumn = {
 export const empColumns: ColumnDef<empCertificateColumn>[] = [
   {
     accessorKey: 'no',
-    header: 'Number'
+    header: 'No'
   },
   {
     accessorKey: 'employee',

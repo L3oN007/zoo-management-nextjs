@@ -1,11 +1,7 @@
-import axios from "axios";
-import { ManageCertificateForm } from "./components/manage-certificate-form";
+import axios from 'axios';
+import { ManageCertificateForm } from './components/manage-certificate-form';
 
-const ManageCertificatePage = async ({
-  params,
-}: {
-  params: { cerCode: string };
-}) => {
+const ManageCertificatePage = async ({ params }: { params: { cerCode: string } }) => {
   const url = process.env.NEXT_PUBLIC_API_GET_CERTIFICATE + `${params.cerCode}`;
 
   try {

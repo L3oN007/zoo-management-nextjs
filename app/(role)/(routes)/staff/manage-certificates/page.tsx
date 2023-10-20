@@ -1,11 +1,11 @@
-import React, { useState } from "react";
-import { ManageCertificateClient } from "./components/client";
+import React, { useState } from 'react';
+import { ManageCertificateClient } from './components/client';
 
-import axios from "axios";
-import { format, set } from "date-fns";
-import { Button } from "@/components/ui/button";
-import ErrorPage from "@/app/error/page";
-import agent from "@/app/api/agent";
+import axios from 'axios';
+import { format, set } from 'date-fns';
+import { Button } from '@/components/ui/button';
+import ErrorPage from '@/app/error/page';
+import agent from '@/app/api/agent';
 
 const ManageCertificatePage = async () => {
   const certiurl = process.env.NEXT_PUBLIC_API_LOAD_CERTIFICATE;
@@ -39,10 +39,7 @@ const ManageCertificatePage = async () => {
     return (
       <div className="flex-col">
         <div className="flex-1 space-y-4 p-8 pt-6">
-          <ManageCertificateClient
-            data={certificates}
-            empCer={empCertificates}
-          />
+          <ManageCertificateClient data={certificates} empCer={empCertificates} />
         </div>
       </div>
     );
