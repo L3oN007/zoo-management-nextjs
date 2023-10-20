@@ -5,16 +5,25 @@ import { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown } from 'lucide-react';
 import Image from 'next/image';
 import { CellAction } from './cell-action';
+import { EmpObj } from '../../../../../models/employee';
+import { SpeciesObj } from '../../../../../models/species';
 
 export type NewsColumn = {
-	id: string;
+	id: number;
 	title: string;
-	description: string;
 	content: string;
+	image: string;
 	tag: string;
 	thumbnailImg: string;
 	author: string;
 	createDate: string;
+	employeeId: string;
+	employee: EmpObj;
+	speciesId: string;
+	animalSpecies: SpeciesObj
+	writingDate: string;
+	speciesName:string;
+	newsId: number;
 };
 
 export const columns: ColumnDef<NewsColumn>[] = [
@@ -24,7 +33,7 @@ export const columns: ColumnDef<NewsColumn>[] = [
 		cell: (props) => (
 			<div className='flex items-center'>
 				<Image
-					src={props.row.original.thumbnailImg}
+					src={props.row.original.image}
 					className='object-cover rounded-md'
 					alt={props.row.original.title}
 					width={200}
@@ -47,32 +56,34 @@ export const columns: ColumnDef<NewsColumn>[] = [
 		},
 	},
 	{
-		accessorKey: 'description',
-		header: 'Description',
-	},
-	{
-		accessorKey: 'author',
+		accessorKey: 'employeee.fullName',
 		header: 'Author',
 		cell: (props) => {
 			return (
-				<div className='flex flex-wrap w-[100px]'>
-					{props.row.original.author}
+				<div className=''>
+					{props.row.original.employee.fullName}
 				</div>
 			);
 		},
 	},
 	{
-		accessorKey: 'createDate',
+		accessorKey: 'writingDate',
 		header: 'Create Date',
+		cell: (props) => {
+			return (
+				<div>
+					{props.row.original.writingDate.substring(0, 10)}
+				</div>
+			);
+		},
 	},
 	{
-		accessorKey: 'tag',
+		accessorKey: 'animalSpecies.speciesName',
 		header: 'Tag',
 		cell: (props) => {
 			return (
 				<span className='bg-green-100 text-green-800 text-xs font-medium mr-2 mb-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300'>
-					{props.row.original.tag.charAt(0).toUpperCase() +
-						props.row.original.tag.slice(1)}
+					{props.row.original.animalSpecies.speciesName}
 				</span>
 			);
 		},

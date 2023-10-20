@@ -86,8 +86,9 @@ export const ManageCageForm: React.FC<ManageCageFormProps> = ({
 		axios
 			.get(process.env.NEXT_PUBLIC_API_LOAD_AREAS!)
 			.then((response) => {
-				const areaIDs = response.data.map((item: any) => item.areaId);
-				console.log(areaIDs);
+				const areaIDs = response.data.map((item: any) => 
+					item.areaId
+				);
 				setAreaIDData(areaIDs);
 			})
 			.catch((error) => {

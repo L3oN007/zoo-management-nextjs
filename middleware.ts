@@ -16,7 +16,6 @@ export default withAuth(
         }
 
         if (request.nextUrl.pathname.startsWith("/staff")
-            && request.nextauth.token?.role !== "admin"
             && request.nextauth.token?.role !== "staff") {
             return NextResponse.rewrite(
                 new URL("/denied", request.url)
@@ -24,7 +23,6 @@ export default withAuth(
         }
 
         if (request.nextUrl.pathname.startsWith("/trainer")
-            && request.nextauth.token?.role !== "admin"
             && request.nextauth.token?.role !== "trainer") {
             return NextResponse.rewrite(
                 new URL("/denied", request.url)
