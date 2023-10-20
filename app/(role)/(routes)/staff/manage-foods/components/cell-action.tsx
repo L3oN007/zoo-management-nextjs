@@ -16,10 +16,10 @@ import {
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 
-import { CertificateColumn } from "./columns";
+import { FoodColumn } from "./foodColumns";
 
 interface CellActionProps {
-    data: CertificateColumn;
+    data: FoodColumn;
 }
 
 export const CellAction: React.FC<CellActionProps> = ({
@@ -33,7 +33,7 @@ export const CellAction: React.FC<CellActionProps> = ({
     const onConfirm = async () => {
         try {
             setLoading(true);
-            await axios.delete("https://652f95450b8d8ddac0b2bfe2.mockapi.io/importFood" + `/${data.no}`);
+            await axios.delete("https://652d3b33f9afa8ef4b27101b.mockapi.io/food" + `/${data.foodId}`);
             toast.success('Food Import deleted.');
             router.refresh();
         } catch (error: any) {
@@ -68,12 +68,12 @@ export const CellAction: React.FC<CellActionProps> = ({
                 <DropdownMenuContent align="end">
                     <DropdownMenuLabel>Actions</DropdownMenuLabel>
                     <DropdownMenuItem
-                        onClick={() => onCopy(data.no.toString())}
+                        onClick={() => onCopy(data.foodId)}
                     >
                         <Copy className="mr-2 h-4 w-4" /> Copy Id
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                        onClick={() => router.push(`/staff/manage-foods/${data.no}`)}
+                        onClick={() => router.push(`/staff/manage-foods/${data.foodId}`)}
                     >
                         <Edit className="mr-2 h-4 w-4" /> Update
                     </DropdownMenuItem>

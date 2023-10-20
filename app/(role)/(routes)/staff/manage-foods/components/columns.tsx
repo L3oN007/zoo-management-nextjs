@@ -48,10 +48,7 @@ export const columns: ColumnDef<CertificateColumn>[] = [
         header: 'Food ID',
 
     },
-    {
-        id: "actions",
-        cell: ({ row }) => <CellAction data={row.original} />
-    },
+    
 ];
 
 
