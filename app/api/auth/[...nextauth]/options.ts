@@ -48,6 +48,7 @@ export const options: NextAuthOptions = {
         // Include accessToken and refreshToken in the token object
         async jwt({ token, user }) {
             if (user) {
+                token.employeeId = user.employeeId;
                 token.fullName = user.fullName;
                 token.citizenId = user.citizenId;
                 token.email = user.email;
@@ -67,7 +68,7 @@ export const options: NextAuthOptions = {
                 session.user.email = token.email;
                 session.user.phoneNumber = token.phoneNumber;
                 session.user.image = token.image;
-                session.user.id = token.id;
+                session.user.employeeId = token.employeeId;
                 session.user.role = token.role;
                 session.user.token = token.token;
             }

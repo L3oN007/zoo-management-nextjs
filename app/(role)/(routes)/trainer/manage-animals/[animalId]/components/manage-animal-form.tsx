@@ -35,7 +35,20 @@ import { Separator } from "@/components/ui/separator";
 import { log } from "console";
 
 const formSchema = z.object({
-  image: z.string().nullable(),
+  animalId: z
+    .string()
+    .trim()
+    .refine(
+      (value) => {
+        const regex = /^ANI\d{3}/;
+        return regex.test(value);
+      },
+      {
+        message:
+          "ID must be in format ANIXXX with A being an uppercase letter and XXX being a 3 digit number",
+      }
+    ),
+  image: z.object({ url: z.string() }).array() || z.string().optional(),
   name: z
     .string()
     .min(1, { message: "Full name must be between 1-50 characters." })
@@ -117,25 +130,40 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({
       .get<Species[]>("http://localhost:5000/api/AnimalSpecies/species")
       .then((response) => setSpecies(response.data))
       .catch((error) => {
-        console.error( error);
+        console.error(error);
         setLoading(false);
       });
   }, []);
 
-  const title = "Edit Animal information" ;
+  const title = "Edit Animal information";
   const description = "Edit an animal.";
-  const toastMessage = 
- "Animal information updated.";
- 
-  const action = "Save changes" ;
+  const toastMessage = "Animal information updated.";
+
+  const action = "Save changes";
 
   const form = useForm<ManageAnimalFormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: initialData || {},
-    
+    defaultValues: initialData || {
+      animalId: "",
+      image: [] || "",
+      name: "",
+      birthDate: "",
+      importDate: "",
+      region: "",
+      behavior: "",
+      healthStatus: 0,
+      isDeleted: 0,
+      gender: "",
+      rarity: "",
+      employeeId: "",
+      cageId: "",
+      speciesId: 0,
+    },
   });
 
   const onSubmit = async (data: ManageAnimalFormValues) => {
+    const arrayimg = data.image.map((obj) => obj.url);
+    data.image = arrayimg.toString();
     try {
       setLoading(true);
       if (initialData) {
@@ -148,7 +176,11 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({
             console.log(error);
           });
         console.log(data);
-        }
+      } else {
+        console.log(data.image?.toString());
+
+        await axios.post(createAPI + ``, data);
+      }
       router.refresh();
       router.push(`/trainer/manage-animals`);
       toast.success(toastMessage);
@@ -198,7 +230,7 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({
       <Separator />
       <Form {...form}>
         <form
-           onSubmit={form.handleSubmit(onSubmit)}
+          onSubmit={form.handleSubmit(onSubmit)}
           className="space-y-8 w-full"
         >
           {/* <FormField
@@ -206,13 +238,19 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({
             name="image"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Animal Avatar Image</FormLabel>
+                <FormLabel>Images</FormLabel>
                 <FormControl>
                   <ImageUpload
-                    value={field.value ? [field.value] : []}
+                    value={field.value.map((image) => image.url)}
                     disabled={loading}
-                    onChange={(url) => field.onChange(url)}
-                    onRemove={() => field.onChange("")}
+                    onChange={(url) =>
+                      field.onChange([...field.value, { url }])
+                    }
+                    onRemove={(url) =>
+                      field.onChange([
+                        ...field.value.filter((current) => current.url !== url),
+                      ])
+                    }
                   />
                 </FormControl>
                 <FormMessage />
@@ -220,6 +258,24 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({
             )}
           /> */}
           <div className="md:grid md:grid-cols-3 gap-8">
+            <FormField
+              control={form.control}
+              name="animalId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>AnimalId</FormLabel>
+                  <FormControl>
+                    <Input
+                      readOnly={!!initialData}
+                      disabled={loading}
+                      placeholder="Billboard label"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="name"
@@ -241,7 +297,6 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({
               control={form.control}
               name="birthDate"
               render={({ field }) => {
-
                 return (
                   <FormItem>
                     <FormLabel>Date of birth</FormLabel>
@@ -258,7 +313,7 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({
               }}
             />
 
-<FormField
+            <FormField
               control={form.control}
               name="importDate"
               render={({ field }) => {
@@ -277,7 +332,7 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({
                 );
               }}
             />
-            
+
             <FormField
               control={form.control}
               name="region"
@@ -501,7 +556,7 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({
                   <FormLabel>Species:</FormLabel>
                   <Select
                     disabled={loading}
-                    onValueChange={(value) => field.onChange(Number(value))} // Convert value to a number
+                    onValueChange={(value) => field.onChange(Number(value))}
                     value={String(field.value)} // Convert the value to a string here
                     defaultValue={String(field.value)} // Convert the default value to a string
                   >
@@ -532,7 +587,11 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({
               )}
             />
           </div>
-          <Button disabled={loading || !form.formState.isValid} className="ml-auto" type="submit">
+          <Button
+            disabled={loading || !form.formState.isValid}
+            className="ml-auto"
+            type="submit"
+          >
             {action}
           </Button>
         </form>

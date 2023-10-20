@@ -48,7 +48,7 @@ export const columns: ColumnDef<AnimalColumn>[] = [
       <div className="flex items-center">
         <Avatar>
           <AvatarImage
-            src={"https://github.com/shadcn.png"}
+            src={props.row.original.image}
             alt={props.row.original.name}
           />
           <AvatarFallback>A</AvatarFallback>
@@ -94,6 +94,22 @@ export const columns: ColumnDef<AnimalColumn>[] = [
   {
     accessorKey: "healthStatus",
     header: "Health Status",
+    cell: (props) => (
+      <div className="flex items-center">
+        <span
+          className={
+            props.row.original.healthStatus === 1
+              ? "bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
+              : "bg-pink-100 text-pink-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-pink-900 dark:text-pink-300"
+          }
+        >
+          {props.row.original.healthStatus === 1 ? "Checked" : "Unchecked"}
+        </span>
+      </div>
+    ),
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id));
+    },
   },
   {
     accessorKey: "rarity",

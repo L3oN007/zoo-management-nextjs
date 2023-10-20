@@ -9,9 +9,10 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
+  DropdownMenuShortcut,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { CaretDownIcon, PersonIcon, PinRightIcon } from '@radix-ui/react-icons';
+import { CaretDownIcon, GearIcon, PersonIcon, PinRightIcon } from '@radix-ui/react-icons';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 
@@ -63,6 +64,13 @@ export function UserNav({ userRole }: { userRole: string | undefined }) {
             <PersonIcon className="mr-2" /> Manage Account
           </DropdownMenuItem>
         </DropdownMenuGroup>
+        {session.data?.user.role === 'trainer' && (
+          <DropdownMenuGroup>
+            <DropdownMenuItem onClick={() => router.push(`/trainer/manage-certificates`)}>
+              <PersonIcon className="mr-2" /> Manage Certificate
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
+        )}
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => router.push('/api/auth/signout')} className="text-red-500">
           <PinRightIcon className="mr-2" /> Log out

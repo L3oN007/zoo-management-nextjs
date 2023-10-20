@@ -2,9 +2,14 @@ import { format } from "date-fns";
 import { ManageSpeciesForm } from "./components/manage-animal-form";
 import axios from "axios";
 
-const EditAnimalPage = async ({ params }: { params: { speciesId: string } }) => {
+const EditAnimalPage = async ({
+  params,
+}: {
+  params: { speciesId: string };
+}) => {
   // Construct the URL using the animalId from the params object
-  const url = process.env.NEXT_PUBLIC_API_LOAD_ANIMALSPECIES + `${params.speciesId}`;
+  const url =
+    process.env.NEXT_PUBLIC_API_GET_ANIMAL_SPECIES + `${params.speciesId}`;
 
   try {
     // Make the GET request to fetch staff data
@@ -18,9 +23,7 @@ const EditAnimalPage = async ({ params }: { params: { speciesId: string } }) => 
       speciesData = null;
     } else if (Array.isArray(speciesData)) {
       // If speciesData is an array, loop through it and update date format and isDeleted property
-      speciesData.forEach((animal: any) => {
-        
-      });
+      speciesData.forEach((animal: any) => {});
     }
 
     return (

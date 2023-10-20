@@ -29,8 +29,10 @@ const ManageAnimalPage = async () => {
     // If animalData is an array, loop through it and update date format and isDeleted property
     if (Array.isArray(animalData)) {
       animalData.forEach((animal: any) => {
-        animal.birthDate = format(new Date(animal.birthDate), "MMMM do, yyyy");
-        animal.importDate = format(new Date(animal.importDate), "MMMM do, yyyy");
+        animal.birthDate = format(new Date(animal.birthDate), "MM/dd/yyyy");
+        animal.importDate = format(new Date(animal.importDate), "MM/dd/yyyy");
+        var img = animal.image.replace(/\[|\]|'/g, "").split(",");
+        animal.image = img[0];
       });
     }
 

@@ -4,61 +4,50 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ColumnDef } from '@tanstack/react-table';
-import { ArrowUpDown, MoreHorizontal } from "lucide-react"
+import { ArrowUpDown, MoreHorizontal } from 'lucide-react';
 import { CellAction } from './cell-action';
 import { DataTableRowActions } from '@/components/data-table/data-table-row-actions';
 import { AreaObj } from '@/app/models/area';
 
-
 export type empCertificateColumn = {
-    no: number;
-    empId: string;
-    cerCode: string;
-    description: string;
+  no: number;
+  stt: number;
+  employeeId: string;
+  certificateCode: string;
+  description: string;
+  employee: {
+    fullName: string;
+  };
+  certificate: {
+    certificateName: string;
+  };
 };
 
-
 export const empColumns: ColumnDef<empCertificateColumn>[] = [
-    {
-        accessorKey: 'no',
-        header: 'Number',
-
-    },
-    {
-        accessorKey: 'empId',
-        header: ({ column }) => {
-            return (
-                <Button
-                    variant="ghost"
-                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                >
-                    Employee ID
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
-                </Button>
-            )
-        },
-    },
-    {
-        accessorKey: 'cerCode',
-        header: ({ column }) => {
-            return (
-                <Button
-                    variant="ghost"
-                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                >
-                    Certificate Code
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
-                </Button>
-            )
-        },
-    },
-    {
-        accessorKey: 'description',
-        header: 'Description',
-
-    },
-
-    
-  
+  {
+    accessorKey: 'no',
+    header: 'No'
+  },
+  {
+    accessorKey: 'employee',
+    header: 'Employee',
+    cell: (props) => (
+      <div className="flex items-center">
+        <span>{props.row.original.employee?.fullName}</span>
+      </div>
+    )
+  },
+  {
+    accessorKey: 'certificate',
+    header: 'Certificate',
+    cell: (props) => (
+      <div className="flex items-center">
+        <span>{props.row.original.certificate?.certificateName}</span>
+      </div>
+    )
+  },
+  {
+    accessorKey: 'description',
+    header: 'Description'
+  }
 ];
-
