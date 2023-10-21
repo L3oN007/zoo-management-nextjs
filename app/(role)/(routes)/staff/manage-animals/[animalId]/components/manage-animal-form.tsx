@@ -1,27 +1,20 @@
-"use client";
+'use client';
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
-import { Trash } from "lucide-react";
-import { useParams, useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { toast } from "react-hot-toast";
-import * as z from "zod";
+import { zodResolver } from '@hookform/resolvers/zod';
+import axios from 'axios';
+import { Trash } from 'lucide-react';
+import { useParams, useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { toast } from 'react-hot-toast';
+import * as z from 'zod';
 
-import { AlertModal } from "@/components/modals/alert-modal";
-import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Heading } from "@/components/ui/heading";
-import ImageUpload from "@/components/ui/image-upload";
-import { Input } from "@/components/ui/input";
+import { AlertModal } from '@/components/modals/alert-modal';
+import { Button } from '@/components/ui/button';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Heading } from '@/components/ui/heading';
+import ImageUpload from '@/components/ui/image-upload';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
@@ -29,11 +22,11 @@ import {
   SelectItem,
   SelectLabel,
   SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
-import { log } from "console";
-import { da } from "date-fns/locale";
+  SelectValue
+} from '@/components/ui/select';
+import { Separator } from '@/components/ui/separator';
+import { log } from 'console';
+import { da } from 'date-fns/locale';
 
 const formSchema = z.object({
   animalId: z
@@ -45,26 +38,22 @@ const formSchema = z.object({
         return regex.test(value);
       },
       {
-        message:
-          "ID must be in format ANIXXX with A being an uppercase letter and XXX being a 3 digit number",
+        message: 'ID must be in format ANIXXX with A being an uppercase letter and XXX being a 3 digit number'
       }
     ),
   image: z.object({ url: z.string() }).array() || z.string().optional(),
-  name: z
-    .string()
-    .min(1, { message: "Full name must be between 1-50 characters." })
-    .max(50),
-  birthDate: z.string().min(1, { message: "Region is required." }),
-  importDate: z.string().min(1, { message: "Region is required." }),
-  region: z.string().min(1, { message: "Region is required." }),
-  behavior: z.string().min(1, { message: "Behavior is required." }),
+  name: z.string().min(1, { message: 'Full name must be between 1-50 characters.' }).max(50),
+  birthDate: z.string().min(1, { message: 'Region is required.' }),
+  importDate: z.string().min(1, { message: 'Region is required.' }),
+  region: z.string().min(1, { message: 'Region is required.' }),
+  behavior: z.string().min(1, { message: 'Behavior is required.' }),
   healthStatus: z.coerce.number(),
   isDeleted: z.coerce.number(),
-  gender: z.string().min(1, { message: "Gender is required." }),
-  rarity: z.string().min(1, { message: "Rarity is required." }),
-  employeeId: z.string().min(1, { message: "Trainer is required." }),
-  cageId: z.string().min(1, { message: "Cage is required." }),
-  speciesId: z.number().min(1, { message: "Species is required." }),
+  gender: z.string().min(1, { message: 'Gender is required.' }),
+  rarity: z.string().min(1, { message: 'Rarity is required.' }),
+  employeeId: z.string().min(1, { message: 'Trainer is required.' }),
+  cageId: z.string().min(1, { message: 'Cage is required.' }),
+  speciesId: z.number().min(1, { message: 'Species is required.' })
 });
 
 type ManageAnimalFormValues = z.infer<typeof formSchema>;
@@ -94,9 +83,7 @@ interface Species {
 interface ManageAnimalFormProps {
   initialData: Animal | null;
 }
-export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({
-  initialData,
-}) => {
+export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData }) => {
   const deleteAPI = process.env.NEXT_PUBLIC_API_DELETE_ANIMALS;
   const updateAPI = process.env.NEXT_PUBLIC_API_UPDATE_ANIMALS;
   const createAPI = process.env.NEXT_PUBLIC_API_CREATE_ANIMALS;
@@ -105,7 +92,7 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({
 
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [selectedStatus, setSelectedStatus] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState('');
   const [trainers, setTrainers] = useState<Trainer[]>([]);
   const [cages, setCages] = useState<Cage[]>([]);
   const [species, setSpecies] = useState<Species[]>([]);
@@ -116,59 +103,57 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({
 
   useEffect(() => {
     axios
-      .get<Trainer[]>("http://localhost:5000/api/Employees/trainers")
+      .get<Trainer[]>('http://localhost:5000/api/Employees/trainers')
       .then((response) => setTrainers(response.data))
       .catch((error) => {
-        console.error("Lỗi khi lấy danh sách trainers:", error);
+        console.error('Lỗi khi lấy danh sách trainers:', error);
         setLoading(false);
       });
 
     axios
-      .get<Cage[]>("http://localhost:5000/api/Cages/load-cages")
+      .get<Cage[]>('http://localhost:5000/api/Cages/load-cages')
       .then((response) => setCages(response.data))
       .catch((error) => {
-        console.error("Lỗi khi lấy danh sách Cages:", error);
+        console.error('Lỗi khi lấy danh sách Cages:', error);
         setLoading(false);
       });
     axios
-      .get<Species[]>("http://localhost:5000/api/AnimalSpecies/species")
+      .get<Species[]>('http://localhost:5000/api/AnimalSpecies/species')
       .then((response) => setSpecies(response.data))
       .catch((error) => {
-        console.error("Lỗi khi lấy danh sách Species:", error);
+        console.error('Lỗi khi lấy danh sách Species:', error);
         setLoading(false);
       });
   }, []);
 
-  const title = initialData ? "Edit Animal information" : "Import new animal";
-  const description = initialData ? "Edit an animal." : "Import new animal";
-  const toastMessage = initialData
-    ? "Animal information updated."
-    : "Animal imported.";
-  const action = initialData ? "Save changes" : "Import";
+  const title = initialData ? 'Edit Animal information' : 'Import new animal';
+  const description = initialData ? 'Edit an animal.' : 'Import new animal';
+  const toastMessage = initialData ? 'Animal information updated.' : 'Animal imported.';
+  const action = initialData ? 'Save changes' : 'Import';
 
   const form = useForm<ManageAnimalFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: initialData || {
-      animalId: "",
-      image: [] || "",
-      name: "",
-      birthDate: "",
-      importDate: "",
-      region: "",
-      behavior: "",
+      animalId: '',
+      image: [] || '',
+      name: '',
+      birthDate: '',
+      importDate: '',
+      region: '',
+      behavior: '',
       healthStatus: 0,
       isDeleted: 0,
-      gender: "",
-      rarity: "",
-      employeeId: "",
-      cageId: "",
-      speciesId: 0,
-    },
+      gender: '',
+      rarity: '',
+      employeeId: '',
+      cageId: '',
+      speciesId: 0
+    }
   });
 
   const onSubmit = async (data: ManageAnimalFormValues) => {
     const arrayimg = data.image.map((obj) => obj.url);
-    data.image = "[" + arrayimg.toString() + "]";
+    data.image = '[' + arrayimg.toString() + ']';
     try {
       setLoading(true);
       if (initialData) {
@@ -202,9 +187,9 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({
       await axios.delete(deleteAPI + `${params.animalId}`);
       router.refresh();
       router.push(`/staff/manage-animals`);
-      toast.success("Animal deleted.");
+      toast.success('Animal deleted.');
     } catch (error: any) {
-      toast.error("Fail to delete.");
+      toast.error('Fail to delete.');
     } finally {
       setLoading(false);
       setOpen(false);
@@ -213,31 +198,18 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({
 
   return (
     <>
-      <AlertModal
-        isOpen={open}
-        onClose={() => setOpen(false)}
-        onConfirm={onDelete}
-        loading={loading}
-      />
+      <AlertModal isOpen={open} onClose={() => setOpen(false)} onConfirm={onDelete} loading={loading} />
       <div className="flex items-center justify-between">
         <Heading title={title} description={description} />
         {initialData && (
-          <Button
-            disabled={loading}
-            variant="destructive"
-            size="sm"
-            onClick={() => setOpen(true)}
-          >
+          <Button disabled={loading} variant="destructive" size="sm" onClick={() => setOpen(true)}>
             <Trash className="h-4 w-4" />
           </Button>
         )}
       </div>
       <Separator />
       <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-8 w-full"
-        >
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
           <FormField
             control={form.control}
             name="image"
@@ -248,14 +220,8 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({
                   <ImageUpload
                     value={field.value.map((image) => image.url)}
                     disabled={loading}
-                    onChange={(url) =>
-                      field.onChange([...field.value, { url }])
-                    }
-                    onRemove={(url) =>
-                      field.onChange([
-                        ...field.value.filter((current) => current.url !== url),
-                      ])
-                    }
+                    onChange={(url) => field.onChange([...field.value, { url }])}
+                    onRemove={(url) => field.onChange([...field.value.filter((current) => current.url !== url)])}
                   />
                 </FormControl>
                 <FormMessage />
@@ -270,12 +236,7 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({
                 <FormItem>
                   <FormLabel>AnimalId</FormLabel>
                   <FormControl>
-                    <Input
-                      readOnly={!!initialData}
-                      disabled={loading}
-                      placeholder="Billboard label"
-                      {...field}
-                    />
+                    <Input readOnly={!!initialData} disabled={loading} placeholder="Billboard label" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -288,11 +249,7 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({
                 <FormItem>
                   <FormLabel>Animal Name</FormLabel>
                   <FormControl>
-                    <Input
-                      disabled={loading}
-                      placeholder="Billboard label"
-                      {...field}
-                    />
+                    <Input disabled={loading} placeholder="Billboard label" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -305,11 +262,7 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({
                 <FormItem>
                   <FormLabel>Date of birth</FormLabel>
                   <FormControl>
-                    <Input
-                      type="date"
-                      value={field.value}
-                      onChange={(e) => field.onChange(e.target.value)}
-                    />
+                    <Input type="date" value={field.value} onChange={(e) => field.onChange(e.target.value)} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -322,12 +275,7 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({
                 <FormItem>
                   <FormLabel>ImportDate</FormLabel>
                   <FormControl>
-                    <Input
-                      type="date"
-                      disabled={loading}
-                      placeholder="Billboard label"
-                      {...field}
-                    />
+                    <Input type="date" disabled={loading} placeholder="Billboard label" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -340,11 +288,7 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({
                 <FormItem>
                   <FormLabel>Region:</FormLabel>
                   <FormControl>
-                    <Input
-                      disabled={loading}
-                      placeholder="Billboard label"
-                      {...field}
-                    />
+                    <Input disabled={loading} placeholder="Billboard label" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -358,11 +302,7 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({
                 <FormItem>
                   <FormLabel>Behavior:</FormLabel>
                   <FormControl>
-                    <Input
-                      disabled={loading}
-                      placeholder="Billboard label"
-                      {...field}
-                    />
+                    <Input disabled={loading} placeholder="Billboard label" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -382,12 +322,8 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue
-                          defaultValue={
-                            field.value === 1 ? "Checked" : "Unchecked"
-                          }
-                        >
-                          {field.value === 1 ? "Checked" : "Unchecked"}
+                        <SelectValue defaultValue={field.value === 1 ? 'Checked' : 'Unchecked'}>
+                          {field.value === 1 ? 'Checked' : 'Unchecked'}
                         </SelectValue>
                       </SelectTrigger>
                     </FormControl>
@@ -409,13 +345,27 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Gender:</FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={loading}
-                      placeholder="Billboard label"
-                      {...field}
-                    />
-                  </FormControl>
+                  <Select
+                    disabled={loading}
+                    onValueChange={field.onChange}
+                    value={field.value.toString()} // Convert the value to a string here
+                    defaultValue={field.value.toString()} // Convert the default value to a string
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue defaultValue={field.value == 'Male' ? 'Female' : 'Male'}>
+                          {field.value == 'Female' ? 'Female' : 'Male'}
+                        </SelectValue>
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectLabel>Health Status</SelectLabel>
+                        <SelectItem value="Female">Female</SelectItem>
+                        <SelectItem value="Male">Male</SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}
@@ -427,11 +377,7 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({
                 <FormItem>
                   <FormLabel>Rarity:</FormLabel>
                   <FormControl>
-                    <Input
-                      disabled={loading}
-                      placeholder="Billboard label"
-                      {...field}
-                    />
+                    <Input disabled={loading} placeholder="Billboard label" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -451,12 +397,8 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue
-                          defaultValue={
-                            field.value === 0 ? "Active" : "Inactive"
-                          }
-                        >
-                          {field.value === 0 ? "Active" : "Inactive"}
+                        <SelectValue defaultValue={field.value === 0 ? 'Active' : 'Inactive'}>
+                          {field.value === 0 ? 'Active' : 'Inactive'}
                         </SelectValue>
                       </SelectTrigger>
                     </FormControl>
@@ -486,20 +428,13 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({
                   >
                     <SelectTrigger>
                       <SelectValue>
-                        {
-                          trainers.find(
-                            (trainer) => trainer.employeeId === field.value
-                          )?.fullName
-                        }
+                        {trainers.find((trainer) => trainer.employeeId === field.value)?.fullName}
                       </SelectValue>
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
                         {trainers.map((trainer) => (
-                          <SelectItem
-                            key={trainer.employeeId}
-                            value={trainer?.employeeId.toString()}
-                          >
+                          <SelectItem key={trainer.employeeId} value={trainer?.employeeId.toString()}>
                             {trainer.fullName}
                           </SelectItem>
                         ))}
@@ -524,21 +459,13 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({
                     defaultValue={field.value} // Convert the default value to a string
                   >
                     <SelectTrigger>
-                      <SelectValue>
-                        {
-                          cages.find((cages) => cages.cageId === field.value)
-                            ?.name
-                        }
-                      </SelectValue>
+                      <SelectValue>{cages.find((cages) => cages.cageId == field.value)?.cageId}</SelectValue>
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
                         {cages.map((cage) => (
-                          <SelectItem
-                            key={cage.cageId}
-                            value={cage?.cageId.toString()}
-                          >
-                            {cage.name}
+                          <SelectItem key={cage.cageId} value={cage?.cageId.toString()}>
+                            {cage.cageId}
                           </SelectItem>
                         ))}
                       </SelectGroup>
@@ -562,20 +489,13 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({
                   >
                     <SelectTrigger>
                       <SelectValue>
-                        {
-                          species.find(
-                            (species) => species.speciesId === field.value
-                          )?.speciesName
-                        }
+                        {species.find((species) => species.speciesId === field.value)?.speciesName}
                       </SelectValue>
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
                         {species.map((species) => (
-                          <SelectItem
-                            key={species.speciesId}
-                            value={species?.speciesId.toString()}
-                          >
+                          <SelectItem key={species.speciesId} value={species?.speciesId.toString()}>
                             {species.speciesName}
                           </SelectItem>
                         ))}
