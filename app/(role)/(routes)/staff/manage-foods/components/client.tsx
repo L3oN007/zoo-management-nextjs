@@ -8,16 +8,16 @@ import { Plus } from "lucide-react"
 import { useParams, useRouter } from "next/navigation"
 import { FC, useState } from "react"
 import { columns } from "./columns"
-import { empColumns } from "./foodColumns"
+import { FoodColumn } from "./foodColumns"
 
 
 interface ManageFoodClientProps {
     data: any,
-    empCer: any
+    food: any
 
 }
 
-export const ManageFoodClient: FC<ManageFoodClientProps> = ({data, empCer}) => {
+export const ManageFoodClient: FC<ManageFoodClientProps> = ({data, food}) => {
     const router = useRouter();
 
    
@@ -25,20 +25,25 @@ export const ManageFoodClient: FC<ManageFoodClientProps> = ({data, empCer}) => {
     return (    
         <>
             <div className="flex items-center justify-between">
-                <Heading title={`Food (${Object.keys(data).length})`} description="Manage Food in the zoo" />
-
-                <Button onClick={() => router.push("/staff/manage-foods/new")}>
+                <Heading title={`Food (${Object.keys(food).length})`} description="Manage Food in the zoo" />
+                <div>
+                <Button onClick={() => router.push("/staff/manage-foods/newImport")}>
                     <Plus className="mr-2 h-4 w-4" />
-                    Add New
+                    Add New Import
                 </Button>
+                <Button className="ml-2" onClick={() => router.push("/staff/manage-foods/new")}>
+                    <Plus className="mr-2 h-4 w-4" />
+                    Add New Food
+                </Button>
+                </div>
             </div>
             <Separator />
             <div className="flex justify-around">
             <div className="flex-1">
-            <DataTable key="certificate" columns={columns} data={data} searchKey="cerName" filterOptions={null as any} />
+            <DataTable key="certificate" columns={columns} data={data} searchKey="foodId" filterOptions={null as any} />
             </div>
             <div className="ml-4">
-            <DataTable key="empCertificate" columns={empColumns} data={empCer} searchKey={"cerCode"}  filterOptions={null as any} />
+            <DataTable key="empCertificate" columns={FoodColumn} data={food} searchKey={"foodName"}  filterOptions={null as any} />
 
             </div>
             </div>

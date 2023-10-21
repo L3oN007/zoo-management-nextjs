@@ -2,22 +2,15 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
-import { Check, ChevronsUpDown, Trash } from "lucide-react";
+import { Trash } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import * as z from "zod";
 
 import { AlertModal } from "@/components/modals/alert-modal";
 import { Button } from "@/components/ui/button";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-} from "@/components/ui/command";
 import {
   Form,
   FormControl,
@@ -27,73 +20,85 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Heading } from "@/components/ui/heading";
+import ImageUpload from "@/components/ui/image-upload";
 import { Input } from "@/components/ui/input";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { cn } from "@/lib/utils";
-import { CageObj } from "@/app/models/cage";
+import { log } from "console";
 
 const formSchema = z.object({
-  importDate: z.string().min(1, { message: "Import Date is required." }),
-  importQuantity: z.coerce.number().refine((value) => value > 0, {
-		message: 'Import Quantity must be greater than 0.',
-	}),
-  foodId: z.string().min(1, { message: "Food name is required." }),
+  menuNo: z.string().min(1, { message: "Schedule's ID is required." }),
+  menuName: z.string().min(1, { message: "Schedule's name is required." }),
+  
+  foodId: z.string().min(1, { message: "Food ID is required." }),
 });
 
-type ManageFoodFormValues = z.infer<typeof formSchema>;
+type ManageScheduleFormValues = z.infer<typeof formSchema>;
 
-interface Food {}
+interface Schedule {}
 
-interface ManageFoodFormProps {
-  initialData: Food | null;
+interface ManageScheduleFormProps {
+  initialData: Schedule | null;
 }
 
-export const ManageFoodForm: React.FC<ManageFoodFormProps> = ({
+export const ManageScheduleForm: React.FC<ManageScheduleFormProps> = ({
   initialData,
 }) => {
+  const API = "https://652f95450b8d8ddac0b2bfe2.mockapi.io/feedingMenu";
   const params = useParams();
   const router = useRouter();
-  const url = "https://652f95450b8d8ddac0b2bfe2.mockapi.io/importFood";
+
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  // eslint-disable-next-line import/no-anonymous-default-export
+  const [selectedStatus, setSelectedStatus] = useState("");
 
-  const title = initialData ? "Edit import history" : "Create new import";
-  const description = initialData ? "Edit import history." : "Add a new import";
+  const title = initialData ? "Edit menu information" : "Add new menu";
+  const description = initialData ? "Edit an menu." : "Add new menu";
   const toastMessage = initialData
-    ? "Import history updated."
-    : "New import added.";
-  const action = initialData ? "Save changes" : "Create";
+    ? "Menu information updated."
+    : "Menu Added.";
+  const action = initialData ? "Save changes" : "Add";
 
-  const form = useForm<ManageFoodFormValues>({
+  const form = useForm<ManageScheduleFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: initialData || {
-      importDate: "",
-      importQuantity: 0,
+      menuNo: "",
+      menuName: "",
       foodId: "",
+     
+      
     },
   });
 
-  const onSubmit = async (data: ManageFoodFormValues) => {
-    debugger;
+  const onSubmit = async (data: ManageScheduleFormValues) => {
     try {
       setLoading(true);
       if (initialData) {
-        await axios.put(`${url}/${params.no}`, data);
+        await axios
+          .put(API + `${params.menuNo}`, data)
+          .then((response) => {
+            console.log(response);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+        console.log(data);
       } else {
-        await axios.post(url, data);
+        await axios.post(API, data);
       }
       router.refresh();
-      router.push(`/staff/manage-foods`);
+      router.push(`/trainer/manage-schedules`);
       toast.success(toastMessage);
     } catch (error: any) {
-      toast.error(error.response.data.title);
-      console.log(error);
+      toast.error("Something went wrong.");
     } finally {
       setLoading(false);
     }
@@ -102,12 +107,12 @@ export const ManageFoodForm: React.FC<ManageFoodFormProps> = ({
   const onDelete = async () => {
     try {
       setLoading(true);
-      await axios.delete(url + `/${params.no}`);
+      await axios.delete(API + `${params.menuNo}`);
       router.refresh();
-      router.push(`/staff/manage-foods`);
-      toast.success("Foods deleted.");
+      router.push(`/trainer/manage-schedules`);
+      toast.success("Schedule deleted.");
     } catch (error: any) {
-      toast.error(error.response.data.title);
+      toast.error("Fail to delete.");
     } finally {
       setLoading(false);
       setOpen(false);
@@ -141,37 +146,18 @@ export const ManageFoodForm: React.FC<ManageFoodFormProps> = ({
           onSubmit={form.handleSubmit(onSubmit)}
           className="space-y-8 w-full"
         >
-          <div className="md:grid md:grid-cols-4 gap-8">
-          <FormField
-							control={form.control}
-							name='importQuantity'
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel>Import Quantity</FormLabel>
-									<FormControl>
-										<Input
-											type='number'
-											disabled={loading}
-											placeholder='Import Quantity'
-											{...field}
-										/>
-									</FormControl>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-            
+          <div className="md:grid md:grid-cols-3 gap-8">
             <FormField
               control={form.control}
-              name="importDate"
+              name="menuNo"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>ImportDate</FormLabel>
+                  <FormLabel>Menu No</FormLabel>
                   <FormControl>
                     <Input
-                      type="date"
                       disabled={loading}
-                      placeholder="ImportDate"
+                      placeholder="Menu No"
+                      readOnly={initialData ? true : false}
                       {...field}
                     />
                   </FormControl>
@@ -179,6 +165,25 @@ export const ManageFoodForm: React.FC<ManageFoodFormProps> = ({
                 </FormItem>
               )}
             />
+
+            <FormField
+              control={form.control}
+              name="menuName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Menu Name</FormLabel>
+                  <FormControl>
+                    <Input
+                      disabled={loading}
+                      placeholder="Menu Name"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+           
             <FormField
               control={form.control}
               name="foodId"

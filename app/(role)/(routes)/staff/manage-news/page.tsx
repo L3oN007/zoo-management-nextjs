@@ -5,7 +5,7 @@ import axios from 'axios';
 import { format } from 'date-fns';
 
 const ManageNewsPage = async () => {
-	const url = `https://648867740e2469c038fda6cc.mockapi.io/news`;
+	const url = process.env.NEXT_PUBLIC_API_LOAD_NEWS!;
 
 	try {
 		const response = await axios.get(url);
@@ -20,15 +20,7 @@ const ManageNewsPage = async () => {
 			);
 		}
 
-		// Extract staffData from the response
 		let newsData = response.data;
-
-		// If staffData is an array, loop through it and update date format and isDeleted property
-		// if (Array.isArray(newsData)) {
-		// 	newsData.forEach((news: any) => {
-		// 		news.createDate = format(new Date(news.createDate), 'MMMM do, yyyy');
-		// 	});
-		// }
 
 		return (
 			<div className='flex-col'>

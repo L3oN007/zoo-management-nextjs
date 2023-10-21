@@ -90,9 +90,9 @@ export function MainNav({ className, role, ...props }: React.HTMLAttributes<HTML
 				active: pathname === `/trainer/manage-species`,
 			},
 			{
-				href: `/trainer/manage-schedules`,
-				label: 'Manage Feeding Schedules',
-				active: pathname === `/trainer/manage-schedules`,
+				href: `/trainer/manage-menus`,
+				label: 'Manage Menus',
+				active: pathname === `/trainer/manage-menus`,
 			},
 		]
 	}

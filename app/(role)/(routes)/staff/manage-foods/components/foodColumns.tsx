@@ -10,14 +10,14 @@ import { DataTableRowActions } from '@/components/data-table/data-table-row-acti
 import { AreaObj } from '@/app/models/area';
 
 
-export type empCertificateColumn = {
+export type FoodColumn = {
    foodId: string;
    foodName: string;
    inventoryQuantity: number;
 };
 
 
-export const empColumns: ColumnDef<empCertificateColumn>[] = [
+export const FoodColumn: ColumnDef<FoodColumn>[] = [
     {
         accessorKey: 'foodId',
         header: 'Food ID',
@@ -44,7 +44,10 @@ export const empColumns: ColumnDef<empCertificateColumn>[] = [
 
     },
 
-    
+    {
+        id: "actions",
+        cell: ({ row }) => <CellAction data={row.original} />
+    },
   
 ];
 

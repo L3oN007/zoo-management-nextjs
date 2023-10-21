@@ -21,84 +21,68 @@ import { cn } from '@/lib/utils';
 import { CageObj } from '@/app/models/cage';
 
 const formSchema = z.object({
-  cageId: z
-    .string()
-    .trim()
-    .refine(
-      (value) => {
-        const regex = /^[A-Z]\d{4}$/;
-        return regex.test(value);
-      },
-      {
-        message: 'ID must be in format AXXXX with A being an uppercase letter and XXXX being a 4 digit number'
-      }
-    ),
-  name: z.string().trim().min(1, { message: 'Name must be between 1-50 characters.' }).max(50),
-  maxCapacity: z.coerce.number().refine((value) => value > 0, {
-    message: 'Capacity must be greater than 0.'
+  importDate: z.string().min(1, { message: 'Import Date is required.' }),
+  importQuantity: z.coerce.number().refine((value) => value > 0, {
+    message: 'Import Quantity must be greater than 0.'
   }),
-  areaId: z.string().min(1, { message: 'Area ID is required.' }).max(50)
+  foodId: z.string().min(1, { message: 'Food name is required.' })
 });
 
-type ManageCageFormValues = z.infer<typeof formSchema>;
+type ManageImportFormValues = z.infer<typeof formSchema>;
 
-interface Cage {}
+interface Food {}
 
-interface ManageCageFormProps {
-  initialData: Cage | null;
+interface ManageImportFormProps {
+  initialData: Food | null;
 }
 
-export const ManageCageForm: React.FC<ManageCageFormProps> = ({ initialData }) => {
+export const ManageImportForm: React.FC<ManageImportFormProps> = ({ initialData }) => {
   const params = useParams();
   const router = useRouter();
-
-  const [open, setOpen] = useState(false);
   const [openComboBox, setOpenComboBox] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [foodData, setFoodData] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [value, setValue] = useState('');
-  const [areaIDData, setAreaIDData] = useState([]); // Store the API data
-
+  // eslint-disable-next-line import/no-anonymous-default-export
   useEffect(() => {
     axios
-      .get(process.env.NEXT_PUBLIC_API_LOAD_AREAS!)
+      .get(process.env.NEXT_PUBLIC_API_LOAD_FOOD!)
       .then((response) => {
-        const areaIDs = response.data.map((item: any) => item.areaId);
-        console.log(areaIDs);
-        setAreaIDData(areaIDs);
+        const foodName = response.data.map((item: any) => item.foodId);
+        console.log(foodName);
+        setFoodData(foodName);
       })
       .catch((error) => {
         console.error('Error fetching data from API:', error);
       });
   }, []);
 
-  const title = initialData ? 'Edit cage' : 'Create new cage';
-  const description = initialData ? 'Edit cage.' : 'Add a new cage';
-  const toastMessage = initialData ? 'Cage updated.' : 'New cage added.';
+  const title = initialData ? 'Edit import history' : 'Create new import';
+  const description = initialData ? 'Edit import history.' : 'Add a new import';
+  const toastMessage = initialData ? 'Import history updated.' : 'New import added.';
   const action = initialData ? 'Save changes' : 'Create';
 
-  const form = useForm<ManageCageFormValues>({
+  const form = useForm<ManageImportFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: initialData || {
-      cageId: '',
-      maxCapacity: 0,
-      name: '',
-      areaId: ''
+      importDate: '',
+      importQuantity: 0,
+      foodId: ''
     }
   });
 
-  const onSubmit = async (data: ManageCageFormValues) => {
-    debugger;
+  const onSubmit = async (data: ManageImportFormValues) => {
+    console.log(params.foodId);
+    console.log('abc');
     try {
       setLoading(true);
       if (initialData) {
-        await axios.put(process.env.NEXT_PUBLIC_API_UPDATE_CAGE + `?cageId=${params.cageId}`, data);
+        // await axios.put(`${url}/${params.no}`, data);
       } else {
-        // console.log(data);
-
-        await axios.post(process.env.NEXT_PUBLIC_API_CREATE_CAGE!, data);
+        await axios.post(process.env.NEXT_PUBLIC_API_CREATE_CERTIFICATE!, data);
       }
       router.refresh();
-      router.push(`/staff/manage-cages`);
+      router.push(`/staff/manage-foods`);
       toast.success(toastMessage);
     } catch (error: any) {
       toast.error(error.response.data.title);
@@ -111,10 +95,10 @@ export const ManageCageForm: React.FC<ManageCageFormProps> = ({ initialData }) =
   const onDelete = async () => {
     try {
       setLoading(true);
-      await axios.delete(process.env.NEXT_PUBLIC_API_DELETE_CAGE! + `?cageId=${params.cageId}`);
+      // await axios.delete(url + `/${params.no}`);
       router.refresh();
-      router.push(`/staff/manage-cages`);
-      toast.success('Cage deleted.');
+      router.push(`/staff/manage-foods`);
+      toast.success('Foods deleted.');
     } catch (error: any) {
       toast.error(error.response.data.title);
     } finally {
@@ -140,17 +124,26 @@ export const ManageCageForm: React.FC<ManageCageFormProps> = ({ initialData }) =
           <div className="md:grid md:grid-cols-4 gap-8">
             <FormField
               control={form.control}
-              name="cageId"
+              name="importQuantity"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Cage Id</FormLabel>
+                  <FormLabel>Import Quantity</FormLabel>
                   <FormControl>
-                    <Input
-                      disabled={loading}
-                      placeholder="ex: A0009"
-                      readOnly={initialData ? true : false}
-                      {...field}
-                    />
+                    <Input type="number" disabled={loading} placeholder="Import Quantity" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="importDate"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>ImportDate</FormLabel>
+                  <FormControl>
+                    <Input type="date" disabled={loading} placeholder="ImportDate" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -158,37 +151,11 @@ export const ManageCageForm: React.FC<ManageCageFormProps> = ({ initialData }) =
             />
             <FormField
               control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input disabled={loading} placeholder="ex: Panda" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="maxCapacity"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Max Capacity</FormLabel>
-                  <FormControl>
-                    <Input type="number" disabled={loading} placeholder="Billboard label" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="areaId"
+              name="foodId"
               render={({ field }) => {
                 return (
                   <FormItem>
-                    <FormLabel>Area Id</FormLabel>
+                    <FormLabel>FoodName</FormLabel>
                     <FormControl>
                       <Popover open={openComboBox} onOpenChange={setOpenComboBox}>
                         <PopoverTrigger asChild>
@@ -199,17 +166,17 @@ export const ManageCageForm: React.FC<ManageCageFormProps> = ({ initialData }) =
                             className="w-full flex items-center justify-between"
                           >
                             <div>
-                              {field.value ? areaIDData.find((item) => item === field.value) : 'Select AreaID...'}
+                              {field.value ? foodData.find((item) => item === field.value) : 'Select FoodName...'}
                             </div>
                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                           </Button>
                         </PopoverTrigger>
                         <PopoverContent className="w-[200px] p-0">
                           <Command>
-                            <CommandInput placeholder="Search Area ID..." />
-                            <CommandEmpty>No Area ID found.</CommandEmpty>
+                            <CommandInput placeholder="Search FoodName..." />
+                            <CommandEmpty>No FoodName found.</CommandEmpty>
                             <CommandGroup>
-                              {areaIDData.map((item) => (
+                              {foodData.map((item) => (
                                 <CommandItem
                                   key={item}
                                   onSelect={() => {
