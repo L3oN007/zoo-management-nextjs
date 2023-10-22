@@ -61,7 +61,40 @@ export function MainNav({ className, role, ...props }: React.HTMLAttributes<HTML
 				label: 'Manage Trainers',
 				active: pathname === `/staff/manage-trainers`,
 			},
+			{
+				href: `/staff/manage-animals`,
+				label: 'Manage Animals',
+				active: pathname === `/staff/manage-animals`,
+			},
+			{
+				href: `/staff/manage-certificates`,
+				label: 'Manage Certificates',
+				active: pathname === `/staff/manage-certificates`,
+			},
+			{
+				href: `/staff/manage-foods`,
+				label: 'Manage Foods',
+				active: pathname === `/staff/manage-foods`,
+			},
 		];
+	} else if(role === 'trainer'){
+		routes = [
+			{
+				href: `/trainer/manage-animals`,
+				label: 'Manage Animals',
+				active: pathname === `/trainer/manage-animals`,
+			},
+			{
+				href: `/trainer/manage-species`,
+				label: 'Manage Species',
+				active: pathname === `/trainer/manage-species`,
+			},
+			{
+				href: `/trainer/manage-menus`,
+				label: 'Manage Menus',
+				active: pathname === `/trainer/manage-menus`,
+			},
+		]
 	}
 
 	return (
