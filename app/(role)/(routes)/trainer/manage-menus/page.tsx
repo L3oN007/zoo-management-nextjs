@@ -1,11 +1,11 @@
-import { ManageScheduleClient } from "./components/client";
+import { ManageScheduleClient } from './components/client';
 
-import ErrorPage from "@/app/error/page";
-import axios from "axios";
-import { format } from "date-fns";
+import ErrorPage from '@/app/error/page';
+import axios from 'axios';
+import { format } from 'date-fns';
 
 const ManageSchedulePage = async () => {
-  const url = "https://652f95450b8d8ddac0b2bfe2.mockapi.io/feedingMenu";
+  const url = process.env.NEXT_PUBLIC_API_LOAD_MENUS;
 
   try {
     // Make the GET request to fetch staff data
@@ -28,9 +28,7 @@ const ManageSchedulePage = async () => {
 
     // If menuData is an array, loop through it and update date format and isDeleted property
     if (Array.isArray(menuData)) {
-      menuData.forEach((animal: any) => {
-       
-      });
+      menuData.forEach((animal: any) => {});
     }
 
     return (

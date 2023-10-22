@@ -1,10 +1,10 @@
-import { format } from "date-fns";
-import { ManageScheduleForm } from "./components/manage-menu-form";
-import axios from "axios";
+import { format } from 'date-fns';
+import { ManageScheduleForm } from './components/manage-menu-form';
+import axios from 'axios';
 
-const EditAnimalPage = async ({ params }: { params: { scheduleNo: string } }) => {
+const EditAnimalPage = async ({ params }: { params: { menuNo: string } }) => {
   // Construct the URL using the animalId from the params object
-  const url = "https://652f95450b8d8ddac0b2bfe2.mockapi.io/feedingMenu" + `${params.scheduleNo}`;
+  const url = process.env.NEXT_PUBLIC_API_GET_MENU + `${params.menuNo}`;
 
   try {
     // Make the GET request to fetch staff data
@@ -18,9 +18,7 @@ const EditAnimalPage = async ({ params }: { params: { scheduleNo: string } }) =>
       menuData = null;
     } else if (Array.isArray(menuData)) {
       // If menuData is an array, loop through it and update date format and isDeleted property
-      menuData.forEach((animal: any) => {
-        
-      });
+      menuData.forEach((animal: any) => {});
     }
 
     return (
