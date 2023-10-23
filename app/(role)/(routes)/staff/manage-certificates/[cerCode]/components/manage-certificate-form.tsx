@@ -59,7 +59,6 @@ interface Certificate {}
 interface ManageCertificateFormProps {
   initialData: Certificate | null;
 }
-
 export const ManageCertificateForm: React.FC<ManageCertificateFormProps> = ({
   initialData,
 }) => {
