@@ -20,7 +20,7 @@ import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 import { CageObj } from '@/app/models/cage';
 import { useSession } from 'next-auth/react';
-import { render } from 'react-dom';
+// import { render } from 'react-dom';
 
 const formSchema = z.object({
   certificateCode: z.string().min(1, { message: 'Certificate code is required.' }),
@@ -62,6 +62,7 @@ export const ManageCertificateForm: React.FC<ManageCertificateFormProps> = ({ in
   const description = initialData ? 'Edit certificate.' : 'Add a new certificate';
   const toastMessage = initialData ? 'Certificate updated.' : 'New certificate added.';
   const action = initialData ? 'Save changes' : 'Create';
+  const [noCounter, setNoCounter] = useState(1);
 
   const form = useForm<ManageCertificateFormValues>({
     resolver: zodResolver(formSchema),
@@ -97,8 +98,8 @@ export const ManageCertificateForm: React.FC<ManageCertificateFormProps> = ({ in
     try {
       setLoading(true);
       await axios.delete(process.env.NEXT_PUBLIC_API_DELETE_EMPLOYEECERTIFICATE + `${params.cerCode}`);
-      router.refresh();
-      router.push(`/trainer/manage-certificates`);
+      await router.refresh();
+      await router.push(`/trainer/manage-certificates`);
       toast.success('Certificate deleted.');
     } catch (error: any) {
       toast.error(error.response.data.title);
