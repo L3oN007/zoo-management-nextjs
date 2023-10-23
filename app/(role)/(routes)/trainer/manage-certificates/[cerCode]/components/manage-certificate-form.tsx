@@ -24,7 +24,7 @@ import { useSession } from 'next-auth/react';
 
 const formSchema = z.object({
   certificateCode: z.string().min(1, { message: 'Certificate code is required.' }),
-  employeeId: z.string().min(1, { message: 'Employee ID is required.' }),
+  employeeId: z.string(),
   description: z.string().min(1, { message: 'Description is required.' })
 });
 
@@ -150,7 +150,7 @@ export const ManageCertificateForm: React.FC<ManageCertificateFormProps> = ({ in
                 render={({ field }) => {
                   return (
                     <FormItem>
-                      <FormLabel>CertificateName</FormLabel>
+                      <FormLabel>CertificateCode</FormLabel>
                       <FormControl>
                         <Popover open={openComboBox} onOpenChange={setOpenComboBox}>
                           <PopoverTrigger asChild>
@@ -163,15 +163,15 @@ export const ManageCertificateForm: React.FC<ManageCertificateFormProps> = ({ in
                               <div>
                                 {field.value
                                   ? certificateData.find((item) => item === field.value)
-                                  : 'Select AreaID...'}
+                                  : 'Select Certificate...'}
                               </div>
                               <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                             </Button>
                           </PopoverTrigger>
                           <PopoverContent className="w-[200px] p-0">
                             <Command>
-                              <CommandInput placeholder="Search CertificateName..." />
-                              <CommandEmpty>No CertificateName found.</CommandEmpty>
+                              <CommandInput placeholder="Search CertificateCode..." />
+                              <CommandEmpty>No CertificateCode found.</CommandEmpty>
                               <CommandGroup>
                                 {certificateData.map((item) => (
                                   <CommandItem
