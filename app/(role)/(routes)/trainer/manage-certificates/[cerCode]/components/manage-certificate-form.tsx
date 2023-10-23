@@ -18,13 +18,13 @@ import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
-import { CageObj } from '@/app/models/cage';
 import { useSession } from 'next-auth/react';
 // import { render } from 'react-dom';
 
 const formSchema = z.object({
   certificateCode: z.string().min(1, { message: 'Certificate code is required.' }),
   employeeId: z.string(),
+  employeeId: z.string().min(0, { message: 'Employee ID is required.' }),
   description: z.string().min(1, { message: 'Description is required.' })
 });
 
@@ -163,7 +163,7 @@ export const ManageCertificateForm: React.FC<ManageCertificateFormProps> = ({ in
                               <div>
                                 {field.value
                                   ? certificateData.find((item) => item === field.value)
-                                  : 'Select Certificate...'}
+                                  : 'Select CertificateCode...'}
                               </div>
                               <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                             </Button>

@@ -1,24 +1,26 @@
-import { options } from '@/app/api/auth/[...nextauth]/options';
-import { MainNav } from '@/components/main-nav';
-import { ThemeToggle } from '@/components/theme-toggle';
-import { getServerSession } from 'next-auth';
-import Logo from './logo';
+'use client';
+import { MenuIcon } from 'lucide-react';
+import { Button } from './ui/button';
 import { UserNav } from './user-nav';
 
-const Navbar = async () => {
-	const session = await getServerSession(options);
-	return (
-		<div className='border-b'>
-			<div className='flex h-16 items-center px-4'>
-				<Logo />
-				<MainNav className='mx-6' role={session?.user?.role} />
-				<div className='ml-auto flex items-center space-x-4'>
-					<ThemeToggle />
-					<UserNav userRole={session?.user?.role} />
-				</div>
-			</div>
-		</div>
-	);
+interface NavbarProps {
+  toggleSidebar: () => void;
+  isSidebarVisible: boolean;
+}
+
+const Navbar: React.FC<NavbarProps> = ({ toggleSidebar }) => {
+  return (
+    <div className="border-b">
+      <div className="flex h-16 items-center px-4">
+        <Button onClick={toggleSidebar} className="p-2 h-10 w-10">
+          <MenuIcon className="text-white" size={20} />
+        </Button>
+        <div className="ml-auto flex items-center space-x-4">
+          <UserNav />
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default Navbar;
