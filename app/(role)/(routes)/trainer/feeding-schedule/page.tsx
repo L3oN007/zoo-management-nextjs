@@ -23,13 +23,16 @@ registerLicense('Ngo9BigBOggjHTQxAR8/V1NHaF5cXmVCf1JpRGBGfV5yd0VDalhRTnVZUj0eQnx
 const SchedulePage: React.FC = () => {
   const [events, setEvents] = useState<Event[]>();
 
+  const urlGetSchedules = process.env.NEXT_PUBLIC_API_LOAD_SCHEDULES;
+  const urlCreateSchedule = process.env.NEXT_PUBLIC_API_CREATE_SCHEDULE;
+
   useEffect(() => {
     fetchEvents();
   }, []);
 
   const fetchEvents = () => {
     axios
-      .get<Event[]>('https://651d776944e393af2d59dbd7.mockapi.io/schedule')
+      .get<Event[]>(urlGetSchedules!)
       .then((response) => {
         const currentDate = new Date();
         const updatedEvents = response.data.map((event) => {
@@ -83,7 +86,7 @@ const SchedulePage: React.FC = () => {
     const adjustedEvent = processEventTimezone(newEvent);
     const newSchedule = { ...adjustedEvent['0'], Id: undefined };
     axios
-      .post<Event>('https://651d776944e393af2d59dbd7.mockapi.io/schedule', newSchedule)
+      .post<Event>(urlCreateSchedule!, newSchedule)
       .then(() => {
         fetchEvents();
       })

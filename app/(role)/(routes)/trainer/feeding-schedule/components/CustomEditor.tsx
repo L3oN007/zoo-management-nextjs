@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { Event } from '../modal/event';
 import { format } from 'date-fns';
 import axios from 'axios';
+import { useSession } from 'next-auth/react';
 interface CustomScheduleEditorProps {
   eventData: Event;
 }
@@ -20,6 +21,9 @@ export const CustomScheduleEditor: React.FC<CustomScheduleEditorProps> = ({ even
   const feedingStatus = eventData?.feedingStatus || 0;
   const startTime = new Date(eventData?.StartTime);
   const endTime = new Date(eventData?.EndTime);
+
+  const session = useSession();
+  const employeeId = session.data?.user.employeeId;
 
   const menuUrl = 'https://651d776944e393af2d59dbd7.mockapi.io/menu';
   const cageUrl = 'https://651d776944e393af2d59dbd7.mockapi.io/menu';
@@ -70,16 +74,15 @@ export const CustomScheduleEditor: React.FC<CustomScheduleEditorProps> = ({ even
 
               <div className="sm:col-span-3">
                 <label htmlFor="last-name" className="block text-sm font-medium leading-6 text-gray-900">
-                  Employee Name
+                  Employee ID
                 </label>
                 <div className="mt-2">
                   <input
                     readOnly={true}
-                    value={'Vu Long'}
+                    value={employeeId}
                     type="text"
-                    name="last-name"
-                    id="last-name"
-                    autoComplete="family-name"
+                    name="employeeId"
+                    id="employeeId"
                     className="e-field e-input read-only:bg-slate-200"
                   />
                 </div>
@@ -91,9 +94,9 @@ export const CustomScheduleEditor: React.FC<CustomScheduleEditorProps> = ({ even
                 </label>
                 <div className="mt-2">
                   <DateTimePickerComponent
-                    id="StartTime"
+                    id="startTime"
                     format="dd/MM/yy hh:mm a"
-                    data-name="StartTime"
+                    data-name="startTime"
                     value={startTime}
                     className="e-field "
                   />
@@ -105,9 +108,9 @@ export const CustomScheduleEditor: React.FC<CustomScheduleEditorProps> = ({ even
                 </label>
                 <div className="mt-2">
                   <DateTimePickerComponent
-                    id="EndTime"
+                    id="endTime"
                     format="dd/MM/yy hh:mm a"
-                    data-name="EndTime"
+                    data-name="endTime"
                     value={endTime}
                     className="e-field "
                   />
@@ -236,16 +239,15 @@ export const CustomScheduleEditor: React.FC<CustomScheduleEditorProps> = ({ even
 
               <div className="sm:col-span-3">
                 <label htmlFor="last-name" className="block text-sm font-medium leading-6 text-gray-900">
-                  Employee Name
+                  Employee ID
                 </label>
                 <div className="mt-2">
                   <input
                     readOnly={true}
-                    value={'Vu Long'}
+                    value={employeeId}
                     type="text"
-                    name="last-name"
-                    id="last-name"
-                    autoComplete="family-name"
+                    name="employeeId"
+                    id="employeeId"
                     className="e-field e-input read-only:bg-slate-200"
                   />
                 </div>
@@ -257,9 +259,9 @@ export const CustomScheduleEditor: React.FC<CustomScheduleEditorProps> = ({ even
                 </label>
                 <div className="mt-2">
                   <DateTimePickerComponent
-                    id="StartTime"
+                    id="startTime"
                     format="dd/MM/yy hh:mm a"
-                    data-name="StartTime"
+                    data-name="startTime"
                     value={startTime}
                     className="e-field "
                   />
@@ -271,9 +273,9 @@ export const CustomScheduleEditor: React.FC<CustomScheduleEditorProps> = ({ even
                 </label>
                 <div className="mt-2">
                   <DateTimePickerComponent
-                    id="EndTime"
+                    id="endTime"
                     format="dd/MM/yy hh:mm a"
-                    data-name="EndTime"
+                    data-name="endTime"
                     value={endTime}
                     className="e-field "
                   />
