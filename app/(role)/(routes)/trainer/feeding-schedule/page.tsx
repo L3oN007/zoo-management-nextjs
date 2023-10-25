@@ -16,25 +16,12 @@ import {
 } from '@syncfusion/ej2-react-schedule';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-
+import { Event } from './modal/event';
 import { CustomScheduleEditor } from './components/CustomEditor';
 registerLicense('Ngo9BigBOggjHTQxAR8/V1NHaF5cXmVCf1JpRGBGfV5yd0VDalhRTnVZUj0eQnxTdEZiWX5bcXZWRmFUVUR2Ww==');
 
-interface Event {
-  id: string;
-  Subject: string;
-  StartTime: string;
-  EndTime: string;
-  IsAllDay: boolean;
-  ProjectId: number;
-  TaskId: number;
-  feedingStatus: string;
-  IsReadonly: boolean;
-}
-
 const SchedulePage: React.FC = () => {
   const [events, setEvents] = useState<Event[]>();
-  const [summary, setSummary] = useState('');
 
   useEffect(() => {
     fetchEvents();
@@ -156,11 +143,11 @@ const SchedulePage: React.FC = () => {
     const event = args.data as Event;
 
     switch (event.feedingStatus) {
-      case '0':
-        args.element.style.backgroundColor = 'green'; // Change to your desired color
+      case 0:
+        args.element.style.backgroundColor = 'black'; // Change to your desired color
         break;
-      case '1':
-        args.element.style.backgroundColor = 'yellow'; // Change to your desired color
+      case 1:
+        args.element.style.backgroundColor = 'green'; // Change to your desired color
         break;
       default:
         // Default background color if neither 0 nor 1
