@@ -18,6 +18,8 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Event } from './modal/event';
 import { CustomScheduleEditor } from './components/CustomEditor';
+// import { toast } from 'react-toastify';
+import { toast } from 'react-hot-toast';
 registerLicense('Ngo9BigBOggjHTQxAR8/V1NHaF5cXmVCf1JpRGBGfV5yd0VDalhRTnVZUj0eQnxTdEZiWX5bcXZWRmFUVUR2Ww==');
 
 const SchedulePage: React.FC = () => {
@@ -53,6 +55,7 @@ const SchedulePage: React.FC = () => {
       })
       .catch((error) => {
         console.error(error);
+        toast.error(error.response.data.title);
       });
   };
 
@@ -83,7 +86,7 @@ const SchedulePage: React.FC = () => {
   };
 
   const addEvent = (newEvent: Event) => {
-    const adjustedEvent = processEventTimezone(newEvent);
+    const adjustedEvent = newEvent;
     const newSchedule = { ...adjustedEvent['0'], Id: undefined };
     axios
       .post<Event>(urlCreateSchedule!, newSchedule)
@@ -92,6 +95,7 @@ const SchedulePage: React.FC = () => {
       })
       .catch((error) => {
         console.error(error);
+        toast.error(error.response.data.title);
       });
   };
 
@@ -106,6 +110,7 @@ const SchedulePage: React.FC = () => {
       })
       .catch((error) => {
         console.error(error);
+        toast.error(error.response.data.title);
       });
   };
 

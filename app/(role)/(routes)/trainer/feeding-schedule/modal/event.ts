@@ -23,7 +23,9 @@ export interface Event {
     scheduleNo: string;
     cageId: string;
     animalId: null | string;
+    note: string;
     createdTime: string;
+    employeeId: string;
     StartTime: string;
     EndTime: string;
     feedingAmount: number;
@@ -31,8 +33,8 @@ export interface Event {
     animal: Animal | null;
     cage: Cage | null;
     feedingMenu: {
-        scheduleNo: string;
-        scheduleName: string;
+        menuNo: string;
+        menuName: string;
         foodId: string;
         foodInventory: null | any;
     };
