@@ -24,7 +24,7 @@ import { useSession } from 'next-auth/react';
 const formSchema = z.object({
   certificateCode: z.string().min(1, { message: 'Certificate code is required.' }),
   employeeId: z.string(),
-  employeeId: z.string().min(0, { message: 'Employee ID is required.' }),
+
   description: z.string().min(1, { message: 'Description is required.' })
 });
 
