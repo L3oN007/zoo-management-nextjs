@@ -91,7 +91,7 @@ export const ManageScheduleForm: React.FC<ManageScheduleFormProps> = ({ initialD
       await axios.delete(urlDelete! + `${params.menuNo}`);
       router.refresh();
       router.push(`/trainer/manage-menus`);
-      toast.success('Schedule deleted.');
+      toast.success('Menu deleted.');
     } catch (error: any) {
       toast.error(error.response.data.title);
     } finally {
