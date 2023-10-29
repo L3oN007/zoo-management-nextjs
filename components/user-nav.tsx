@@ -25,7 +25,7 @@ export function UserNav() {
       <DropdownMenuTrigger asChild>
         <div className="flex cursor-pointer">
           <div className="flex-1 flex-col space-y-1 mr-2">
-            <p className="text-sm font-medium leading-none ml-1">Minh Nhat</p>
+            <p className="text-sm font-medium leading-none ml-1">{session.data.user?.fullName}</p>
             <span className="bg-green-100 text-green-800 text-xs font-medium ml-5 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">
               {userRole?.charAt(0).toUpperCase() + userRole?.slice(1)}{' '}
             </span>

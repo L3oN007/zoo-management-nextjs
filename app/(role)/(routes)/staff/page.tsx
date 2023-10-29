@@ -13,6 +13,7 @@ import { options } from "@/app/api/auth/[...nextauth]/options";
 import { Heading } from "@/components/ui/heading";
 import { getServerSession } from "next-auth";
 import { Overview } from "./components/overview";
+import axios from 'axios';
 
 export const metadata: Metadata = {
   title: "Dashboard",
@@ -21,6 +22,38 @@ export const metadata: Metadata = {
 
 export default async function DashboardPage() {
   const session = await getServerSession(options);
+  const transUrl = process.env.NEXT_PUBLIC_API_LOAD_TRANSACTIONS!;
+  const orderDetailUrl = process.env.NEXT_PUBLIC_API_LOAD_ORDERDETAIL!;
+
+  const transResponse = await axios.get(transUrl);
+
+  let transData = transResponse.data;
+  console.log(transData)
+
+  var totalRevenue = 0;
+
+  var curTickets = 0;
+
+  transData.forEach((element: any) => {
+    totalRevenue += element.totalPrice;
+
+    if ((new Date(element.purchaseDate).getMonth() + 1) === new Date().getMonth() + 1) {
+      element.order.orderDetails.forEach((od: { quantity: number; }) => {
+        curTickets += od.quantity;
+      });
+    }
+  });
+
+  const odResponse = await axios.get(orderDetailUrl);
+
+  let odData = odResponse.data;
+
+  var totalQuantityTickets = 0;
+
+  odData.forEach((element: any) => {
+    totalQuantityTickets += element.quantity;
+  });
+
   return (
     <>
       <div className="hidden flex-col md:flex">
@@ -54,36 +87,12 @@ export default async function DashboardPage() {
                 </svg>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">$45,231.89</div>
+                <div className="text-2xl font-bold">{totalRevenue.toLocaleString('vi', {
+                  style: 'currency',
+                  currency: 'VND'
+                })}</div>
                 <p className="text-xs text-muted-foreground">
                   +20.1% from last month
-                </p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  Subscriptions
-                </CardTitle>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  className="h-4 w-4 text-muted-foreground"
-                >
-                  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                  <circle cx="9" cy="7" r="4" />
-                  <path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
-                </svg>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">+2350</div>
-                <p className="text-xs text-muted-foreground">
-                  +180.1% from last month
                 </p>
               </CardContent>
             </Card>
@@ -105,34 +114,9 @@ export default async function DashboardPage() {
                 </svg>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">+12,234</div>
+                <div className="text-2xl font-bold">{totalQuantityTickets} sold tickets</div>
                 <p className="text-xs text-muted-foreground">
                   +19% from last month
-                </p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  Active Now
-                </CardTitle>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  className="h-4 w-4 text-muted-foreground"
-                >
-                  <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-                </svg>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">+573</div>
-                <p className="text-xs text-muted-foreground">
-                  +201 since last hour
                 </p>
               </CardContent>
             </Card>
@@ -143,14 +127,14 @@ export default async function DashboardPage() {
                 <CardTitle>Overview</CardTitle>
               </CardHeader>
               <CardContent className="pl-2">
-                <Overview />
+                <Overview dataReal={transData} />
               </CardContent>
             </Card>
             <Card className="col-span-3">
               <CardHeader>
                 <CardTitle>Recent Sales</CardTitle>
                 <CardDescription>
-                  You made 265 sales this month.
+                  We sold {curTickets} tickets this month. 
                 </CardDescription>
               </CardHeader>
               <CardContent></CardContent>
