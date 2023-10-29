@@ -125,7 +125,7 @@ export const ManageNewsForm: React.FC<ManageNewsFormProps> = ({ initialData }) =
 		try {
 			const currentDate = format(new Date(), 'yyyy-MM-dd');
 			data.writingDate = currentDate;
-			data.employeeId = session.data?.user.id!;
+			data.employeeId = session.data?.user.employeeId!;
 			data.content = editorContent;
 
 			setLoading(true);
