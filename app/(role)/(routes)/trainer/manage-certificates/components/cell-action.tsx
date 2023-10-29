@@ -33,7 +33,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
       setLoading(true);
       await axios.delete(process.env.NEXT_PUBLIC_API_DELETE_EMPLOYEECERTIFICATE + `${data.no}`);
       toast.success('Certificate deleted.');
-      router.refresh();
+      await router.refresh();
     } catch (error: any) {
       toast.error(error.response.data.title);
       console.log(error);
