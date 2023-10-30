@@ -1,23 +1,17 @@
 "use client";
 
+import dotenv from "dotenv";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
-import { Check, ChevronsUpDown, Trash } from "lucide-react";
+import { Trash } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import * as z from "zod";
 
 import { AlertModal } from "@/components/modals/alert-modal";
 import { Button } from "@/components/ui/button";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-} from "@/components/ui/command";
 import {
   Form,
   FormControl,
@@ -27,84 +21,85 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Heading } from "@/components/ui/heading";
+import ImageUpload from "@/components/ui/image-upload";
 import { Input } from "@/components/ui/input";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { cn } from "@/lib/utils";
-import { CageObj } from "@/app/models/cage";
+
+dotenv.config();
 
 const formSchema = z.object({
-  certificateCode: z
-    .string()
-    .min(1, { message: "Certificate code is required." }),
-  certificateName: z
-    .string()
-    .min(1, { message: "Certificate name is required." }),
-  level: z.string().min(1, { message: "Certificate name is required." }),
-
-  trainingInstitution: z
-    .string()
-    .min(1, { message: "Training Institution is required." })
-    .max(5000),
+  ticketId: z.string().min(1, { message: "Ticket ID is required." }),
+  image: z.string().nullable(),
+  type: z
+    .string(),
+  description: z.string(),
+  unitPrice: z.coerce.number(),
 });
 
-type ManageCertificateFormValues = z.infer<typeof formSchema>;
+type ManageTicketFormValues = z.infer<typeof formSchema>;
 
-interface Certificate {}
+interface Staff {}
 
-interface ManageCertificateFormProps {
-  initialData: Certificate | null;
+interface ManageTicketFormProps {
+  initialData: Staff | null;
 }
-export const ManageCertificateForm: React.FC<ManageCertificateFormProps> = ({
+
+export const ManageTicketForm: React.FC<ManageTicketFormProps> = ({
   initialData,
 }) => {
+  const urlPost = process.env.NEXT_PUBLIC_API_CREATE_TICKET || "";
+  const urlPut = process.env.NEXT_PUBLIC_API_UPDATE_TICKET;
+  const urlDelete = process.env.NEXT_PUBLIC_API_DELETE_TICKET;
+
   const params = useParams();
   const router = useRouter();
-  const url = "https://6525248067cfb1e59ce6b68f.mockapi.io/empCerti";
+
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [selectedStatus, setSelectedStatus] = useState("");
 
-  const title = initialData ? "Edit certificate" : "Create new certificate";
+  const title = initialData ? "Edit Ticket" : "Create Ticket";
   const description = initialData
-    ? "Edit certificate."
-    : "Add a new certificate";
+    ? "Edit ticket."
+    : "Add a new Ticket";
   const toastMessage = initialData
-    ? "Certificate updated."
-    : "New certificate added.";
+    ? "Ticket updated."
+    : "Ticket created.";
   const action = initialData ? "Save changes" : "Create";
 
-  const form = useForm<ManageCertificateFormValues>({
+  const form = useForm<ManageTicketFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: initialData || {
-      certificateCode: "",
-      certificateName: "",
-      level: "",
-      trainingInstitution: "",
+      ticketId: "",
+      image: "",
+      type: "",
+      description: "",
+      unitPrice: 0,
     },
   });
 
-  const onSubmit = async (data: ManageCertificateFormValues) => {
-    debugger;
+  const onSubmit = async (data: ManageTicketFormValues) => {
     try {
       setLoading(true);
       if (initialData) {
-        await axios.put(
-          process.env.NEXT_PUBLIC_API_UPDATE_CERTIFICATE + `${params.cerCode}`,
-          data
-        );
+        await axios.put(urlPut + `${params.ticketId}`, data);
       } else {
-        await axios.post(process.env.NEXT_PUBLIC_API_CREATE_CERTIFICATE!, data);
+        await axios.post(urlPost, data);
       }
       router.refresh();
-      router.push(`/staff/manage-certificates`);
+      router.push(`/admin/manage-tickets`);
       toast.success(toastMessage);
     } catch (error: any) {
       toast.error(error.response.data.title);
-      console.log(error);
     } finally {
       setLoading(false);
     }
@@ -113,14 +108,12 @@ export const ManageCertificateForm: React.FC<ManageCertificateFormProps> = ({
   const onDelete = async () => {
     try {
       setLoading(true);
-      await axios.delete(
-        process.env.NEXT_PUBLIC_API_DELETE_CERTIFICATE + `${params.cerCode}`
-      );
+      await axios.delete(urlDelete! + `${params.ticketId}`);
       router.refresh();
-      router.push(`/staff/manage-certificates`);
-      toast.success("Certificate deleted.");
+      router.push(`/admin/manage-tickets`);
+      toast.success("Ticket deleted.");
     } catch (error: any) {
-      toast.error(error.response.data.title);
+      toast.error("Fail to delete.");
     } finally {
       setLoading(false);
       setOpen(false);
@@ -154,18 +147,37 @@ export const ManageCertificateForm: React.FC<ManageCertificateFormProps> = ({
           onSubmit={form.handleSubmit(onSubmit)}
           className="space-y-8 w-full"
         >
-          <div className="md:grid md:grid-cols-4 gap-8">
+          <FormField
+            control={form.control}
+            name="image"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Ticket Image</FormLabel>
+                <FormControl>
+                  <ImageUpload
+                    value={field.value ? [field.value] : []}
+                    disabled={loading}
+                    onChange={(url) => field.onChange(url)}
+                    onRemove={() => field.onChange("")}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <div className="md:grid md:grid-cols-3 gap-8 w-[70%]">
             <FormField
               control={form.control}
-              name="certificateCode"
+              name="ticketId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Certificate Code</FormLabel>
+                  <FormLabel>Ticket ID</FormLabel>
                   <FormControl>
                     <Input
+                      className="read-only:bg-gray-100"
+                      readOnly={!!initialData}
                       disabled={loading}
-                      placeholder="Certificate Code"
-                      readOnly={initialData ? true : false}
+                      placeholder="Ticket ID"
                       {...field}
                     />
                   </FormControl>
@@ -175,14 +187,14 @@ export const ManageCertificateForm: React.FC<ManageCertificateFormProps> = ({
             />
             <FormField
               control={form.control}
-              name="certificateName"
+              name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Certificate Name</FormLabel>
+                  <FormLabel>Description</FormLabel>
                   <FormControl>
                     <Input
                       disabled={loading}
-                      placeholder="Certificate Name"
+                      placeholder="Description"
                       {...field}
                     />
                   </FormControl>
@@ -192,36 +204,42 @@ export const ManageCertificateForm: React.FC<ManageCertificateFormProps> = ({
             />
             <FormField
               control={form.control}
-              name="level"
+              name="type"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Level</FormLabel>
+                  <FormLabel>Type:</FormLabel>
                   <FormControl>
-                    <Input disabled={loading} placeholder="Level" {...field} />
+                    <Input
+                      type="text"
+                      disabled={loading}
+                      placeholder="Type"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
+            
             <FormField
               control={form.control}
-              name="trainingInstitution"
-              render={({ field }) => {
-                return (
-                  <FormItem>
-                    <FormLabel>Training Institution</FormLabel>
-                    <FormControl>
-                      <Input
-                        disabled={loading}
-                        placeholder="Training institution"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                );
-              }}
+              name="unitPrice"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Unit price:</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      disabled={loading}
+                      placeholder="Unit price"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
+            
           </div>
           <Button disabled={loading} className="ml-auto" type="submit">
             {action}

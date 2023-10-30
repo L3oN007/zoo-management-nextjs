@@ -11,6 +11,7 @@ import {
   MenuSquareIcon,
   Newspaper,
   PawPrint,
+  Ticket,
   User,
   User2
 } from 'lucide-react';
@@ -38,6 +39,11 @@ export const SidebarRoutes = () => {
         icon: User,
         label: 'Manage Staffs',
         href: '/admin/manage-staffs'
+      },
+      {
+        icon: Ticket,
+        label: 'Manage Tickets',
+        href: '/admin/manage-tickets'
       }
     ];
   } else if (role === 'staff') {
