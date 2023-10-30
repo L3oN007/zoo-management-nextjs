@@ -25,6 +25,7 @@ export const CustomScheduleEditor: React.FC<CustomScheduleEditorProps> = ({ even
   const startTime = new Date(eventData?.StartTime);
   const endTime = new Date(eventData?.EndTime);
   const note = eventData?.note || '';
+  const no = eventData?.no;
 
   const menuUrl = process.env.NEXT_PUBLIC_API_LOAD_MENUS;
   const cageUrl = process.env.NEXT_PUBLIC_API_LOAD_CAGES;
@@ -65,6 +66,7 @@ export const CustomScheduleEditor: React.FC<CustomScheduleEditorProps> = ({ even
   return (
     <>
       <input id="createdTime" className="e-field " type="hidden" name="createdTime" defaultValue={createdTime} />
+      {/* <input id="no" className="e-field " type="hidden" name="no" defaultValue={no} /> */}
       <Tabs defaultValue={tab} className="w-full">
         <TabsList className="grid w-[200px] grid-cols-2 mb-3">
           <TabsTrigger value="cage">Cage</TabsTrigger>

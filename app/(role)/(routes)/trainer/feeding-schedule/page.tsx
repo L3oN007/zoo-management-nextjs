@@ -10,6 +10,7 @@ import {
   ScheduleComponent,
   TimelineMonth,
   TimelineViews,
+  Timezone,
   ViewDirective,
   ViewsDirective,
   Week
@@ -38,14 +39,8 @@ const SchedulePage: React.FC = () => {
       .then((response) => {
         const currentDate = new Date();
         const updatedEvents = response.data.map((event) => {
-          // Convert event times from UTC to local time zone
-          const startTime = new Date(event.StartTime);
-          const endTime = new Date(event.EndTime);
-
           return {
-            ...event,
-            StartTime: startTime.toISOString(),
-            EndTime: endTime.toISOString()
+            ...event
             // IsReadonly: startTime < currentDate
           };
         });
@@ -55,39 +50,13 @@ const SchedulePage: React.FC = () => {
       })
       .catch((error) => {
         console.error(error);
-        toast.error(error.response.data.title);
       });
-  };
-
-  const processEventTimezone = (event: Event) => {
-    const startTime = new Date(event.StartTime);
-    const endTime = new Date(event.EndTime);
-
-    // Get UTC offset in minutes
-    const utcOffset = startTime.getTimezoneOffset();
-
-    // Convert times to UTC
-    startTime.setMinutes(startTime.getMinutes() - utcOffset);
-    endTime.setMinutes(endTime.getMinutes() - utcOffset);
-
-    // Add date to times
-    const date = new Date();
-    startTime.setFullYear(date.getFullYear(), date.getMonth(), date.getDate());
-    endTime.setFullYear(date.getFullYear(), date.getMonth(), date.getDate());
-
-    // Format date strings
-    function toIsoString(date: Date) {
-      return date.toISOString().slice(0, 16) + 'Z';
-    }
-
-    return {
-      ...event
-    };
   };
 
   const addEvent = (newEvent: Event) => {
     const adjustedEvent = newEvent;
     const newSchedule = { ...adjustedEvent['0'], Id: undefined };
+    console.log(newEvent);
     axios
       .post<Event>(urlCreateSchedule!, newSchedule)
       .then(() => {
@@ -100,11 +69,11 @@ const SchedulePage: React.FC = () => {
   };
 
   const updateEvent = (updatedEvent: Event) => {
-    const adjustedEvent = processEventTimezone(updatedEvent);
+    const adjustedEvent = updatedEvent;
     const updateSchedule = { ...adjustedEvent, Id: undefined };
 
     axios
-      .put(`https://651d776944e393af2d59dbd7.mockapi.io/schedule/${adjustedEvent.id}`, updateSchedule)
+      .put(`https://651d776944e393af2d59dbd7.mockapi.io/schedule/` + `${adjustedEvent.id}`, updateSchedule)
       .then(() => {
         fetchEvents();
       })
