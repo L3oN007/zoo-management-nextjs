@@ -28,6 +28,8 @@ const SchedulePage: React.FC = () => {
 
   const urlGetSchedules = process.env.NEXT_PUBLIC_API_LOAD_SCHEDULES;
   const urlCreateSchedule = process.env.NEXT_PUBLIC_API_CREATE_SCHEDULE;
+  const urlUpdateSchedule = process.env.NEXT_PUBLIC_API_UPDATE_SCHEDULE;
+  const urlDeleteSchedule = process.env.NEXT_PUBLIC_API_DELETE_SCHEDULE;
 
   useEffect(() => {
     fetchEvents();
@@ -73,7 +75,7 @@ const SchedulePage: React.FC = () => {
     const updateSchedule = { ...adjustedEvent, Id: undefined };
 
     axios
-      .put(`https://651d776944e393af2d59dbd7.mockapi.io/schedule/` + `${adjustedEvent.id}`, updateSchedule)
+      .put(urlUpdateSchedule! + `${adjustedEvent.no}`, updateSchedule)
       .then(() => {
         fetchEvents();
       })
@@ -83,16 +85,30 @@ const SchedulePage: React.FC = () => {
       });
   };
 
-  const deleteEvent = (eventId: string) => {
+  const deleteEvent = (deleteEvent: Event) => {
+    const adjustedEvent = deleteEvent;
+    const updateSchedule = { ...adjustedEvent, Id: undefined };
+
     axios
-      .delete(`https://651d776944e393af2d59dbd7.mockapi.io/schedule/${eventId}`)
+      .delete(urlDeleteSchedule! + `${adjustedEvent.no}`)
       .then(() => {
         fetchEvents();
       })
       .catch((error) => {
         console.error(error);
+        toast.error(error.response.data.title);
       });
   };
+  // const deleteEvent = (no: number) => {
+  //   axios
+  //     .delete(urlDeleteSchedule! + `${no}`)
+  //     .then(() => {
+  //       fetchEvents();
+  //     })
+  //     .catch((error) => {
+  //       console.error(error);
+  //     });
+  // };
 
   let instance = new Internationalization();
   const getTimeString = (value: any) => {
@@ -145,7 +161,7 @@ const SchedulePage: React.FC = () => {
           } else if (args.requestType === 'eventChange') {
             updateEvent(args.data as Event);
           } else if (args.requestType === 'eventRemove') {
-            deleteEvent((args.data[0] as Event).id);
+            deleteEvent(args.data[0] as Event);
           }
         }}
         eventRendered={onEventRendered}
