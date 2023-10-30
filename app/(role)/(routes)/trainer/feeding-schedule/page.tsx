@@ -30,6 +30,7 @@ const SchedulePage: React.FC = () => {
   const urlCreateSchedule = process.env.NEXT_PUBLIC_API_CREATE_SCHEDULE;
   const urlUpdateSchedule = process.env.NEXT_PUBLIC_API_UPDATE_SCHEDULE;
   const urlDeleteSchedule = process.env.NEXT_PUBLIC_API_DELETE_SCHEDULE;
+  const urlUpdateScheduleStatus = process.env.NEXT_PUBLIC_API_UPDATE_SCHEDULE_STATUS;
 
   useEffect(() => {
     fetchEvents();
@@ -76,6 +77,21 @@ const SchedulePage: React.FC = () => {
 
     axios
       .put(urlUpdateSchedule! + `${adjustedEvent.no}`, updateSchedule)
+      .then(() => {
+        fetchEvents();
+      })
+      .catch((error) => {
+        console.error(error);
+        toast.error(error.response.data.title);
+      });
+  };
+
+  const updateEventStatus = (updatedEventStatus: Event) => {
+    const adjustedEvent = updatedEventStatus;
+    const updateSchedule = { ...adjustedEvent, Id: undefined };
+
+    axios
+      .put(urlUpdateScheduleStatus! + `${adjustedEvent.no}`, updateSchedule)
       .then(() => {
         fetchEvents();
       })
