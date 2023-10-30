@@ -27,7 +27,7 @@ export const ManageCertificateClient: FC<ManageCertificateClientProps> = (data) 
                     Add New
                 </Button>
             </div>
-            <Separator />
+            <Separator className="mb-2"/>
             <DataTable columns={empColumns} data={data.data} searchKey="cerCode" filterOptions={null as any} />
 
 

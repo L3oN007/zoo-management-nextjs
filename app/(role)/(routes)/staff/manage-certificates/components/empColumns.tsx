@@ -10,8 +10,8 @@ import { DataTableRowActions } from '@/components/data-table/data-table-row-acti
 import { AreaObj } from '@/app/models/area';
 
 export type empCertificateColumn = {
-  no: number;
-  stt: number;
+  // no: object;
+  // stt: number;
   employeeId: string;
   certificateCode: string;
   description: string;
@@ -26,7 +26,12 @@ export type empCertificateColumn = {
 export const empColumns: ColumnDef<empCertificateColumn>[] = [
   {
     accessorKey: 'no',
-    header: 'No'
+    header: 'No',
+    cell: (props) => (
+      <div className="flex items-center">
+        <span>{props.row.index +1}</span>
+      </div>
+    )
   },
   {
     accessorKey: 'employee',
@@ -51,3 +56,7 @@ export const empColumns: ColumnDef<empCertificateColumn>[] = [
     header: 'Description'
   }
 ];
+function calculateNo(): import("react").ReactNode {
+  throw new Error('Function not implemented.');
+}
+
