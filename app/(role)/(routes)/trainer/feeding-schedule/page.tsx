@@ -28,7 +28,7 @@ interface Event {
   IsAllDay: boolean;
   ProjectId: number;
   TaskId: number;
-  Fed: boolean;
+  feedingStatus: string;
   IsReadonly: boolean;
 }
 
@@ -139,7 +139,7 @@ const SchedulePage: React.FC = () => {
     return (
       <div className="template-wrap" style={{ background: props.SecondaryColor }}>
         <div className="subject" style={{ background: props.PrimaryColor }}>
-          {props.Title}
+          <div className="flex">{props.cageName}</div>
         </div>
         <div className="time" style={{ background: props.PrimaryColor }}>
           {' '}
@@ -148,32 +148,32 @@ const SchedulePage: React.FC = () => {
 
         <div className="event-description">{props.Description}</div>
         <div className="footer" style={{ background: props.PrimaryColor }}></div>
-        <span className="inline-flex items-center justify-center rounded-full bg-emerald-100 px-1 py-0.5 text-emerald-700">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth="1.5"
-            stroke="currentColor"
-            className="h-3 w-3 mr-1"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
-          <p className="whitespace-nowrap text-xs">Already Fed</p>
-        </span>
       </div>
     );
+  };
+
+  const onEventRendered = (args: any) => {
+    const event = args.data as Event;
+
+    switch (event.feedingStatus) {
+      case '0':
+        args.element.style.backgroundColor = 'green'; // Change to your desired color
+        break;
+      case '1':
+        args.element.style.backgroundColor = 'yellow'; // Change to your desired color
+        break;
+      default:
+        // Default background color if neither 0 nor 1
+        args.element.style.backgroundColor = 'your_default_color'; // Change to your desired default color
+        break;
+    }
   };
 
   return (
     <div>
       <ScheduleComponent
         width="100%"
-        height="550px"
+        height="100%"
         eventSettings={{ dataSource: events }}
         actionBegin={(args) => {
           if (args.requestType === 'eventCreate') {
@@ -184,7 +184,8 @@ const SchedulePage: React.FC = () => {
             deleteEvent((args.data[0] as Event).id);
           }
         }}
-        // editorTemplate={editorTemplate}
+        eventRendered={onEventRendered}
+        showQuickInfo={false}
         editorTemplate={(props: Event) => <CustomScheduleEditor eventData={props} />}
       >
         <ViewsDirective>
