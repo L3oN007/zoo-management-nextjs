@@ -79,7 +79,7 @@ export const ManageImportForm: React.FC<ManageImportFormProps> = ({ initialData 
       if (initialData) {
         // await axios.put(`${url}/${params.no}`, data);
       } else {
-        await axios.post(process.env.NEXT_PUBLIC_API_CREATE_CERTIFICATE!, data);
+        await axios.post(process.env.NEXT_PUBLIC_API_CREATE_IMPORTFOOD!, data);
       }
       router.refresh();
       router.push(`/staff/manage-foods`);

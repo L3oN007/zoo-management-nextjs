@@ -30,9 +30,7 @@ export default async function DashboardPage() {
               title="Dashboard"
               description={`Welcome back ${session?.user.fullName}`}
             />
-            <div className="flex items-center space-x-2">
-              <Button>Download</Button>
-            </div>
+           
           </div>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             <Card>
