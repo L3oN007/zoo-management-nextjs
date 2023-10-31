@@ -188,9 +188,9 @@ const SchedulePage: React.FC = () => {
           <ViewDirective option="Day" startHour="06:00" endHour="19:00"></ViewDirective>
           <ViewDirective option="Week" isSelected={true} eventTemplate={eventTemplate}></ViewDirective>
           <ViewDirective option="TimelineDay"></ViewDirective>
-          <ViewDirective option="TimelineMonth"></ViewDirective>
+          <ViewDirective option="Agenda"></ViewDirective>
         </ViewsDirective>
-        <Inject services={[Day, Week, Month, DragAndDrop, Agenda, TimelineViews, TimelineMonth, Resize]} />
+        <Inject services={[Day, Week, Month, DragAndDrop, Agenda, TimelineViews, TimelineMonth]} />
       </ScheduleComponent>
     </div>
   );

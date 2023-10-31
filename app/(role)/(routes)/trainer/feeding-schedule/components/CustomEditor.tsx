@@ -172,6 +172,7 @@ export const CustomScheduleEditor: React.FC<CustomScheduleEditorProps> = ({ even
                     className="e-field e-input"
                     type="number"
                     name="feedingAmount"
+                    min={0}
                     style={{ width: '100%' }}
                   />
                 </div>
@@ -315,6 +316,7 @@ export const CustomScheduleEditor: React.FC<CustomScheduleEditorProps> = ({ even
                     className="e-field e-input"
                     type="number"
                     name="feedingAmount"
+                    min={0}
                     style={{ width: '100%' }}
                   />
                 </div>
