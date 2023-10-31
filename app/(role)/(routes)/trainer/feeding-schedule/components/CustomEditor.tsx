@@ -8,6 +8,8 @@ import { Event } from '../modal/event';
 import { format } from 'date-fns';
 import axios from 'axios';
 import { string } from 'zod';
+import { useSession } from 'next-auth/react';
+import { read } from 'fs';
 interface CustomScheduleEditorProps {
   eventData: Event;
 }
@@ -15,6 +17,12 @@ interface CustomScheduleEditorProps {
 export const CustomScheduleEditor: React.FC<CustomScheduleEditorProps> = ({ eventData }) => {
   console.log('eventData', eventData);
   let createdTime = eventData.createdTime || format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+
+  const session = useSession();
+  const areaId = session.data?.user.areaId;
+
+  // attribute is used for authorizing which trainer can do CRUD
+  let readOnly = areaId !== null ? false : true;
 
   const cageId = eventData?.cageId || '';
   const animalId = eventData?.animalId || '';
@@ -58,10 +66,7 @@ export const CustomScheduleEditor: React.FC<CustomScheduleEditorProps> = ({ even
     }
   }, [dataFetched]);
 
-  let tab = 'cage';
-  // if (animalName !== null) {
-  //   tab = 'animal';
-  // }
+  let tab = eventData.cageId == null ? `cage` : `animal`;
 
   return (
     <>
@@ -69,8 +74,12 @@ export const CustomScheduleEditor: React.FC<CustomScheduleEditorProps> = ({ even
       {/* <input id="no" className="e-field " type="hidden" name="no" defaultValue={no} /> */}
       <Tabs defaultValue={tab} className="w-full">
         <TabsList className="grid w-[200px] grid-cols-2 mb-3">
-          <TabsTrigger value="cage">Cage</TabsTrigger>
-          <TabsTrigger value="animal">Animal</TabsTrigger>
+          <TabsTrigger value="cage" disabled={eventData.cageId === null}>
+            Cage
+          </TabsTrigger>
+          <TabsTrigger value="animal" disabled={eventData.animalId === null}>
+            Animal
+          </TabsTrigger>
         </TabsList>
         <TabsContent value="cage">
           <div className="border-b border-gray-900/10 pb-12 ">
@@ -88,6 +97,7 @@ export const CustomScheduleEditor: React.FC<CustomScheduleEditorProps> = ({ even
                     data-name="cageId"
                     className="e-field"
                     style={{ width: '100%' }}
+                    readonly={readOnly}
                     dataSource={cage}
                     fields={{ text: 'cageId', value: 'cageId' }} // Specify text and value fields
                   />
@@ -107,6 +117,7 @@ export const CustomScheduleEditor: React.FC<CustomScheduleEditorProps> = ({ even
                     data-name="employeeId"
                     className="e-field"
                     style={{ width: '100%' }}
+                    readonly={readOnly}
                     dataSource={employee}
                     fields={{ text: 'fullName', value: 'employeeId' }} // Specify text and value fields
                   />
@@ -123,6 +134,7 @@ export const CustomScheduleEditor: React.FC<CustomScheduleEditorProps> = ({ even
                     format="dd/MM/yy hh:mm a"
                     data-name="startTime"
                     value={startTime}
+                    readonly={readOnly}
                     className="e-field "
                   />
                 </div>
@@ -137,6 +149,7 @@ export const CustomScheduleEditor: React.FC<CustomScheduleEditorProps> = ({ even
                     format="dd/MM/yy hh:mm a"
                     data-name="endTime"
                     value={endTime}
+                    readonly={readOnly}
                     className="e-field "
                   />
                 </div>
@@ -155,6 +168,7 @@ export const CustomScheduleEditor: React.FC<CustomScheduleEditorProps> = ({ even
                     data-name="menuNo"
                     className="e-field"
                     style={{ width: '100%' }}
+                    readonly={readOnly}
                     dataSource={menu}
                     fields={{ text: 'menuName', value: 'menuNo' }} // Specify text and value fields
                   />
@@ -172,6 +186,7 @@ export const CustomScheduleEditor: React.FC<CustomScheduleEditorProps> = ({ even
                     className="e-field e-input"
                     type="number"
                     name="feedingAmount"
+                    readOnly={readOnly}
                     min={0}
                     style={{ width: '100%' }}
                   />
@@ -232,6 +247,7 @@ export const CustomScheduleEditor: React.FC<CustomScheduleEditorProps> = ({ even
                     data-name="animalId"
                     className="e-field"
                     style={{ width: '100%' }}
+                    readonly={readOnly}
                     dataSource={animal}
                     fields={{ text: 'name', value: 'animalId' }} // Specify text and value fields
                   />
@@ -251,6 +267,7 @@ export const CustomScheduleEditor: React.FC<CustomScheduleEditorProps> = ({ even
                     data-name="employeeId"
                     className="e-field"
                     style={{ width: '100%' }}
+                    readonly={readOnly}
                     dataSource={employee}
                     fields={{ text: 'fullName', value: 'employeeId' }} // Specify text and value fields
                   />
@@ -266,6 +283,7 @@ export const CustomScheduleEditor: React.FC<CustomScheduleEditorProps> = ({ even
                     id="startTime"
                     format="dd/MM/yy hh:mm a"
                     data-name="startTime"
+                    readonly={readOnly}
                     value={startTime}
                     className="e-field "
                   />
@@ -281,6 +299,7 @@ export const CustomScheduleEditor: React.FC<CustomScheduleEditorProps> = ({ even
                     format="dd/MM/yy hh:mm a"
                     data-name="endTime"
                     value={endTime}
+                    readonly={readOnly}
                     className="e-field "
                   />
                 </div>
@@ -299,6 +318,7 @@ export const CustomScheduleEditor: React.FC<CustomScheduleEditorProps> = ({ even
                     data-name="menuNo"
                     className="e-field"
                     style={{ width: '100%' }}
+                    readonly={readOnly}
                     dataSource={menu}
                     fields={{ text: 'menuName', value: 'menuNo' }} // Specify text and value fields
                   />
@@ -316,6 +336,7 @@ export const CustomScheduleEditor: React.FC<CustomScheduleEditorProps> = ({ even
                     className="e-field e-input"
                     type="number"
                     name="feedingAmount"
+                    readOnly={readOnly}
                     min={0}
                     style={{ width: '100%' }}
                   />
