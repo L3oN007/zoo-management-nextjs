@@ -25,6 +25,7 @@ import {
   SelectValue
 } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
+import { useSession } from 'next-auth/react';
 
 const formSchema = z.object({
   employeeId: z.string().nullable(),
@@ -51,9 +52,11 @@ interface ManageStaffFormProps {
 }
 
 export const AccountForm: React.FC<ManageStaffFormProps> = ({ initialData }) => {
-  const url = 'https://648867740e2469c038fda6cc.mockapi.io/staff';
+  const urlUpdate = process.env.NEXT_PUBLIC_API_UPDATE_STAFF;
   const params = useParams();
   const router = useRouter();
+  var session = useSession();
+
 
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -80,12 +83,10 @@ export const AccountForm: React.FC<ManageStaffFormProps> = ({ initialData }) => 
     try {
       setLoading(true);
       if (initialData) {
-        await axios.put(url + `/${params.staffId}`, data);
-      } else {
-        await axios.post(url, data);
-      }
+        await axios.put(urlUpdate + `/?id=${session.data?.user.employeeId}`, data);
+      } 
       router.refresh();
-      router.push(`/admin/manage-staff`);
+      router.push(`/staff/settings`);
       toast.success(toastMessage);
     } catch (error: any) {
       toast.error('Something went wrong.');
@@ -94,24 +95,24 @@ export const AccountForm: React.FC<ManageStaffFormProps> = ({ initialData }) => 
     }
   };
 
-  const onDelete = async () => {
-    try {
-      setLoading(true);
-      await axios.delete(url + `/${params.staffId}`);
-      router.refresh();
-      router.push(`/admin/manage-staff`);
-      toast.success('Staff deleted.');
-    } catch (error: any) {
-      toast.error('Fail to delete.');
-    } finally {
-      setLoading(false);
-      setOpen(false);
-    }
-  };
+  // const onDelete = async () => {
+  //   try {
+  //     setLoading(true);
+  //     await axios.delete(url + `/${params.staffId}`);
+  //     router.refresh();
+  //     router.push(`/admin/manage-staff`);
+  //     toast.success('Staff deleted.');
+  //   } catch (error: any) {
+  //     toast.error('Fail to delete.');
+  //   } finally {
+  //     setLoading(false);
+  //     setOpen(false);
+  //   }
+  // };
 
   return (
     <>
-      <AlertModal isOpen={open} onClose={() => setOpen(false)} onConfirm={onDelete} loading={loading} />
+      {/* <AlertModal isOpen={open} onClose={() => setOpen(false)} onConfirm={onDelete} loading={loading} /> */}
       <div className="flex items-center justify-between">
         <Heading
           title={'Profile Settings'}

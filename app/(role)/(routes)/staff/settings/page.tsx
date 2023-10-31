@@ -1,3 +1,4 @@
+'use client'
 import { useSession } from 'next-auth/react';
 import { ProfileForm } from './profile-form';
 import axios from '@/lib/axios';
@@ -13,15 +14,22 @@ import axios from '@/lib/axios';
 //     </div>
 //   );
 // }
+// eslint-disable-next-line @next/next/no-async-client-component
 const SettingsProfilePage = async () => {
   // Construct the URL using the staffId from the params object
 
-  // var url = process.env.NEXT_PUBLIC_API_GET_STAFF;
-  // var response = await axios.get(url);
-  // let staffData = response.data;
+  const url = process.env.NEXT_PUBLIC_API_GET_STAFF;
+  // const url = "http://localhost:5000/api/Employees/staff/resource-id?id="
+  const session  = useSession();
+  console.log("aaaaaaaaa");
+  
+  console.log(session.data?.user.employeeId);
+  
+  var response = await axios.get(url + `?id=${session.data?.user.employeeId}`);
+  let staffData = response.data;
   return (
     <div className="space-y-6">
-      <ProfileForm initialData={null} />
+      <ProfileForm initialData={staffData} />
     </div>
   );
 };
