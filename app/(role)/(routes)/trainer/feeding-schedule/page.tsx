@@ -21,10 +21,15 @@ import { Event } from './modal/event';
 import { CustomScheduleEditor } from './components/CustomEditor';
 // import { toast } from 'react-toastify';
 import { toast } from 'react-hot-toast';
+import { useSession } from 'next-auth/react';
+import { constants } from 'buffer';
 registerLicense('Ngo9BigBOggjHTQxAR8/V1NHaF5cXmVCf1JpRGBGfV5yd0VDalhRTnVZUj0eQnxTdEZiWX5bcXZWRmFUVUR2Ww==');
 
 const SchedulePage: React.FC = () => {
   const [events, setEvents] = useState<Event[]>();
+
+  const session = useSession();
+  const areaId = session.data?.user.areaId;
 
   const urlGetSchedules = process.env.NEXT_PUBLIC_API_LOAD_SCHEDULES;
   const urlCreateSchedule = process.env.NEXT_PUBLIC_API_CREATE_SCHEDULE;
@@ -42,9 +47,10 @@ const SchedulePage: React.FC = () => {
       .then((response) => {
         const currentDate = new Date();
         const updatedEvents = response.data.map((event) => {
+          const endTime = new Date(event.EndTime);
           return {
-            ...event
-            // IsReadonly: startTime < currentDate
+            ...event,
+            IsReadonly: endTime < currentDate
           };
         });
 
@@ -75,23 +81,9 @@ const SchedulePage: React.FC = () => {
     const adjustedEvent = updatedEvent;
     const updateSchedule = { ...adjustedEvent, Id: undefined };
 
+    let updateUrl = areaId != null ? urlUpdateSchedule : urlUpdateScheduleStatus;
     axios
-      .put(urlUpdateSchedule! + `${adjustedEvent.no}`, updateSchedule)
-      .then(() => {
-        fetchEvents();
-      })
-      .catch((error) => {
-        console.error(error);
-        toast.error(error.response.data.title);
-      });
-  };
-
-  const updateEventStatus = (updatedEventStatus: Event) => {
-    const adjustedEvent = updatedEventStatus;
-    const updateSchedule = { ...adjustedEvent, Id: undefined };
-
-    axios
-      .put(urlUpdateScheduleStatus! + `${adjustedEvent.no}`, updateSchedule)
+      .put(updateUrl + `${adjustedEvent.no}`, updateSchedule)
       .then(() => {
         fetchEvents();
       })
@@ -115,16 +107,6 @@ const SchedulePage: React.FC = () => {
         toast.error(error.response.data.title);
       });
   };
-  // const deleteEvent = (no: number) => {
-  //   axios
-  //     .delete(urlDeleteSchedule! + `${no}`)
-  //     .then(() => {
-  //       fetchEvents();
-  //     })
-  //     .catch((error) => {
-  //       console.error(error);
-  //     });
-  // };
 
   let instance = new Internationalization();
   const getTimeString = (value: any) => {

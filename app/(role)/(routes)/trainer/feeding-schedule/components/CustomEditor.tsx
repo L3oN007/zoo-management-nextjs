@@ -16,7 +16,9 @@ interface CustomScheduleEditorProps {
 
 export const CustomScheduleEditor: React.FC<CustomScheduleEditorProps> = ({ eventData }) => {
   console.log('eventData', eventData);
-  let createdTime = eventData.createdTime || format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+  let createdTime =
+    eventData.createdTime ||
+    format(new Date(new Date().getTime() - 7 * 60 * 60 * 1000), "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
   const session = useSession();
   const areaId = session.data?.user.areaId;
@@ -33,7 +35,6 @@ export const CustomScheduleEditor: React.FC<CustomScheduleEditorProps> = ({ even
   const startTime = new Date(eventData?.StartTime);
   const endTime = new Date(eventData?.EndTime);
   const note = eventData?.note || '';
-  const no = eventData?.no;
 
   const menuUrl = process.env.NEXT_PUBLIC_API_LOAD_MENUS;
   const cageUrl = process.env.NEXT_PUBLIC_API_LOAD_CAGES;
@@ -71,7 +72,6 @@ export const CustomScheduleEditor: React.FC<CustomScheduleEditorProps> = ({ even
   return (
     <>
       <input id="createdTime" className="e-field " type="hidden" name="createdTime" defaultValue={createdTime} />
-      {/* <input id="no" className="e-field " type="hidden" name="no" defaultValue={no} /> */}
       <Tabs defaultValue={tab} className="w-full">
         <TabsList className="grid w-[200px] grid-cols-2 mb-3">
           <TabsTrigger value="cage" disabled={eventData.cageId === null}>
@@ -357,7 +357,7 @@ export const CustomScheduleEditor: React.FC<CustomScheduleEditorProps> = ({ even
                     style={{ width: '100%' }}
                     dataSource={[
                       { text: 'Pending', value: 0 },
-                      { text: 'Already Feed', value: 1 }
+                      { text: 'Complete', value: 1 }
                     ]}
                     fields={{ text: 'text', value: 'value' }} // Specify text and value fields
                   />
