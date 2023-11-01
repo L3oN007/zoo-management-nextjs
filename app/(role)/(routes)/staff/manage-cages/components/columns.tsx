@@ -8,6 +8,7 @@ import { ArrowUpDown, MoreHorizontal } from 'lucide-react';
 import { CellAction } from './cell-action';
 import { DataTableRowActions } from '@/components/data-table/data-table-row-actions';
 import { AreaObj } from '@/app/models/area';
+import Link from 'next/link';
 
 export type CageColumn = {
   cageId: string;
@@ -31,6 +32,13 @@ export const columns: ColumnDef<CageColumn>[] = [
           Name
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
+      );
+    },
+    cell: (props) => {
+      return (
+        <Link href={`/staff/manage-animals/${props.row.original.cageId}`}>
+          <span>{props.row.original.name}</span>
+        </Link>
       );
     }
   },
