@@ -130,7 +130,7 @@ export const ManageFoodForm: React.FC<ManageFoodFormProps> = ({ initialData }) =
                       className="read-only:bg-gray-100"
                       readOnly={!!initialData}
                       disabled={loading}
-                      placeholder="Food ID"
+                      placeholder="Format: FD _ _"
                       {...field}
                     />
                   </FormControl>
