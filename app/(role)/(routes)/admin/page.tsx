@@ -1,22 +1,16 @@
-import { Metadata } from "next";
+import { Metadata } from 'next';
 
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
-import { options } from "@/app/api/auth/[...nextauth]/options";
-import { Heading } from "@/components/ui/heading";
-import { getServerSession } from "next-auth";
-import { Overview } from "./components/overview";
+import { options } from '@/app/api/auth/[...nextauth]/options';
+import { Heading } from '@/components/ui/heading';
+import { getServerSession } from 'next-auth';
+import { Overview } from './components/overview';
 
 export const metadata: Metadata = {
-  title: "Dashboard",
-  description: "Example dashboard app built using the components.",
+  title: 'Dashboard',
+  description: 'Example dashboard app built using the components.'
 };
 
 export default async function DashboardPage() {
@@ -26,10 +20,7 @@ export default async function DashboardPage() {
       <div className="hidden flex-col md:flex">
         <div className="flex-1 space-y-4 p-8 pt-6">
           <div className="flex items-center justify-between space-y-2">
-            <Heading
-              title="Dashboard"
-              description={`Welcome back ${session?.user.fullName}`}
-            />
+            <Heading title="Dashboard" description={`Welcome back ${session?.user.fullName}`} />
             <div className="flex items-center space-x-2">
               <Button>Download</Button>
             </div>
@@ -41,9 +32,7 @@ export default async function DashboardPage() {
                   <div>
                     <p className="text-sm text-gray-500">Profit</p>
 
-                    <p className="text-2xl font-medium text-gray-900">
-                      $240.94
-                    </p>
+                    <p className="text-2xl font-medium text-gray-900">$240.94</p>
                   </div>
 
                   <div className="mt-1 flex gap-1 text-green-600">
@@ -73,9 +62,7 @@ export default async function DashboardPage() {
             </Card>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  Subscriptions
-                </CardTitle>
+                <CardTitle className="text-sm font-medium">Subscriptions</CardTitle>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
@@ -93,9 +80,7 @@ export default async function DashboardPage() {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">+2350</div>
-                <p className="text-xs text-muted-foreground">
-                  +180.1% from last month
-                </p>
+                <p className="text-xs text-muted-foreground">+180.1% from last month</p>
               </CardContent>
             </Card>
             <Card>
@@ -117,16 +102,12 @@ export default async function DashboardPage() {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">+12,234</div>
-                <p className="text-xs text-muted-foreground">
-                  +19% from last month
-                </p>
+                <p className="text-xs text-muted-foreground">+19% from last month</p>
               </CardContent>
             </Card>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  Active Now
-                </CardTitle>
+                <CardTitle className="text-sm font-medium">Active Now</CardTitle>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
@@ -142,9 +123,7 @@ export default async function DashboardPage() {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">+573</div>
-                <p className="text-xs text-muted-foreground">
-                  +201 since last hour
-                </p>
+                <p className="text-xs text-muted-foreground">+201 since last hour</p>
               </CardContent>
             </Card>
           </div>
@@ -160,9 +139,7 @@ export default async function DashboardPage() {
             <Card className="col-span-3">
               <CardHeader>
                 <CardTitle>Recent Sales</CardTitle>
-                <CardDescription>
-                  You made 265 sales this month.
-                </CardDescription>
+                <CardDescription>You made 265 sales this month.</CardDescription>
               </CardHeader>
               <CardContent></CardContent>
             </Card>
