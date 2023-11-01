@@ -1,55 +1,31 @@
-"use client";
+'use client';
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
-import { Check, ChevronsUpDown, Trash } from "lucide-react";
-import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { toast } from "react-hot-toast";
-import * as z from "zod";
+import { zodResolver } from '@hookform/resolvers/zod';
+import axios from 'axios';
+import { Check, ChevronsUpDown, Trash } from 'lucide-react';
+import { useParams, useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { toast } from 'react-hot-toast';
+import * as z from 'zod';
 
-import { AlertModal } from "@/components/modals/alert-modal";
-import { Button } from "@/components/ui/button";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-} from "@/components/ui/command";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Heading } from "@/components/ui/heading";
-import { Input } from "@/components/ui/input";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Separator } from "@/components/ui/separator";
-import { cn } from "@/lib/utils";
-import { CageObj } from "@/app/models/cage";
+import { AlertModal } from '@/components/modals/alert-modal';
+import { Button } from '@/components/ui/button';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from '@/components/ui/command';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Heading } from '@/components/ui/heading';
+import { Input } from '@/components/ui/input';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Separator } from '@/components/ui/separator';
+import { cn } from '@/lib/utils';
+import { CageObj } from '@/app/models/cage';
 
 const formSchema = z.object({
-  certificateCode: z
-    .string()
-    .min(1, { message: "Certificate code is required." }),
-  certificateName: z
-    .string()
-    .min(1, { message: "Certificate name is required." }),
-  level: z.string().min(1, { message: "Certificate name is required." }),
+  certificateCode: z.string().min(1, { message: 'Certificate code is required.' }),
+  certificateName: z.string().min(1, { message: 'Certificate name is required.' }),
+  level: z.string().min(1, { message: 'Certificate name is required.' }),
 
-  trainingInstitution: z
-    .string()
-    .min(1, { message: "Training Institution is required." })
-    .max(5000),
+  trainingInstitution: z.string().min(1, { message: 'Training Institution is required.' }).max(5000)
 });
 
 type ManageCertificateFormValues = z.infer<typeof formSchema>;
@@ -59,32 +35,25 @@ interface Certificate {}
 interface ManageCertificateFormProps {
   initialData: Certificate | null;
 }
-export const ManageCertificateForm: React.FC<ManageCertificateFormProps> = ({
-  initialData,
-}) => {
+export const ManageCertificateForm: React.FC<ManageCertificateFormProps> = ({ initialData }) => {
   const params = useParams();
   const router = useRouter();
-  const url = "https://6525248067cfb1e59ce6b68f.mockapi.io/empCerti";
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const title = initialData ? "Edit certificate" : "Create new certificate";
-  const description = initialData
-    ? "Edit certificate."
-    : "Add a new certificate";
-  const toastMessage = initialData
-    ? "Certificate updated."
-    : "New certificate added.";
-  const action = initialData ? "Save changes" : "Create";
+  const title = initialData ? 'Edit certificate' : 'Create new certificate';
+  const description = initialData ? 'Edit certificate.' : 'Add a new certificate';
+  const toastMessage = initialData ? 'Certificate updated.' : 'New certificate added.';
+  const action = initialData ? 'Save changes' : 'Create';
 
   const form = useForm<ManageCertificateFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: initialData || {
-      certificateCode: "",
-      certificateName: "",
-      level: "",
-      trainingInstitution: "",
-    },
+      certificateCode: '',
+      certificateName: '',
+      level: '',
+      trainingInstitution: ''
+    }
   });
 
   const onSubmit = async (data: ManageCertificateFormValues) => {
@@ -92,10 +61,7 @@ export const ManageCertificateForm: React.FC<ManageCertificateFormProps> = ({
     try {
       setLoading(true);
       if (initialData) {
-        await axios.put(
-          process.env.NEXT_PUBLIC_API_UPDATE_CERTIFICATE + `${params.cerCode}`,
-          data
-        );
+        await axios.put(process.env.NEXT_PUBLIC_API_UPDATE_CERTIFICATE + `${params.cerCode}`, data);
       } else {
         await axios.post(process.env.NEXT_PUBLIC_API_CREATE_CERTIFICATE!, data);
       }
@@ -113,12 +79,10 @@ export const ManageCertificateForm: React.FC<ManageCertificateFormProps> = ({
   const onDelete = async () => {
     try {
       setLoading(true);
-      await axios.delete(
-        process.env.NEXT_PUBLIC_API_DELETE_CERTIFICATE + `${params.cerCode}`
-      );
+      await axios.delete(process.env.NEXT_PUBLIC_API_DELETE_CERTIFICATE + `${params.cerCode}`);
       router.refresh();
       router.push(`/staff/manage-certificates`);
-      toast.success("Certificate deleted.");
+      toast.success('Certificate deleted.');
     } catch (error: any) {
       toast.error(error.response.data.title);
     } finally {
@@ -129,31 +93,18 @@ export const ManageCertificateForm: React.FC<ManageCertificateFormProps> = ({
 
   return (
     <>
-      <AlertModal
-        isOpen={open}
-        onClose={() => setOpen(false)}
-        onConfirm={onDelete}
-        loading={loading}
-      />
+      <AlertModal isOpen={open} onClose={() => setOpen(false)} onConfirm={onDelete} loading={loading} />
       <div className="flex items-center justify-between">
         <Heading title={title} description={description} />
         {initialData && (
-          <Button
-            disabled={loading}
-            variant="destructive"
-            size="sm"
-            onClick={() => setOpen(true)}
-          >
+          <Button disabled={loading} variant="destructive" size="sm" onClick={() => setOpen(true)}>
             <Trash className="h-4 w-4" />
           </Button>
         )}
       </div>
       <Separator />
       <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-8 w-full"
-        >
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
           <div className="md:grid md:grid-cols-4 gap-8">
             <FormField
               control={form.control}
@@ -163,6 +114,7 @@ export const ManageCertificateForm: React.FC<ManageCertificateFormProps> = ({
                   <FormLabel>Certificate Code</FormLabel>
                   <FormControl>
                     <Input
+                      className="read-only:bg-gray-100"
                       disabled={loading}
                       placeholder="Certificate Code"
                       readOnly={initialData ? true : false}
@@ -180,11 +132,7 @@ export const ManageCertificateForm: React.FC<ManageCertificateFormProps> = ({
                 <FormItem>
                   <FormLabel>Certificate Name</FormLabel>
                   <FormControl>
-                    <Input
-                      disabled={loading}
-                      placeholder="Certificate Name"
-                      {...field}
-                    />
+                    <Input disabled={loading} placeholder="Certificate Name" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -211,11 +159,7 @@ export const ManageCertificateForm: React.FC<ManageCertificateFormProps> = ({
                   <FormItem>
                     <FormLabel>Training Institution</FormLabel>
                     <FormControl>
-                      <Input
-                        disabled={loading}
-                        placeholder="Training institution"
-                        {...field}
-                      />
+                      <Input disabled={loading} placeholder="Training institution" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

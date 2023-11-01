@@ -83,7 +83,7 @@ export const ManageSpeciesForm: React.FC<ManageSpeciesFormProps> = ({ initialDat
       router.push(`/trainer/manage-species`);
       toast.success(toastMessage);
     } catch (error: any) {
-      toast.error('Something went wrong.');
+      toast.error(error.response.data.title);
     } finally {
       setLoading(false);
     }
@@ -97,7 +97,7 @@ export const ManageSpeciesForm: React.FC<ManageSpeciesFormProps> = ({ initialDat
       router.push(`/trainer/manage-species`);
       toast.success('Species deleted.');
     } catch (error: any) {
-      toast.error('Fail to delete.');
+      toast.error(error.response.data.title);
     } finally {
       setLoading(false);
       setOpen(false);

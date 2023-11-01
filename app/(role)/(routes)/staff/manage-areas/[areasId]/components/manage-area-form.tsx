@@ -127,7 +127,13 @@ export const ManageAreasForm: React.FC<ManageAreasFormProps> = ({ initialData })
                 <FormItem>
                   <FormLabel>Area Id</FormLabel>
                   <FormControl>
-                    <Input readOnly={!!initialData} disabled={loading} placeholder="[A-Z]" {...field} />
+                    <Input
+                      className="read-only:bg-gray-100"
+                      readOnly={!!initialData}
+                      disabled={loading}
+                      placeholder="[A-Z]"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -163,16 +169,14 @@ export const ManageAreasForm: React.FC<ManageAreasFormProps> = ({ initialData })
                             className="w-full flex items-center justify-between"
                           >
                             <div>
-                              {field.value
-                                ? employeeData.find((item) => item === field.value)
-                                : 'Select CertificateCode...'}
+                              {field.value ? employeeData.find((item) => item === field.value) : 'Select EmployeeId...'}
                             </div>
                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                           </Button>
                         </PopoverTrigger>
                         <PopoverContent className="w-[200px] p-0">
                           <Command>
-                            <CommandInput placeholder="Search CertificateName..." />
+                            <CommandInput placeholder="Search EmployeeId..." />
                             <CommandEmpty>No CertificateName found.</CommandEmpty>
                             <CommandGroup>
                               {employeeData.map((item) => (
