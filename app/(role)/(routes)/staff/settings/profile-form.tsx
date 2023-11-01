@@ -42,7 +42,7 @@ interface ProfileFormProps {
 }
 
 export const ProfileForm: React.FC<ProfileFormProps> = ({ initialData }) => {
-	const url = process.env.NEXT_PUBLIC_API_GET_STAFF;
+	const url = process.env.NEXT_PUBLIC_API_UPDATE_STAFF;
 	const params = useParams();
 	const router = useRouter();
 	const session  = useSession();
@@ -77,6 +77,8 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ initialData }) => {
 			toast.success(toastMessage);
 		} catch (error: any) {
 			toast.error('Something went wrong.');
+			console.log(error);
+			
 		} finally {
 			setLoading(false);
 		}

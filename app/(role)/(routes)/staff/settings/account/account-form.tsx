@@ -31,7 +31,6 @@ const formSchema = z.object({
   employeeId: z.string().nullable(),
   image: z.string().nullable(),
   fullName: z.string().min(1, { message: 'Full name must be between 1-50 characters.' }).max(50),
-  dob: z.string().min(1, { message: 'Date of birth is required.' }),
   citizenId: z.string().min(1, { message: 'Citizen ID is required.' }),
   email: z.string().email({ message: 'Invalid email address.' }),
   phoneNumber: z.string().refine((value) => /^\d{10}$/.test(value), {
@@ -71,7 +70,6 @@ export const AccountForm: React.FC<ManageStaffFormProps> = ({ initialData }) => 
     defaultValues: initialData || {
       image: '',
       fullName: '',
-      dob: '',
       citizenId: '',
       email: '',
       phoneNumber: '',
@@ -159,19 +157,7 @@ export const AccountForm: React.FC<ManageStaffFormProps> = ({ initialData }) => 
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="dob"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Date of birth</FormLabel>
-                  <FormControl>
-                    <Input type="date" disabled={loading} placeholder="Billboard label" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+           
             <FormField
               control={form.control}
               name="citizenId"
