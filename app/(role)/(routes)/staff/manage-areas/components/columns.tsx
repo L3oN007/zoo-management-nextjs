@@ -8,8 +8,9 @@ import { ArrowUpDown, MoreHorizontal } from 'lucide-react';
 import { CellAction } from './cell-action';
 import { DataTableRowActions } from '@/components/data-table/data-table-row-actions';
 import Link from 'next/link';
+import { useState } from 'react';
 
-export type NewsColumn = {
+export type AreaColumn = {
   areaId: string;
   areaName: string;
   employeeId: string;
@@ -18,7 +19,7 @@ export type NewsColumn = {
   };
 };
 
-export const columns: ColumnDef<NewsColumn>[] = [
+export const columns: ColumnDef<AreaColumn>[] = [
   {
     accessorKey: 'areaId',
     header: 'AreaID'
@@ -35,11 +36,23 @@ export const columns: ColumnDef<NewsColumn>[] = [
          
        
      );},
-      cell: (props) => (
-          <Link href={'/staff/manage-cages'}>
-            <span>{props.row.original.areaName}</span>
+      cell: (props) => {
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        const [areaId, setAreaId] = useState('');
+
+      const handleAreaNameClick = () => {
+        const areaId = props.row.original.areaId;
+        setAreaId(areaId);
+        sessionStorage.setItem('areaId', areaId);
+        console.log(areaId);
+        
+      };
+      return(
+          <Link  href={`/staff/manage-cages/${props.row.original.areaId}`}>
+            <span onClick={handleAreaNameClick}>{props.row.original.areaName}</span>
           </Link>
       )
+      }
     
   },
   
