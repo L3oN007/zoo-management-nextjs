@@ -27,35 +27,22 @@ export const columns: ColumnDef<AreaColumn>[] = [
   {
     accessorKey: 'areaName',
     header: ({ column }) => {
-    return (
-        
-         <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-           Area&rsquo;s name
-           <ArrowUpDown className="ml-2 h-4 w-4" />
-         </Button>
-         
-       
-     );},
-      cell: (props) => {
-        // eslint-disable-next-line react-hooks/rules-of-hooks
-        const [areaId, setAreaId] = useState('');
-
-      const handleAreaNameClick = () => {
-        const areaId = props.row.original.areaId;
-        setAreaId(areaId);
-        sessionStorage.setItem('areaId', areaId);
-        console.log(areaId);
-        
-      };
-      return(
-          <Link  href={`/staff/manage-cages/${props.row.original.areaId}`}>
-            <span onClick={handleAreaNameClick}>{props.row.original.areaName}</span>
-          </Link>
-      )
-      }
-    
+      return (
+        <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+          Area&rsquo;s name
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: (props) => {
+      return (
+        <Link href={`/staff/manage-cages/${props.row.original.areaId}`}>
+          <span>{props.row.original.areaName}</span>
+        </Link>
+      );
+    }
   },
-  
+
   {
     accessorKey: 'employee',
     header: 'Trainer',
