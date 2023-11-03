@@ -31,12 +31,11 @@ const SchedulePage: React.FC = () => {
   const session = useSession();
   const areaId = session.data?.user.areaId;
 
-  const urlGetScheduleOfAnArea = ''; // need to be fixed
+  const urlGetScheduleOfAnArea = process.env.NEXT_PUBLIC_API_LOAD_FEEDING_SCHEDULE_OF_AREA! + session.data?.user.areaId;
   const urlGetScheduleOfAnEmp =
     process.env.NEXT_PUBLIC_API_LOAD_FEEDING_SCHEDULE_OF_TRAINER! + session.data?.user.employeeId;
 
-  // const urlGetSchedule = areaId != null ? urlGetScheduleOfAnArea : urlGetScheduleOfAnEmp;
-  const urlGetSchedules = process.env.NEXT_PUBLIC_API_LOAD_SCHEDULES;
+  const urlGetSchedule = areaId != null ? urlGetScheduleOfAnArea : urlGetScheduleOfAnEmp;
 
   const urlCreateSchedule = process.env.NEXT_PUBLIC_API_CREATE_SCHEDULE;
   const urlUpdateSchedule = process.env.NEXT_PUBLIC_API_UPDATE_SCHEDULE;
@@ -49,8 +48,7 @@ const SchedulePage: React.FC = () => {
 
   const fetchEvents = () => {
     axios
-      // need to be fixed
-      .get<Event[]>(urlGetSchedules!)
+      .get<Event[]>(urlGetSchedule!)
       .then((response) => {
         const currentDate = new Date();
         const updatedEvents = response.data.map((event) => {
