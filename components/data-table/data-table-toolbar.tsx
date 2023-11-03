@@ -31,21 +31,23 @@ export function DataTableToolbar<TData>({ table, searchKey, filterOptions }: Dat
           onChange={(event) => table.getColumn(searchKey)?.setFilterValue(event.target.value)}
           className="h-8 w-[150px] lg:w-[250px]"
         />
+      </div>
+      <div className="flex space-x-2">
         {table.getColumn('employeeStatus') && (
           <DataTableFacetedFilter column={table.getColumn('employeeStatus')} title="Status" options={filterOptions} />
         )}
-        {table.getColumn('tag') && (
-          <DataTableFacetedFilter column={table.getColumn('tag')} title="Tag" options={filterOptions} />
+        {table.getColumn('area_areaName') && (
+          <DataTableFacetedFilter column={table.getColumn('area_areaName')} title="Area" options={filterOptions} />
         )}
-
         {isFiltered && (
-          <Button variant="ghost" onClick={() => table.resetColumnFilters()} className="h-8 px-2 lg:px-3">
+          <Button variant="ghost" onClick={() => table.resetColumnFilters()} className="h-8 px-2 lg:px-3 ">
             Reset
             <Cross2Icon className="ml-2 h-4 w-4" />
           </Button>
         )}
       </div>
-      <DataTableViewOptions table={table} />
+
+      {/* <DataTableViewOptions table={table} /> */}
     </div>
   );
 }
