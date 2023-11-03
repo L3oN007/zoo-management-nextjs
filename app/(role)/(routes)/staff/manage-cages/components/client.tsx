@@ -14,7 +14,6 @@ interface ManageCageClientProps {
 }
 
 export const ManageCageClient: FC<ManageCageClientProps> = ({ data }) => {
-  console.log('data', data);
   const router = useRouter();
 
   const uniqueTags = useMemo(() => {
@@ -39,7 +38,7 @@ export const ManageCageClient: FC<ManageCageClientProps> = ({ data }) => {
         </Button>
       </div>
       <Separator />
-      <DataTable columns={columns} data={data} searchKey="name" filterOptions={tagsData} />
+      <DataTable columns={columns} data={data} searchKey="name" />
     </>
   );
 };
