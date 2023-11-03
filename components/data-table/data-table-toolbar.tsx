@@ -27,12 +27,22 @@ export function DataTableToolbar<TData>({ table, searchKey, data }: DataTableToo
   const isFiltered = table.getState().columnFilters.length > 0;
 
   const employeeStatusColumn = table.getColumn('employeeStatus');
+  const isDeletedColumn = table.getColumn('isDeleted');
   const areaNameColumn = table.getColumn('area_areaName');
   const trainerColumn = table.getColumn('employee_fullName');
+  const healthStatusColumn = table.getColumn('healthStatus');
+  const rarityColumn = table.getColumn('rarity');
+  const animalSpeciesColumn = table.getColumn('animalSpecies_speciesName');
+  const cageNameColumn = table.getColumn('cage_name');
 
   let empStatusOptions: filterOptions[] = [];
   let areaNameOptions: filterOptions[] = [];
   let trainerNameOptions: filterOptions[] = [];
+  let healthStatusOptions: filterOptions[] = [];
+  let rarityOptions: filterOptions[] = [];
+  let animalSpeciesOptions: filterOptions[] = [];
+  let isDeletedOptions: filterOptions[] = [];
+  let cageNameOptions: filterOptions[] = [];
 
   if (employeeStatusColumn && employeeStatusColumn.getSize() > 0) {
     // Add filter options for employee status
@@ -43,6 +53,33 @@ export function DataTableToolbar<TData>({ table, searchKey, data }: DataTableToo
       },
       {
         label: 'Inactive',
+        value: '1'
+      }
+    );
+  }
+  if (isDeletedColumn && isDeletedColumn.getSize() > 0) {
+    // Add filter options for employee status
+    isDeletedOptions.push(
+      {
+        label: 'Active',
+        value: '0'
+      },
+      {
+        label: 'Inactive',
+        value: '1'
+      }
+    );
+  }
+
+  if (healthStatusColumn && healthStatusColumn.getSize() > 0) {
+    // Add filter options for employee status
+    healthStatusOptions.push(
+      {
+        label: 'Unchecked',
+        value: '0'
+      },
+      {
+        label: 'Checked',
         value: '1'
       }
     );
@@ -59,6 +96,45 @@ export function DataTableToolbar<TData>({ table, searchKey, data }: DataTableToo
     }));
     // Add filter options for health status
     areaNameOptions.push(...tagsData);
+  }
+
+  if (cageNameColumn && cageNameColumn.getSize() > 0) {
+    const allTags = data.map((item: any) => item.cage.name);
+    const uniqueTagsSet = new Set(allTags);
+    const uniqueTags = Array.from(uniqueTagsSet) as string[];
+
+    const tagsData = uniqueTags.map((tag) => ({
+      label: tag,
+      value: tag
+    }));
+    // Add filter options for health status
+    cageNameOptions.push(...tagsData);
+  }
+
+  if (animalSpeciesColumn && animalSpeciesColumn.getSize() > 0) {
+    const allTags = data.map((item: any) => item.animalSpecies.speciesName);
+    const uniqueTagsSet = new Set(allTags);
+    const uniqueTags = Array.from(uniqueTagsSet) as string[];
+
+    const tagsData = uniqueTags.map((tag) => ({
+      label: tag,
+      value: tag
+    }));
+    // Add filter options for health status
+    animalSpeciesOptions.push(...tagsData);
+  }
+
+  if (rarityColumn && rarityColumn.getSize() > 0) {
+    const allTags = data.map((item: any) => item.rarity);
+    const uniqueTagsSet = new Set(allTags);
+    const uniqueTags = Array.from(uniqueTagsSet) as string[];
+
+    const tagsData = uniqueTags.map((tag) => ({
+      label: tag,
+      value: tag
+    }));
+    // Add filter options for health status
+    rarityOptions.push(...tagsData);
   }
 
   if (trainerColumn && trainerColumn.getSize() > 0) {
@@ -95,12 +171,35 @@ export function DataTableToolbar<TData>({ table, searchKey, data }: DataTableToo
         {table.getColumn('area_areaName') && (
           <DataTableFacetedFilter column={table.getColumn('area_areaName')} title="Area" options={areaNameOptions} />
         )}
+        {table.getColumn('animalSpecies_speciesName') && (
+          <DataTableFacetedFilter
+            column={table.getColumn('animalSpecies_speciesName')}
+            title="Species"
+            options={animalSpeciesOptions}
+          />
+        )}
+        {table.getColumn('rarity') && (
+          <DataTableFacetedFilter column={table.getColumn('rarity')} title="Rarity" options={rarityOptions} />
+        )}
+        {table.getColumn('healthStatus') && (
+          <DataTableFacetedFilter
+            column={table.getColumn('healthStatus')}
+            title="Health Status"
+            options={healthStatusOptions}
+          />
+        )}
         {table.getColumn('employee_fullName') && (
           <DataTableFacetedFilter
             column={table.getColumn('employee_fullName')}
             title="Trainer"
             options={trainerNameOptions}
           />
+        )}
+        {table.getColumn('cage_name') && (
+          <DataTableFacetedFilter column={table.getColumn('cage_name')} title="Cage" options={cageNameOptions} />
+        )}
+        {table.getColumn('isDeleted') && (
+          <DataTableFacetedFilter column={table.getColumn('isDeleted')} title="Status" options={isDeletedOptions} />
         )}
         {isFiltered && (
           <Button variant="ghost" onClick={() => table.resetColumnFilters()} className="h-8 px-2 lg:px-3 ">
@@ -110,7 +209,7 @@ export function DataTableToolbar<TData>({ table, searchKey, data }: DataTableToo
         )}
       </div>
 
-      <DataTableViewOptions table={table} />
+      {/* <DataTableViewOptions table={table} /> */}
     </div>
   );
 }

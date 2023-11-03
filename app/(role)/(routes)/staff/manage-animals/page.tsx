@@ -6,7 +6,7 @@ import { format } from 'date-fns';
 import { any } from 'zod';
 
 const ManageAnimalPage = async () => {
-  const url = 'https://648867740e2469c038fda6cc.mockapi.io/animal';
+  const url = process.env.NEXT_PUBLIC_API_LOAD_ANIMALS;
 
   try {
     // Make the GET request to fetch staff data
@@ -34,6 +34,8 @@ const ManageAnimalPage = async () => {
         animal.importDate = format(new Date(animal.importDate), 'MM/dd/yyyy');
         var img = animal.image.replace(/\[|\]|'/g, '').split(',');
         animal.image = img[0];
+        animal.healthStatus = animal.healthStatus.toString();
+        animal.isDeleted = animal.isDeleted.toString();
       });
     }
 

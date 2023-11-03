@@ -11,36 +11,23 @@ import { columns } from './columns';
 import { CheckCircledIcon, CrossCircledIcon } from '@radix-ui/react-icons';
 
 interface ManageAnimalClientProps {
-	data: any;
+  data: any;
 }
 
 export const ManageAnimalClient: FC<ManageAnimalClientProps> = ({ data }) => {
-	const router = useRouter();
-	const statuses = [
-		{
-			value: "0",
-			label: "Active",
-			icon: CheckCircledIcon,
-		},
-		{
-			value: "1",
-			label: "Inactive",
-			icon: CrossCircledIcon,
-		},
-	]
+  const router = useRouter();
 
-
-	return (
-		<>
-			<div className='flex items-center justify-between'>
-				<Heading title={`Animals (${Object.keys(data).length})`} description='Manage Animals in the zoo' />
-				<Button onClick={() => router.push('/staff/manage-animals/new')}>
-					<Plus className='mr-2 h-4 w-4' />
-					Add New
-				</Button>
-			</div>
-			<Separator />
-			<DataTable columns={columns} data={data} searchKey='fullName' filterOptions={statuses} />
-		</>
-	);
+  return (
+    <>
+      <div className="flex items-center justify-between">
+        <Heading title={`Animals (${Object.keys(data).length})`} description="Manage Animals in the zoo" />
+        <Button onClick={() => router.push('/staff/manage-animals/new')}>
+          <Plus className="mr-2 h-4 w-4" />
+          Add New
+        </Button>
+      </div>
+      <Separator />
+      <DataTable columns={columns} data={data} searchKey="name" />
+    </>
+  );
 };
