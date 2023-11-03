@@ -37,9 +37,10 @@ export const CustomScheduleEditor: React.FC<CustomScheduleEditorProps> = ({ even
   const note = eventData?.note || '';
 
   const menuUrl = process.env.NEXT_PUBLIC_API_LOAD_MENUS;
-  const cageUrl = process.env.NEXT_PUBLIC_API_LOAD_CAGES;
   const animalUrl = process.env.NEXT_PUBLIC_API_LOAD_ANIMALS;
   const trainerUrl = process.env.NEXT_PUBLIC_API_LOAD_TRAINERS;
+
+  const loadCagesByArea = process.env.NEXT_PUBLIC_API_LOAD_CAGE_BY_AREA + `${session.data?.user.areaId}`;
 
   const [menu, setMenu] = useState([]);
   const [cage, setCage] = useState([]);
@@ -59,7 +60,7 @@ export const CustomScheduleEditor: React.FC<CustomScheduleEditorProps> = ({ even
       };
 
       fetchData(menuUrl!, setMenu);
-      fetchData(cageUrl!, setCage);
+      fetchData(loadCagesByArea!, setCage);
       fetchData(animalUrl!, setAnimal);
       fetchData(trainerUrl!, setEmployee);
 
