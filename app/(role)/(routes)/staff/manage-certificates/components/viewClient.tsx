@@ -14,10 +14,9 @@ import { empColumns } from "./empColumns"
 interface ManageCertificateClientProps {
     data: any,
 
-
 }
 
-export const ManageCertificateClient: FC<ManageCertificateClientProps> = ({data}) => {
+export const ManageEmpCertificateClient: FC<ManageCertificateClientProps> = ({data}) => {
     const router = useRouter();
 
    
@@ -25,18 +24,14 @@ export const ManageCertificateClient: FC<ManageCertificateClientProps> = ({data}
     return (    
         <>
             <div className="flex items-center justify-between">
-                <Heading title={`Certificate (${Object.keys(data).length})`} description="Manage Certificate information of trainer" />
+                <Heading title={`Certificate  of Trainer (${Object.keys(data).length})`} description="Manage Certificate information of trainer" />
 
-                <Button onClick={() => router.push("/staff/manage-certificates/new")}>
-                    <Plus className="mr-2 h-4 w-4" />
-                    Add New
-                </Button>
             </div>
             <Separator />
-           
-            <DataTable key="certificate" columns={columns} data={data} searchKey="cerName" filterOptions={null as any} />
             
-          
+            <DataTable key="empCertificate" columns={empColumns} data={data} searchKey={"cerCode"}  filterOptions={null as any} />
+
+         
         </>
     )
 }
