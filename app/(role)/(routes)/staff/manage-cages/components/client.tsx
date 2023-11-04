@@ -14,19 +14,7 @@ interface ManageCageClientProps {
 }
 
 export const ManageCageClient: FC<ManageCageClientProps> = ({ data }) => {
-  console.log('data', data);
   const router = useRouter();
-
-  const uniqueTags = useMemo(() => {
-    const allTags = data.map((item: any) => item.area.areaName);
-    const uniqueTagsSet = new Set(allTags);
-    return Array.from(uniqueTagsSet) as string[];
-  }, [data]);
-
-  const tagsData = uniqueTags.map((tag) => ({
-    label: tag,
-    value: tag
-  }));
 
   return (
     <>
@@ -39,7 +27,7 @@ export const ManageCageClient: FC<ManageCageClientProps> = ({ data }) => {
         </Button>
       </div>
       <Separator />
-      <DataTable columns={columns} data={data} searchKey="name" filterOptions={tagsData} />
+      <DataTable columns={columns} data={data} searchKey="name" placeholder="Search by cage name" />
     </>
   );
 };
