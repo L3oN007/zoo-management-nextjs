@@ -365,7 +365,7 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
                     </FormControl>
                     <SelectContent>
                       <SelectGroup>
-                        <SelectLabel>Health Status</SelectLabel>
+                        <SelectLabel>Gender</SelectLabel>
                         <SelectItem value="Female">Female</SelectItem>
                         <SelectItem value="Male">Male</SelectItem>
                       </SelectGroup>
@@ -402,8 +402,8 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue defaultValue={field.value === 0 ? 'Active' : 'Inactive'}>
-                          {field.value === 0 ? 'Active' : 'Inactive'}
+                        <SelectValue defaultValue={field.value.toString() == '0' ? 'Active' : 'Inactive'}>
+                          {field.value.toString() == '0' ? 'Active' : 'Inactive'}
                         </SelectValue>
                       </SelectTrigger>
                     </FormControl>

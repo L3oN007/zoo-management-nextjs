@@ -29,12 +29,12 @@ export const empColumns: ColumnDef<empCertificateColumn>[] = [
     header: 'No',
     cell: (props) => (
       <div className="flex items-center">
-        <span>{props.row.index +1}</span>
+        <span>{props.row.index + 1}</span>
       </div>
     )
   },
   {
-    accessorKey: 'employee',
+    accessorKey: 'employee.fullName',
     header: 'Employee',
     cell: (props) => (
       <div className="flex items-center">
@@ -56,7 +56,6 @@ export const empColumns: ColumnDef<empCertificateColumn>[] = [
     header: 'Description'
   }
 ];
-function calculateNo(): import("react").ReactNode {
+function calculateNo(): import('react').ReactNode {
   throw new Error('Function not implemented.');
 }
-
