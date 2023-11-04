@@ -171,6 +171,13 @@ const SchedulePage: React.FC = () => {
         eventRendered={onEventRendered}
         showQuickInfo={false}
         editorTemplate={(props: Event) => <CustomScheduleEditor eventData={props} />}
+        popupOpen={(args) => {
+          let isEmptyCell =
+            args.target.classList.contains('e-work-cells') || args.target.classList.contains('e-header-cells');
+          if (args.type === 'Editor' && isEmptyCell && areaId == null) {
+            args.cancel = true;
+          }
+        }}
       >
         <ViewsDirective>
           <ViewDirective option="Day" startHour="06:00" endHour="19:00"></ViewDirective>

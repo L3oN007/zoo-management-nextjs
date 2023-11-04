@@ -27,13 +27,7 @@ export const ManageAreaClient: FC<ManageAreaClientProps> = ({ data }) => {
         </Button>
       </div>
       <Separator />
-      <DataTable
-        columns={columns}
-        data={data}
-        searchKey="name"
-        placeholder="Search by area name"
-        filterOptions={null as any}
-      />
+      <DataTable columns={columns} data={data} searchKey="areaName" placeholder="Search by area name" />
     </>
   );
 };

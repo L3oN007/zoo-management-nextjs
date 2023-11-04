@@ -363,8 +363,9 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
                     <SelectContent>
                       <SelectGroup>
                         <SelectLabel>Health Status</SelectLabel>
-                        <SelectItem value="0">Healthy</SelectItem>
-                        <SelectItem value="1">Unhealthy</SelectItem>
+                        <SelectItem value="0">Undefined</SelectItem>
+                        <SelectItem value="1">Ok</SelectItem>
+                        <SelectItem value="2">Bad</SelectItem>
                       </SelectGroup>
                     </SelectContent>
                   </Select>

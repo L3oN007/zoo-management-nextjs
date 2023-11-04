@@ -12,9 +12,10 @@ import { empColumns } from './empColumns';
 
 interface ManageCertificateClientProps {
   data: any;
+  empCer: any;
 }
 
-export const ManageCertificateClient: FC<ManageCertificateClientProps> = ({ data }) => {
+export const ManageCertificateClient: FC<ManageCertificateClientProps> = ({ data, empCer }) => {
   const router = useRouter();
 
   return (
@@ -31,8 +32,18 @@ export const ManageCertificateClient: FC<ManageCertificateClientProps> = ({ data
         </Button>
       </div>
       <Separator />
-
-      <DataTable key="certificate" columns={columns} data={data} searchKey="cerName" filterOptions={null as any} />
+      <div className="flex justify-around">
+        <DataTable key="certificate" columns={columns} data={data} searchKey="cerName" filterOptions={null as any} />
+        <div className="ml-4">
+          <DataTable
+            key="empCertificate"
+            columns={empColumns}
+            data={empCer}
+            searchKey={'cerCode'}
+            filterOptions={null as any}
+          />
+        </div>
+      </div>
     </>
   );
 };

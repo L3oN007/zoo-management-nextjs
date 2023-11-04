@@ -46,7 +46,7 @@ const formSchema = z.object({
   birthDate: z.string().min(1, { message: 'Region is required.' }),
   importDate: z.string().min(1, { message: 'Region is required.' }),
   region: z.string().min(1, { message: 'Region is required.' }),
-  behavior: z.string().min(1, { message: 'Behavior is required.' }),
+  behavior: z.string().min(1, { message: 'Behavior is required' }),
   healthStatus: z.coerce.number(),
   isDeleted: z.coerce.number(),
   gender: z.string().min(1, { message: 'Gender is required.' }),
@@ -334,7 +334,6 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name="gender"
