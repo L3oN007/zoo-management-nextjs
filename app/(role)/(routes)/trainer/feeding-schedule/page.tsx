@@ -10,6 +10,7 @@ import {
   ScheduleComponent,
   TimelineMonth,
   TimelineViews,
+  Timezone,
   ViewDirective,
   ViewsDirective,
   Week
@@ -20,13 +21,26 @@ import { Event } from './modal/event';
 import { CustomScheduleEditor } from './components/CustomEditor';
 // import { toast } from 'react-toastify';
 import { toast } from 'react-hot-toast';
+import { useSession } from 'next-auth/react';
+import { constants } from 'buffer';
 registerLicense('Ngo9BigBOggjHTQxAR8/V1NHaF5cXmVCf1JpRGBGfV5yd0VDalhRTnVZUj0eQnxTdEZiWX5bcXZWRmFUVUR2Ww==');
 
 const SchedulePage: React.FC = () => {
   const [events, setEvents] = useState<Event[]>();
 
-  const urlGetSchedules = process.env.NEXT_PUBLIC_API_LOAD_SCHEDULES;
+  const session = useSession();
+  const areaId = session.data?.user.areaId;
+
+  const urlGetScheduleOfAnArea = process.env.NEXT_PUBLIC_API_LOAD_FEEDING_SCHEDULE_OF_AREA! + session.data?.user.areaId;
+  const urlGetScheduleOfAnEmp =
+    process.env.NEXT_PUBLIC_API_LOAD_FEEDING_SCHEDULE_OF_TRAINER! + session.data?.user.employeeId;
+
+  const urlGetSchedule = areaId != null ? urlGetScheduleOfAnArea : urlGetScheduleOfAnEmp;
+
   const urlCreateSchedule = process.env.NEXT_PUBLIC_API_CREATE_SCHEDULE;
+  const urlUpdateSchedule = process.env.NEXT_PUBLIC_API_UPDATE_SCHEDULE;
+  const urlDeleteSchedule = process.env.NEXT_PUBLIC_API_DELETE_SCHEDULE;
+  const urlUpdateScheduleStatus = process.env.NEXT_PUBLIC_API_UPDATE_SCHEDULE_STATUS;
 
   useEffect(() => {
     fetchEvents();
@@ -34,19 +48,14 @@ const SchedulePage: React.FC = () => {
 
   const fetchEvents = () => {
     axios
-      .get<Event[]>(urlGetSchedules!)
+      .get<Event[]>(urlGetSchedule!)
       .then((response) => {
         const currentDate = new Date();
         const updatedEvents = response.data.map((event) => {
-          // Convert event times from UTC to local time zone
-          const startTime = new Date(event.StartTime);
           const endTime = new Date(event.EndTime);
-
           return {
             ...event,
-            StartTime: startTime.toISOString(),
-            EndTime: endTime.toISOString()
-            // IsReadonly: startTime < currentDate
+            IsReadonly: endTime < currentDate
           };
         });
 
@@ -55,43 +64,18 @@ const SchedulePage: React.FC = () => {
       })
       .catch((error) => {
         console.error(error);
-        toast.error(error.response.data.title);
       });
-  };
-
-  const processEventTimezone = (event: Event) => {
-    const startTime = new Date(event.StartTime);
-    const endTime = new Date(event.EndTime);
-
-    // Get UTC offset in minutes
-    const utcOffset = startTime.getTimezoneOffset();
-
-    // Convert times to UTC
-    startTime.setMinutes(startTime.getMinutes() - utcOffset);
-    endTime.setMinutes(endTime.getMinutes() - utcOffset);
-
-    // Add date to times
-    const date = new Date();
-    startTime.setFullYear(date.getFullYear(), date.getMonth(), date.getDate());
-    endTime.setFullYear(date.getFullYear(), date.getMonth(), date.getDate());
-
-    // Format date strings
-    function toIsoString(date: Date) {
-      return date.toISOString().slice(0, 16) + 'Z';
-    }
-
-    return {
-      ...event
-    };
   };
 
   const addEvent = (newEvent: Event) => {
     const adjustedEvent = newEvent;
     const newSchedule = { ...adjustedEvent['0'], Id: undefined };
+    console.log(newEvent);
     axios
       .post<Event>(urlCreateSchedule!, newSchedule)
       .then(() => {
         fetchEvents();
+        toast.success('Created successfully!');
       })
       .catch((error) => {
         console.error(error);
@@ -100,11 +84,12 @@ const SchedulePage: React.FC = () => {
   };
 
   const updateEvent = (updatedEvent: Event) => {
-    const adjustedEvent = processEventTimezone(updatedEvent);
+    const adjustedEvent = updatedEvent;
     const updateSchedule = { ...adjustedEvent, Id: undefined };
 
+    let updateUrl = areaId != null ? urlUpdateSchedule : urlUpdateScheduleStatus;
     axios
-      .put(`https://651d776944e393af2d59dbd7.mockapi.io/schedule/${adjustedEvent.id}`, updateSchedule)
+      .put(updateUrl + `${adjustedEvent.no}`, updateSchedule)
       .then(() => {
         fetchEvents();
       })
@@ -114,14 +99,18 @@ const SchedulePage: React.FC = () => {
       });
   };
 
-  const deleteEvent = (eventId: string) => {
+  const deleteEvent = (deleteEvent: Event) => {
+    const adjustedEvent = deleteEvent;
+    const updateSchedule = { ...adjustedEvent, Id: undefined };
+
     axios
-      .delete(`https://651d776944e393af2d59dbd7.mockapi.io/schedule/${eventId}`)
+      .delete(urlDeleteSchedule! + `${adjustedEvent.no}`)
       .then(() => {
         fetchEvents();
       })
       .catch((error) => {
         console.error(error);
+        toast.error(error.response.data.title);
       });
   };
 
@@ -176,7 +165,7 @@ const SchedulePage: React.FC = () => {
           } else if (args.requestType === 'eventChange') {
             updateEvent(args.data as Event);
           } else if (args.requestType === 'eventRemove') {
-            deleteEvent((args.data[0] as Event).id);
+            deleteEvent(args.data[0] as Event);
           }
         }}
         eventRendered={onEventRendered}
@@ -187,9 +176,9 @@ const SchedulePage: React.FC = () => {
           <ViewDirective option="Day" startHour="06:00" endHour="19:00"></ViewDirective>
           <ViewDirective option="Week" isSelected={true} eventTemplate={eventTemplate}></ViewDirective>
           <ViewDirective option="TimelineDay"></ViewDirective>
-          <ViewDirective option="TimelineMonth"></ViewDirective>
+          <ViewDirective option="Agenda"></ViewDirective>
         </ViewsDirective>
-        <Inject services={[Day, Week, Month, DragAndDrop, Agenda, TimelineViews, TimelineMonth, Resize]} />
+        <Inject services={[Day, Week, Month, Agenda, TimelineViews, TimelineMonth]} />
       </ScheduleComponent>
     </div>
   );

@@ -53,7 +53,10 @@ export const columns: ColumnDef<CageColumn>[] = [
 
   {
     accessorKey: 'area.areaName',
-    header: 'Area'
+    header: 'Area',
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id));
+    }
   },
   {
     id: 'actions',

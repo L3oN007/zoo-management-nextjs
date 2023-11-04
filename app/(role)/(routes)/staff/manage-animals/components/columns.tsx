@@ -15,7 +15,7 @@ export type AnimalColumn = {
   gender: string;
   birthDate: Date;
   importDate: Date;
-  healthStatus: number;
+  healthStatus: string | number;
   rarity: string;
   employee: {
     employeeId: string;
@@ -37,7 +37,7 @@ export type AnimalColumn = {
     speciesId: number;
     speciesName: string;
   };
-  isDeleted: number;
+  isDeleted: number | string;
 };
 
 export const columns: ColumnDef<AnimalColumn>[] = [
@@ -58,7 +58,7 @@ export const columns: ColumnDef<AnimalColumn>[] = [
     header: ({ column }) => {
       return (
         <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-          Animal's Name
+          Animal&apos;s Name
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
@@ -109,7 +109,10 @@ export const columns: ColumnDef<AnimalColumn>[] = [
   },
   {
     accessorKey: 'rarity',
-    header: 'Rarity'
+    header: 'Rarity',
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id));
+    }
   },
   {
     accessorKey: 'isDeleted',
@@ -118,7 +121,7 @@ export const columns: ColumnDef<AnimalColumn>[] = [
       <div className="flex items-center">
         <span
           className={
-            props.row.original.isDeleted === 0
+            props.row.original.isDeleted == '0'
               ? 'bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300'
               : 'bg-pink-100 text-pink-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-pink-900 dark:text-pink-300'
           }
@@ -138,25 +141,34 @@ export const columns: ColumnDef<AnimalColumn>[] = [
       <div className="flex items-center">
         <span>{props.row.original.employee?.fullName}</span>
       </div>
-    )
+    ),
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id));
+    }
   },
   {
-    accessorKey: 'animalSpecies',
+    accessorKey: 'animalSpecies.speciesName',
     header: 'Species',
     cell: (props) => (
       <div className="flex items-center">
         <span>{props.row.original.animalSpecies?.speciesName}</span>
       </div>
-    )
+    ),
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id));
+    }
   },
   {
-    accessorKey: 'cage',
+    accessorKey: 'cage.name',
     header: 'Cage',
     cell: (props) => (
       <div className="flex items-center">
         <span>{props.row.original.cage?.name}</span>
       </div>
-    )
+    ),
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id));
+    }
   },
   {
     id: 'actions',
