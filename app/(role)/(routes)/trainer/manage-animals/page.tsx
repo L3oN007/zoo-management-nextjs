@@ -32,6 +32,8 @@ const ManageAnimalPage = async () => {
         animal.birthDate = format(new Date(animal.birthDate), 'MM/dd/yyyy');
         animal.importDate = format(new Date(animal.importDate), 'MM/dd/yyyy');
         var img = animal.image.replace(/\[|\]|'/g, '').split(',');
+        animal.healthStatus = animal.healthStatus.toString();
+        animal.isDeleted = animal.isDeleted.toString();
         animal.image = img[0];
       });
     }

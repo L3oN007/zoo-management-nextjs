@@ -10,40 +10,22 @@ import { FC, useMemo } from 'react';
 import { columns } from './columns';
 
 interface ManageNewsClientProps {
-	data: any;
+  data: any;
 }
 
 export const ManageNewsClient: FC<ManageNewsClientProps> = ({ data }) => {
-	const router = useRouter();
-	const uniqueTags = useMemo(() => {
-		const allTags = data.flatMap((item: any) => item.tag);
-		return [...new Set(allTags)];
-	}, [data]) as string[];
-
-	const tagsData = uniqueTags.map((tag) => ({
-		label: tag,
-		value: tag,
-	}));
-
-	return (
-		<>
-			<div className='flex items-center justify-between'>
-				<Heading
-					title={`News (${Object.keys(data).length})`}
-					description='Manage News information in the zoo'
-				/>
-				<Button onClick={() => router.push('/staff/manage-news/new')}>
-					<Plus className='mr-2 h-4 w-4' />
-					Add New
-				</Button>
-			</div>
-			<Separator />
-			<DataTable
-				columns={columns}
-				data={data}
-				searchKey='title'
-				filterOptions={tagsData}
-			/>
-		</>
-	);
+  const router = useRouter();
+  return (
+    <>
+      <div className="flex items-center justify-between">
+        <Heading title={`News (${Object.keys(data).length})`} description="Manage News information in the zoo" />
+        <Button onClick={() => router.push('/staff/manage-news/new')}>
+          <Plus className="mr-2 h-4 w-4" />
+          Add New
+        </Button>
+      </div>
+      <Separator />
+      <DataTable columns={columns} data={data} searchKey="title" placeholder="Search by title" />
+    </>
+  );
 };
