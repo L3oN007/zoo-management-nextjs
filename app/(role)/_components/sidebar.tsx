@@ -8,7 +8,7 @@ export const Sidebar = () => {
       <div className="py-4 pl-9 ">
         <Logo />
       </div>
-      <div className="flex flex-col w-full">
+      <div className="flex flex-col w-full h-full">
         <SidebarRoutes />
       </div>
     </div>

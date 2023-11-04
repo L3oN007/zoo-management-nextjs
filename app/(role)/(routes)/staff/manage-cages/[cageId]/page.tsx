@@ -5,7 +5,8 @@ import { ManageCageForm } from './components/manage-cage-form';
 import { ManageCageClient } from '../components/client';
 import { useState, useEffect } from 'react';
 
-const ManageAreasPage = async ({ params }: { params: { cageId: string } }) => {
+// eslint-disable-next-line @next/next/no-async-client-component
+const ManageCagesPage = async ({ params }: { params: { cageId: string } }) => {
   const url = (await process.env.NEXT_PUBLIC_API_GET_CAGE) + `?id=${params.cageId}`;
   const cagebyarea = (await process.env.NEXT_PUBLIC_API_LOAD_CAGE_BY_AREA) + `${params.cageId}`;
 
@@ -42,4 +43,4 @@ const ManageAreasPage = async ({ params }: { params: { cageId: string } }) => {
   }
 };
 
-export default ManageAreasPage;
+export default ManageCagesPage;
