@@ -23,7 +23,7 @@ const SettingsProfilePage = async () => {
   const session  = useSession();
   console.log("aaaaaaaaa");
   
-  console.log(session.data?.user.employeeId);
+  console.log(session.data?.user.image);
   
   var response = await axios.get(url + `?id=${session.data?.user.employeeId}`);
   let staffData = response.data;
