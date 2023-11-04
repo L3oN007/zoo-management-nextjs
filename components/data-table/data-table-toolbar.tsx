@@ -15,6 +15,7 @@ interface DataTableToolbarProps<TData> {
   table: Table<TData>;
   searchKey: string;
   data: any;
+  placeholder?: string;
 }
 
 interface filterOptions {
@@ -23,7 +24,7 @@ interface filterOptions {
   icon?: React.ComponentType<{ className?: string }>;
 }
 
-export function DataTableToolbar<TData>({ table, searchKey, data }: DataTableToolbarProps<TData>) {
+export function DataTableToolbar<TData>({ table, searchKey, data, placeholder }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
 
   const employeeStatusColumn = table.getColumn('employeeStatus');
@@ -154,7 +155,7 @@ export function DataTableToolbar<TData>({ table, searchKey, data }: DataTableToo
     <div className="flex items-center justify-between">
       <div className="flex flex-1 items-center space-x-2">
         <Input
-          placeholder="Search"
+          placeholder={placeholder}
           value={(table.getColumn(searchKey)?.getFilterValue() as string) ?? ''}
           onChange={(event) => table.getColumn(searchKey)?.setFilterValue(event.target.value)}
           className="h-8 w-[150px] lg:w-[250px]"

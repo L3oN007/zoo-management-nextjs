@@ -28,7 +28,7 @@ export const ManageTrainerClient: FC<ManageTrainerClientProps> = ({ data }) => {
         </Button>
       </div>
       <Separator />
-      <DataTable columns={columns} data={data} searchKey="fullName" />
+      <DataTable columns={columns} data={data} searchKey="fullName" placeholder="Search by full name" />
     </>
   );
 };

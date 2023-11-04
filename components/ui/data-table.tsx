@@ -25,9 +25,10 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   searchKey: string;
+  placeholder?: string;
 }
 
-export function DataTable<TData, TValue>({ columns, data, searchKey }: DataTableProps<TData, TValue>) {
+export function DataTable<TData, TValue>({ columns, data, searchKey, placeholder }: DataTableProps<TData, TValue>) {
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
@@ -57,7 +58,7 @@ export function DataTable<TData, TValue>({ columns, data, searchKey }: DataTable
 
   return (
     <div className="space-y-4">
-      <DataTableToolbar table={table} searchKey={searchKey} data={data} />
+      <DataTableToolbar table={table} searchKey={searchKey} data={data} placeholder={placeholder} />
       <div className="rounded-md border">
         <Table>
           <TableHeader>
