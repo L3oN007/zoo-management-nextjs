@@ -201,15 +201,15 @@ export const ManageScheduleForm: React.FC<ManageScheduleFormProps> = ({ initialD
                           <div>
                             {field.value
                               ? foodData.find((food) => food.foodId === field.value)?.foodName
-                              : 'Select species...'}
+                              : 'Select food...'}
                           </div>
                           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent className="w-[200px] p-0">
                         <Command>
-                          <CommandInput placeholder="Search Specie ID..." />
-                          <CommandEmpty>No Specie found.</CommandEmpty>
+                          <CommandInput placeholder="Search Food ..." />
+                          <CommandEmpty>No food found.</CommandEmpty>
                           <CommandGroup>
                             {foodData.map((food) => (
                               <CommandItem
@@ -263,7 +263,7 @@ export const ManageScheduleForm: React.FC<ManageScheduleFormProps> = ({ initialD
                       </PopoverTrigger>
                       <PopoverContent className="w-[200px] p-0">
                         <Command>
-                          <CommandInput placeholder="Search Specie ID..." />
+                          <CommandInput placeholder="Search Species..." />
                           <CommandEmpty>No Specie found.</CommandEmpty>
                           <CommandGroup>
                             {speciesData.map((species) => (
