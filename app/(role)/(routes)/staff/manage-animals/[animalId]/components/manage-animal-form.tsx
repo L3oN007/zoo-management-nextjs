@@ -46,7 +46,7 @@ const formSchema = z.object({
   birthDate: z.string().min(1, { message: 'Region is required.' }),
   importDate: z.string().min(1, { message: 'Region is required.' }),
   region: z.string().min(1, { message: 'Region is required.' }),
-  behavior: z.string().min(1, { message: 'Behavior is required.' }),
+  behavior: z.string().min(1, { message: 'Behavior is required' }),
   healthStatus: z.coerce.number(),
   isDeleted: z.coerce.number(),
   gender: z.string().min(1, { message: 'Gender is required.' }),
@@ -322,16 +322,21 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue defaultValue={field.value === 1 ? 'Checked' : 'Unchecked'}>
-                          {field.value === 1 ? 'Checked' : 'Unchecked'}
+                        <SelectValue
+                          defaultValue={
+                            field.value.toString() == '1' ? 'Ok' : field.value.toString() == '2' ? 'Bad' : 'Undefined'
+                          }
+                        >
+                          {field.value.toString() == '1' ? 'Ok' : field.value.toString() == '2' ? 'Bad' : 'Undefined'}
                         </SelectValue>
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
                       <SelectGroup>
                         <SelectLabel>Health Status</SelectLabel>
-                        <SelectItem value="1">Checked</SelectItem>
-                        <SelectItem value="0">Unchecked</SelectItem>
+                        <SelectItem value="0">Undefined</SelectItem>
+                        <SelectItem value="1">Ok</SelectItem>
+                        <SelectItem value="2">Bad</SelectItem>
                       </SelectGroup>
                     </SelectContent>
                   </Select>

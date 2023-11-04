@@ -76,12 +76,16 @@ export function DataTableToolbar<TData>({ table, searchKey, data, placeholder }:
     // Add filter options for employee status
     healthStatusOptions.push(
       {
-        label: 'Unchecked',
+        label: 'Undefined',
         value: '0'
       },
       {
-        label: 'Checked',
+        label: 'Ok',
         value: '1'
+      },
+      {
+        label: 'Bad',
+        value: '2'
       }
     );
   }
