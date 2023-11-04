@@ -7,6 +7,7 @@ import {
   Cat,
   Compass,
   Layout,
+  LucideIcon,
   MapPin,
   MenuSquareIcon,
   Newspaper,
@@ -19,10 +20,16 @@ import { useSession } from 'next-auth/react';
 import { SidebarItem } from './sidebar-item';
 
 type Route = {
-  icon: any;
+  icon: LucideIcon;
   label: string;
   href: string;
-};
+    subItems?: {
+      icon: LucideIcon;
+      label: string;
+      href: string;
+    }[];
+  };
+  
 
 export const SidebarRoutes = () => {
   const session = useSession();
@@ -61,7 +68,20 @@ export const SidebarRoutes = () => {
       {
         icon: User,
         label: 'Manage Trainers',
-        href: '/staff/manage-trainers'
+        href: '/staff/manage-trainers',
+        subItems: [
+          {
+            icon: User,
+            label: 'Lead Trainer',
+            href: '/staff/manage-trainers/lead'
+          },
+          {
+            icon: User,
+            label: 'Normal Trainer',
+            href: '/staff/manage-trainers/normal'
+          },
+          // Add more trainer subitems as needed
+        ]
       },
       {
         icon: MapPin,
@@ -81,7 +101,8 @@ export const SidebarRoutes = () => {
       {
         icon: BadgeCheck,
         label: 'Manage Certificates',
-        href: '/staff/manage-certificates'
+        href: '/staff/manage-certificates',
+
       },
       {
         icon: ArchiveRestore,
@@ -122,7 +143,7 @@ export const SidebarRoutes = () => {
   return (
     <div className="flex flex-col w-full">
       {routes.map((route) => (
-        <SidebarItem key={route.href} icon={route.icon} label={route.label} href={route.href} />
+        <SidebarItem key={route.href} icon={route.icon} label={route.label} href={route.href} subItems={route.subItems}/>
       ))}
     </div>
   );
