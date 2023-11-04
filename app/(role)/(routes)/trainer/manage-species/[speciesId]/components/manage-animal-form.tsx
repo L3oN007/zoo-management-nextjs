@@ -28,6 +28,7 @@ import { Separator } from '@/components/ui/separator';
 import { log } from 'console';
 
 const formSchema = z.object({
+  speciesId: z.coerce.number(),
   speciesName: z.string().min(1, { message: "Species' name is required." })
 });
 
@@ -67,7 +68,7 @@ export const ManageSpeciesForm: React.FC<ManageSpeciesFormProps> = ({ initialDat
       setLoading(true);
       if (initialData) {
         await axios
-          .put(updateAPI + `${params.speciesId}`, data)
+          .put(updateAPI+'', data)
           .then((response) => {
             console.log(response);
           })
@@ -118,6 +119,19 @@ export const ManageSpeciesForm: React.FC<ManageSpeciesFormProps> = ({ initialDat
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
           <div className="md:grid md:grid-cols-3 gap-8">
+          <FormField
+              control={form.control}
+              name="speciesId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Species ID</FormLabel>
+                  <FormControl>
+                    <Input disabled={loading} placeholder="SpeciesID" readOnly={initialData ? true : false} {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="speciesName"
