@@ -1,8 +1,8 @@
-import { ManageAnimalClient } from "./components/client";
+import { ManageAnimalClient } from './components/client';
 
-import ErrorPage from "@/app/error/page";
-import axios from "axios";
-import { format } from "date-fns";
+import ErrorPage from '@/app/error/page';
+import axios from 'axios';
+import { format } from 'date-fns';
 
 const ManageAnimalPage = async () => {
   const url = process.env.NEXT_PUBLIC_API_LOAD_ANIMALS;
@@ -29,9 +29,11 @@ const ManageAnimalPage = async () => {
     // If animalData is an array, loop through it and update date format and isDeleted property
     if (Array.isArray(animalData)) {
       animalData.forEach((animal: any) => {
-        animal.birthDate = format(new Date(animal.birthDate), "MM/dd/yyyy");
-        animal.importDate = format(new Date(animal.importDate), "MM/dd/yyyy");
-        var img = animal.image.replace(/\[|\]|'/g, "").split(",");
+        animal.birthDate = format(new Date(animal.birthDate), 'MM/dd/yyyy');
+        animal.importDate = format(new Date(animal.importDate), 'MM/dd/yyyy');
+        var img = animal.image.replace(/\[|\]|'/g, '').split(',');
+        animal.healthStatus = animal.healthStatus.toString();
+        animal.isDeleted = animal.isDeleted.toString();
         animal.image = img[0];
       });
     }

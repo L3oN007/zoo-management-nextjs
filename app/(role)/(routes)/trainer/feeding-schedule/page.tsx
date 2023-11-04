@@ -31,7 +31,12 @@ const SchedulePage: React.FC = () => {
   const session = useSession();
   const areaId = session.data?.user.areaId;
 
-  const urlGetSchedules = process.env.NEXT_PUBLIC_API_LOAD_SCHEDULES;
+  const urlGetScheduleOfAnArea = process.env.NEXT_PUBLIC_API_LOAD_FEEDING_SCHEDULE_OF_AREA! + session.data?.user.areaId;
+  const urlGetScheduleOfAnEmp =
+    process.env.NEXT_PUBLIC_API_LOAD_FEEDING_SCHEDULE_OF_TRAINER! + session.data?.user.employeeId;
+
+  const urlGetSchedule = areaId != null ? urlGetScheduleOfAnArea : urlGetScheduleOfAnEmp;
+
   const urlCreateSchedule = process.env.NEXT_PUBLIC_API_CREATE_SCHEDULE;
   const urlUpdateSchedule = process.env.NEXT_PUBLIC_API_UPDATE_SCHEDULE;
   const urlDeleteSchedule = process.env.NEXT_PUBLIC_API_DELETE_SCHEDULE;
@@ -43,7 +48,7 @@ const SchedulePage: React.FC = () => {
 
   const fetchEvents = () => {
     axios
-      .get<Event[]>(urlGetSchedules!)
+      .get<Event[]>(urlGetSchedule!)
       .then((response) => {
         const currentDate = new Date();
         const updatedEvents = response.data.map((event) => {
@@ -70,6 +75,7 @@ const SchedulePage: React.FC = () => {
       .post<Event>(urlCreateSchedule!, newSchedule)
       .then(() => {
         fetchEvents();
+        toast.success('Created successfully!');
       })
       .catch((error) => {
         console.error(error);
@@ -165,6 +171,13 @@ const SchedulePage: React.FC = () => {
         eventRendered={onEventRendered}
         showQuickInfo={false}
         editorTemplate={(props: Event) => <CustomScheduleEditor eventData={props} />}
+        popupOpen={(args) => {
+          let isEmptyCell =
+            args.target.classList.contains('e-work-cells') || args.target.classList.contains('e-header-cells');
+          if (args.type === 'Editor' && isEmptyCell && areaId == null) {
+            args.cancel = true;
+          }
+        }}
       >
         <ViewsDirective>
           <ViewDirective option="Day" startHour="06:00" endHour="19:00"></ViewDirective>
