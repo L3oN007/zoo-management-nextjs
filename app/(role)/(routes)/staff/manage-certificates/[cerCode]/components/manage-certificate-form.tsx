@@ -19,6 +19,15 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 import { CageObj } from '@/app/models/cage';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select';
 
 const formSchema = z.object({
   certificateCode: z.string().min(1, { message: 'Certificate code is required.' }),
@@ -144,9 +153,32 @@ export const ManageCertificateForm: React.FC<ManageCertificateFormProps> = ({ in
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Level</FormLabel>
-                  <FormControl>
-                    <Input disabled={loading} placeholder="Level" {...field} />
-                  </FormControl>
+                  <Select
+                    disabled={loading}
+                    onValueChange={field.onChange}
+                    value={field.value} // Convert the value to a string here
+                    defaultValue={field.value} // Convert the default value to a string
+                  >
+                    {field.value ? (
+                      <>
+                        <SelectTrigger>
+                          <SelectValue>{field.value}</SelectValue>
+                        </SelectTrigger>
+                      </>
+                    ) : (
+                      <SelectTrigger>
+                        <SelectValue>Choose a Level</SelectValue>
+                      </SelectTrigger>
+                    )}
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectLabel>Level:</SelectLabel>
+                        <SelectItem value="Beginner">Beginner</SelectItem>
+                        <SelectItem value="Intermediate">Intermediate</SelectItem>
+                        <SelectItem value="Expert">Expert</SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}

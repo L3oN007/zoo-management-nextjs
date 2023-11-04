@@ -7,7 +7,7 @@ import { useState, useEffect } from 'react';
 
 const ManageAreasPage = async ({ params }: { params: { cageId: string } }) => {
   const url = (await process.env.NEXT_PUBLIC_API_GET_CAGE) + `?id=${params.cageId}`;
-  const cagebyarea = (await process.env.NEXT_PUBLIC_API_LOAD_CAGEBYAREAID) + `${params.cageId}`;
+  const cagebyarea = (await process.env.NEXT_PUBLIC_API_LOAD_CAGE_BY_AREA) + `${params.cageId}`;
 
   try {
     if (params.cageId.length === 1) {
