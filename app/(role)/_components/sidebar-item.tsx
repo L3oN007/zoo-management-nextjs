@@ -1,6 +1,6 @@
 'use client';
 
-import { LucideIcon } from 'lucide-react';
+import { ArrowDown, ChevronDown, LucideIcon } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 
 import { cn } from '@/lib/utils';
@@ -21,12 +21,14 @@ export const SidebarItem = ({ icon: Icon, label, href, subItems }: SidebarItemPr
   const pathname = usePathname();
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
+  const [arrowRotation, setArrowRotation] = useState(0);
 
 
   const isActive = (pathname === '/' && href === '/') || pathname === href;
 
  const onClick = () => {
     if (subItems && subItems.length > 0) {
+      setArrowRotation(arrowRotation === 0 ? 180 : 0);
       setIsOpen(!isOpen);
     } else {
       router.push(href);
@@ -57,7 +59,10 @@ export const SidebarItem = ({ icon: Icon, label, href, subItems }: SidebarItemPr
                   'flex items-center gap-x-2 text-slate-500 text-sm font-[500] pl-6 transition-all hover:text-slate-600 hover:bg-slate-300/20',
                   isActive && isOpen && 'text-black font-semibold bg-slate-200/20 hover:bg-slate-200/20 hover:text-black'
                 )}
-              />
+              >
+                 <ChevronDown name="arrow-down" size={16} style={{ transform: `rotate(${arrowRotation}deg)` }} /> {/* Add the arrow icon */}
+              </div>
+
             )}
           {/* <div className={cn(
           'ml-auto opacity-0 border-2 border-slate-700 h-full transition-all',
@@ -90,3 +95,7 @@ export const SidebarItem = ({ icon: Icon, label, href, subItems }: SidebarItemPr
     };
     
     
+function setArrowRotation(arg0: number) {
+  throw new Error('Function not implemented.');
+}
+

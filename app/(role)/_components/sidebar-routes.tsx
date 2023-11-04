@@ -1,6 +1,7 @@
 'use client';
 
 import {
+  Apple,
   ArchiveRestore,
   BadgeCheck,
   CalendarCheckIcon,
@@ -102,12 +103,38 @@ export const SidebarRoutes = () => {
         icon: BadgeCheck,
         label: 'Manage Certificates',
         href: '/staff/manage-certificates',
+        subItems: [
+          {
+            icon: BadgeCheck,
+            label: 'Edit All Certificate',
+            href: '/staff/manage-certificates/view'
+          },
+          {
+            icon: BadgeCheck,
+            label: 'Employee Certificate',
+            href: '/staff/manage-certificates/empCertificate'
+          },
+          // Add more trainer subitems as needed
+        ]
 
       },
       {
         icon: ArchiveRestore,
         label: 'Manage Foods',
-        href: '/staff/manage-foods'
+        href: '/staff/manage-foods',
+        subItems: [
+          {
+            icon: ArchiveRestore,
+            label: 'Import History',
+            href: '/staff/manage-foods/importHistory'
+          },
+          {
+            icon: Apple,
+            label: 'Food In Zoo',
+            href: '/staff/manage-foods/food'
+          },
+          // Add more trainer subitems as needed
+        ]
       }
     ];
   } else if (role === 'trainer') {
