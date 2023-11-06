@@ -1,22 +1,22 @@
-"use client";
+'use client';
 
-import axios from "axios";
-import { Calendar, Copy, Edit, MoreHorizontal, Trash } from "lucide-react";
-import { useParams, useRouter } from "next/navigation";
-import { useState } from "react";
-import { toast } from "react-hot-toast";
+import axios from 'axios';
+import { Calendar, Copy, Edit, MoreHorizontal, Trash } from 'lucide-react';
+import { useParams, useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { toast } from 'react-hot-toast';
 
-import { AlertModal } from "@/components/modals/alert-modal";
-import { Button } from "@/components/ui/button";
+import { AlertModal } from '@/components/modals/alert-modal';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu';
 
-import { TrainerColumn } from "./columns";
+import { TrainerColumn } from './columns';
 
 interface CellActionProps {
   data: TrainerColumn;
@@ -34,10 +34,10 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
       setLoading(true);
       console.log(params);
       await axios.put(url + `?id=${data.employeeId}`);
-      toast.success("Trainer deleted.");
+      toast.success('Trainer deleted.');
       router.refresh();
     } catch (error) {
-      toast.error("Something went wrong");
+      toast.error('Something went wrong');
     } finally {
       setLoading(false);
       setOpen(false);
@@ -46,17 +46,12 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
 
   const onCopy = (id: string) => {
     navigator.clipboard.writeText(id);
-    toast.success("Trainer ID copied to clipboard.");
+    toast.success('Trainer ID copied to clipboard.');
   };
 
   return (
     <>
-      <AlertModal
-        isOpen={open}
-        onClose={() => setOpen(false)}
-        onConfirm={onConfirm}
-        loading={loading}
-      />
+      <AlertModal isOpen={open} onClose={() => setOpen(false)} onConfirm={onConfirm} loading={loading} />
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
@@ -69,26 +64,11 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
           <DropdownMenuItem onClick={() => onCopy(data.employeeId)}>
             <Copy className="mr-2 h-4 w-4" /> Copy Id
           </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() =>
-              router.push(`/staff/manage-trainers/${data.employeeId}`)
-            }
-          >
+          <DropdownMenuItem onClick={() => router.push(`/staff/manage-trainers/${data.employeeId}`)}>
             <Edit className="mr-2 h-4 w-4" /> Update
           </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() =>
-              router.push(
-                `/staff/manage-trainers/${data.employeeId}/trainer-schedule`
-              )
-            }
-          >
-            <Calendar className="mr-2 h-4 w-4" /> Schedule
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => setOpen(true)}
-            className="text-red-500"
-          >
+
+          <DropdownMenuItem onClick={() => onConfirm()} className="text-red-500">
             <Trash className="mr-2 h-4 w-4" /> Delete
           </DropdownMenuItem>
         </DropdownMenuContent>
