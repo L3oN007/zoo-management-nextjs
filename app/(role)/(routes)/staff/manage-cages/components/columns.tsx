@@ -13,7 +13,7 @@ export type CageColumn = {
   cageId: string;
   name: string;
   maxCapacity: number;
-  currentQuantity: number;
+  currentCapacity: number;
   areaId: string;
   area: AreaObj;
 };
@@ -35,8 +35,8 @@ export const columns: ColumnDef<CageColumn>[] = [
     }
   },
   {
-    accessorKey: 'currentQuantity',
-    header: 'CurrentQuantity'
+    accessorKey: 'currentCapacity',
+    header: 'Current Capacity'
   },
   {
     accessorKey: 'maxCapacity',
