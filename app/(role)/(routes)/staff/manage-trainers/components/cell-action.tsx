@@ -1,4 +1,5 @@
 'use client';
+'use client';
 
 import axios from 'axios';
 import { Calendar, Copy, Edit, MoreHorizontal, Trash } from 'lucide-react';
@@ -67,7 +68,8 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
           <DropdownMenuItem onClick={() => router.push(`/staff/manage-trainers/${data.employeeId}`)}>
             <Edit className="mr-2 h-4 w-4" /> Update
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setOpen(true)} className="text-red-500">
+
+          <DropdownMenuItem onClick={() => onConfirm()} className="text-red-500">
             <Trash className="mr-2 h-4 w-4" /> Delete
           </DropdownMenuItem>
         </DropdownMenuContent>

@@ -19,6 +19,7 @@ export function UserNav() {
   const router = useRouter();
   const session = useSession();
   const userRole = session.data?.user.role;
+  const areaId = session.data?.user.areaId;
 
   return (
     <DropdownMenu>
@@ -28,7 +29,9 @@ export function UserNav() {
             <div className="grid grid-rows-2 grid-flow-col">
               <p className="row text-sm font-medium leading-none ml-1">{session.data?.user.fullName}</p>
               <span className="bg-green-100 text-green-800 ml-auto text-xs font-medium left-5 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">
-                {userRole?.charAt(0).toUpperCase() + userRole?.slice(1)}{' '}
+                {areaId != null
+                  ? `Chief Trainer - Area ` + areaId.toUpperCase()
+                  : userRole?.charAt(0).toUpperCase() + userRole?.slice(1)}
               </span>
             </div>
           </div>
