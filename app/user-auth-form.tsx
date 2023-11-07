@@ -94,6 +94,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
                   autoComplete="password"
                   autoCorrect="off"
                   disabled={isLoading}
+                  onChange={(e) => (pass.current = e.target.value)}
                   required
                   className="block w-full "
                 />
