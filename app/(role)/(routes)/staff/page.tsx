@@ -14,6 +14,29 @@ export const metadata: Metadata = {
   description: 'Example dashboard app built using the components.'
 };
 
+function getMonthName(monthNumber : number) {
+  const months = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December'
+  ];
+
+  if (monthNumber >= 1 && monthNumber <= 12) {
+    return months[monthNumber - 1];
+  } else {
+    return 'Invalid month number';
+  }
+}
+
 export default async function DashboardPage() {
   const session = await getServerSession(options);
   const transUrl = process.env.NEXT_PUBLIC_API_LOAD_TRANSACTIONS!;
@@ -57,15 +80,12 @@ export default async function DashboardPage() {
               title="Dashboard"
               description={`Welcome back ${session?.user.fullName}`}
             />
-            <div className="flex items-center space-x-2">
-              <Button>Download</Button>
-            </div>
           </div>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Total Revenue
+                  Total Revenue of {new Date().getFullYear()}
                 </CardTitle>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -85,14 +105,11 @@ export default async function DashboardPage() {
                   style: 'currency',
                   currency: 'VND'
                 })}</div>
-                <p className="text-xs text-muted-foreground">
-                  +20.1% from last month
-                </p>
               </CardContent>
             </Card>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Sales</CardTitle>
+                <CardTitle className="text-sm font-medium">Sales in of {new Date().getFullYear()}</CardTitle>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
@@ -109,16 +126,14 @@ export default async function DashboardPage() {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{totalQuantityTickets} sold tickets</div>
-                <p className="text-xs text-muted-foreground">
-                  +19% from last month
-                </p>
               </CardContent>
             </Card>
           </div>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
             <Card className="col-span-4">
               <CardHeader>
-                <CardTitle>Overview</CardTitle>
+                <CardTitle>Overview revenue of {new Date().getFullYear()}</CardTitle>
+                <CardDescription>millions per month</CardDescription>
               </CardHeader>
               <CardContent className="pl-2">
                 <Overview dataReal={transData} />
@@ -128,7 +143,7 @@ export default async function DashboardPage() {
               <CardHeader>
                 <CardTitle>Recent Sales</CardTitle>
                 <CardDescription>
-                  We sold {curTickets} tickets this month.
+                  We sold {curTickets} tickets this {getMonthName(new Date().getMonth() + 1)}.
                 </CardDescription>
               </CardHeader>
               <CardContent></CardContent>

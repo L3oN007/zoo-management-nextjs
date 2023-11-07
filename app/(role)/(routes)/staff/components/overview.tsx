@@ -74,7 +74,7 @@ export function Overview({ dataReal }: OverviewProps) {
           fontSize={12}
           tickLine={false}
           axisLine={false}
-          tickFormatter={(value) => `${value/1000}`}
+          tickFormatter={(value) => `${value/1000000}`}
         />
         <Bar dataKey="revenue" fill="#adfa1d" radius={[4, 4, 0, 0]} />
       </BarChart>
