@@ -21,9 +21,9 @@ export const CustomScheduleEditor: React.FC<CustomScheduleEditorProps> = ({ even
     format(new Date(new Date().getTime() - 7 * 60 * 60 * 1000), "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
   const session = useSession();
-  const areaId = session.data?.user.areaId;
 
   // attribute is used for authorizing which trainer can do CRUD
+  const areaId = session.data?.user.areaId;
   let readOnly = areaId !== null ? false : true;
 
   const cageId = eventData?.cageId || '';
@@ -37,9 +37,18 @@ export const CustomScheduleEditor: React.FC<CustomScheduleEditorProps> = ({ even
   const note = eventData?.note || '';
 
   const menuUrl = process.env.NEXT_PUBLIC_API_LOAD_MENUS;
-  const cageUrl = process.env.NEXT_PUBLIC_API_LOAD_CAGES;
   const animalUrl = process.env.NEXT_PUBLIC_API_LOAD_ANIMALS;
-  const trainerUrl = process.env.NEXT_PUBLIC_API_LOAD_TRAINERS;
+  const loadAllTrainers = process.env.NEXT_PUBLIC_API_LOAD_TRAINERS;
+
+  // const animalUrl = process.env.NEXT_PUBLIC_API_LOAD_ANIMAL_BAD_HEALTH_OF_AREA! + areaId;
+
+  const loadChiefTrainer = process.env.NEXT_PUBLIC_API_LOAD_TRAINER_OF_AREA! + areaId;
+
+  const loadAllCages = process.env.NEXT_PUBLIC_API_LOAD_CAGES;
+  const loadCagesByArea = process.env.NEXT_PUBLIC_API_LOAD_CAGE_BY_AREA + `${session.data?.user.areaId}`;
+
+  const loadCage = areaId != null ? loadCagesByArea : loadAllCages;
+  const loadTrainer = areaId != null ? loadChiefTrainer : loadAllTrainers;
 
   const [menu, setMenu] = useState([]);
   const [cage, setCage] = useState([]);
@@ -59,9 +68,9 @@ export const CustomScheduleEditor: React.FC<CustomScheduleEditorProps> = ({ even
       };
 
       fetchData(menuUrl!, setMenu);
-      fetchData(cageUrl!, setCage);
+      fetchData(loadCage!, setCage);
       fetchData(animalUrl!, setAnimal);
-      fetchData(trainerUrl!, setEmployee);
+      fetchData(loadTrainer!, setEmployee);
 
       setDataFetched(true);
     }

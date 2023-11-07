@@ -12,7 +12,7 @@ export default function RoleLayout({ children }: { children: React.ReactNode }) 
   };
   return (
     <div className="h-full flex">
-      <div className={` h-full w-56 flex-col inset-y-0 z-50 ${isSidebarVisible ? 'hidden' : ''}`}>
+      <div className={` h-full min-w-56 flex-col inset-y-0 z-50 ${isSidebarVisible ? 'hidden' : ''}`}>
         <Sidebar />
       </div>
       <div className="flex-1">
