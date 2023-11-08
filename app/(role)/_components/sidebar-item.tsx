@@ -49,6 +49,7 @@ export const SidebarItem = ({ icon: Icon, label, href, subItems }: SidebarItemPr
             'text-black font-semibold border-r-4 border-slate-700 bg-slate-200/20 hover:bg-slate-200/20 hover:text-black w-full'
         )}
       >
+         <div className="flex items-center justify-between w-full">
         <div className="flex items-center gap-x-2 ">
           <Icon size={22} className={cn('text-slate-500', isActive && 'text-black')} />
           {label}
@@ -56,14 +57,15 @@ export const SidebarItem = ({ icon: Icon, label, href, subItems }: SidebarItemPr
         {subItems && subItems.length > 0 && (
           <div
             className={cn(
-              'flex items-center gap-x-2 text-slate-500 text-sm font-[500] pl-6 transition-all hover:text-slate-600 hover:bg-slate-300/20',
+              'flex items-center gap-x-2 text-slate-500 text-sm font-[500] pl-6 transition-all mr-2',
               isActive && isOpen && 'text-black font-semibold bg-slate-200/20 hover:bg-slate-200/20 hover:text-black'
             )}
           >
-            <ChevronDown name="arrow-down" size={16} style={{ transform: `rotate(${arrowRotation}deg)` }} />{' '}
+            <ChevronDown name="arrow-down" size={16} style={{ transform: `rotate(${arrowRotation}deg)`}} />{' '}
             {/* Add the arrow icon */}
           </div>
         )}
+        </div>
         {/* <div className={cn(
           'ml-auto opacity-0 border-2 border-slate-700 h-full transition-all',
           isActive  && 'opacity-100'
