@@ -31,8 +31,8 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from '
 import { cn } from '@/lib/utils';
 
 const formSchema = z.object({
-  menuNo: z.string().min(1, { message: "Schedule's ID is required." }),
-  menuName: z.string().min(1, { message: "Schedule's name is required." }),
+  menuNo: z.string().min(1, { message: "Menu's No is required." }),
+  menuName: z.string().min(1, { message: "Menu's name is required." }),
   foodId: z.string().min(1, { message: 'Food ID is required.' }),
   speciesId: z.number().min(1, { message: 'Species ID is required' })
 });
