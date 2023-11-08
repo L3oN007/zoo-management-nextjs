@@ -20,9 +20,9 @@ import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 
 const formSchema = z.object({
-  areaId: z.string().min(1, { message: 'Id must have Alphabet' }).max(1),
+  areaId: z.string().min(1, { message: 'AreaId must have Alphabet' }).max(1),
   areaName: z.string().min(1, { message: 'Title must be between 1-50 characters.' }).max(50),
-  employeeId: z.string()
+  employeeId: z.string().min(1, { message: 'EmployeeID must be required' })
 });
 
 type ManageAreasFormValues = z.infer<typeof formSchema>;
@@ -61,7 +61,7 @@ export const ManageAreasForm: React.FC<ManageAreasFormProps> = ({ initialData })
 
   const title = initialData ? 'Edit a Areas' : 'Create new Areas';
   const description = initialData ? 'Edit a  areas.' : 'Add a new areas';
-  const toastMessage = initialData ? 'Areas name updated.' : 'Areas updated.';
+  const toastMessage = initialData ? 'Areas updated.' : 'Areas created.';
   const action = initialData ? 'Save changes' : 'Create';
 
   const form = useForm<ManageAreasFormValues>({

@@ -7,7 +7,7 @@ import { useState, useEffect } from 'react';
 
 // eslint-disable-next-line @next/next/no-async-client-component
 const ManageCagesPage = async ({ params }: { params: { cageId: string } }) => {
-  const url = (await process.env.NEXT_PUBLIC_API_GET_CAGE) + `?id=${params.cageId}`;
+  const url = (await process.env.NEXT_PUBLIC_API_GET_CAGE) + `${params.cageId}`;
   const cagebyarea = (await process.env.NEXT_PUBLIC_API_LOAD_CAGE_BY_AREA) + `${params.cageId}`;
 
   try {
