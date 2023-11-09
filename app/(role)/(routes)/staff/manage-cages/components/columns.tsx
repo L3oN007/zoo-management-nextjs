@@ -1,14 +1,11 @@
 'use client';
 
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
+import { AreaObj } from '@/app/models/area';
 import { Button } from '@/components/ui/button';
 import { ColumnDef } from '@tanstack/react-table';
-import { ArrowUpDown, MoreHorizontal } from 'lucide-react';
-import { CellAction } from './cell-action';
-import { DataTableRowActions } from '@/components/data-table/data-table-row-actions';
-import { AreaObj } from '@/app/models/area';
+import { ArrowUpDown } from 'lucide-react';
 import Link from 'next/link';
+import { CellAction } from './cell-action';
 
 export type CageColumn = {
   cageId: string;
@@ -44,7 +41,7 @@ export const columns: ColumnDef<CageColumn>[] = [
   },
   {
     accessorKey: 'currentCapacity',
-    header: 'currentCapacity'
+    header: 'Current Capacity'
   },
   {
     accessorKey: 'maxCapacity',

@@ -37,10 +37,10 @@ export const CustomScheduleEditor: React.FC<CustomScheduleEditorProps> = ({ even
   const note = eventData?.note || '';
 
   const menuUrl = process.env.NEXT_PUBLIC_API_LOAD_MENUS;
-  const animalUrl = process.env.NEXT_PUBLIC_API_LOAD_ANIMALS;
+  const loadAllAnimal = process.env.NEXT_PUBLIC_API_LOAD_ANIMALS;
   const loadAllTrainers = process.env.NEXT_PUBLIC_API_LOAD_TRAINERS;
 
-  // const animalUrl = process.env.NEXT_PUBLIC_API_LOAD_ANIMAL_BAD_HEALTH_OF_AREA! + areaId;
+  const loadBadHealthAnimal = process.env.NEXT_PUBLIC_API_LOAD_ANIMAL_BAD_HEALTH_OF_AREA! + areaId;
 
   const loadChiefTrainer = process.env.NEXT_PUBLIC_API_LOAD_TRAINER_OF_AREA! + areaId;
 
@@ -49,6 +49,7 @@ export const CustomScheduleEditor: React.FC<CustomScheduleEditorProps> = ({ even
 
   const loadCage = areaId != null ? loadCagesByArea : loadAllCages;
   const loadTrainer = areaId != null ? loadChiefTrainer : loadAllTrainers;
+  const loadAnimal = areaId != null ? loadBadHealthAnimal : loadAllAnimal;
 
   const [menu, setMenu] = useState([]);
   const [cage, setCage] = useState([]);
@@ -69,7 +70,7 @@ export const CustomScheduleEditor: React.FC<CustomScheduleEditorProps> = ({ even
 
       fetchData(menuUrl!, setMenu);
       fetchData(loadCage!, setCage);
-      fetchData(animalUrl!, setAnimal);
+      fetchData(loadAnimal!, setAnimal);
       fetchData(loadTrainer!, setEmployee);
 
       setDataFetched(true);
