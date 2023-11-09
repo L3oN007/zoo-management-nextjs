@@ -146,7 +146,7 @@ export const ManageAreasForm: React.FC<ManageAreasFormProps> = ({ initialData })
                 <FormItem>
                   <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input disabled={loading} placeholder="Billboard label" {...field} />
+                    <Input disabled={loading} placeholder="Area name" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

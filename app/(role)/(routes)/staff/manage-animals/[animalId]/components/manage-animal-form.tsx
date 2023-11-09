@@ -255,7 +255,7 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
                       className="read-only:bg-gray-100"
                       readOnly={!!initialData}
                       disabled={loading}
-                      placeholder="Billboard label"
+                      placeholder="ANIxxx"
                       {...field}
                     />
                   </FormControl>
@@ -270,7 +270,7 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
                 <FormItem>
                   <FormLabel>Animal Name</FormLabel>
                   <FormControl>
-                    <Input disabled={loading} placeholder="Billboard label" {...field} />
+                    <Input disabled={loading} placeholder="Animal name" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -299,9 +299,9 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
               name="importDate"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>ImportDate</FormLabel>
+                  <FormLabel>Import Date</FormLabel>
                   <FormControl>
-                    <Input max={maxDate} type="date" disabled={loading} placeholder="Billboard label" {...field} />
+                    <Input max={maxDate} type="date" disabled={loading} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -312,9 +312,9 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
               name="region"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Region:</FormLabel>
+                  <FormLabel>Region</FormLabel>
                   <FormControl>
-                    <Input disabled={loading} placeholder="Billboard label" {...field} />
+                    <Input disabled={loading} placeholder="Region" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -326,9 +326,9 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
               name="behavior"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Behavior:</FormLabel>
+                  <FormLabel>Behavior</FormLabel>
                   <FormControl>
-                    <Input disabled={loading} placeholder="Billboard label" {...field} />
+                    <Input disabled={loading} placeholder="Behavior" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -339,7 +339,7 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
               name="gender"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Gender:</FormLabel>
+                  <FormLabel>Gender</FormLabel>
                   <Select
                     disabled={loading}
                     onValueChange={field.onChange}
@@ -372,7 +372,7 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
               name="rarity"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Rarity:</FormLabel>
+                  <FormLabel>Rarity</FormLabel>
                   <Select
                     disabled={loading}
                     onValueChange={field.onChange}
@@ -409,7 +409,7 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
               name="employeeId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Trainer:</FormLabel>
+                  <FormLabel>Trainer</FormLabel>
                   <Select
                     disabled={loading}
                     onValueChange={field.onChange}
@@ -424,7 +424,7 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
                       </SelectTrigger>
                     ) : (
                       <SelectTrigger>
-                        <SelectValue>Choose a EmployeeId</SelectValue>
+                        <SelectValue>Choose an employee</SelectValue>
                       </SelectTrigger>
                     )}
 
@@ -448,7 +448,7 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
               name="cageId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Cage:</FormLabel>
+                  <FormLabel>Cage</FormLabel>
                   <Select
                     disabled={loading}
                     onValueChange={field.onChange}
@@ -461,7 +461,7 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
                       </SelectTrigger>
                     ) : (
                       <SelectTrigger>
-                        <SelectValue>Choose a CageId</SelectValue>
+                        <SelectValue>Choose a Cage</SelectValue>
                       </SelectTrigger>
                     )}
 
@@ -484,7 +484,7 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
               name="speciesId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Species:</FormLabel>
+                  <FormLabel>Species</FormLabel>
                   <Select
                     disabled={loading}
                     onValueChange={(value) => field.onChange(Number(value))}
@@ -499,7 +499,7 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
                       </SelectTrigger>
                     ) : (
                       <SelectTrigger>
-                        <SelectValue>Choose a SpeciesId</SelectValue>
+                        <SelectValue>Choose a Species</SelectValue>
                       </SelectTrigger>
                     )}
 
