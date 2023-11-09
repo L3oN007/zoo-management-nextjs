@@ -96,7 +96,21 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
   const [trainers, setTrainers] = useState<Trainer[]>([]);
   const [cages, setCages] = useState<Cage[]>([]);
   const [species, setSpecies] = useState<Species[]>([]);
+  const [maxDate, setMaxDate] = useState('');
 
+  useEffect(() => {
+    // Get the current date
+    const currentDate = new Date();
+
+    // Format the date to "YYYY-MM-DD"
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+    const day = String(currentDate.getDate()).padStart(2, '0');
+    const formattedDate = `${year}-${month}-${day}`;
+
+    // Set the max date in state
+    setMaxDate(formattedDate);
+  }, []);
   useEffect(() => {
     axios
       .get<Trainer[]>('http://localhost:5000/api/Employees/trainers')
@@ -266,7 +280,12 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
                   <FormItem>
                     <FormLabel>Date of birth</FormLabel>
                     <FormControl>
-                      <Input type="date" value={field.value} onChange={(e) => field.onChange(e.target.value)} />
+                      <Input
+                        max={maxDate}
+                        type="date"
+                        value={field.value}
+                        onChange={(e) => field.onChange(e.target.value)}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -282,7 +301,12 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
                   <FormItem>
                     <FormLabel>Import Date</FormLabel>
                     <FormControl>
-                      <Input type="date" value={field.value} onChange={(e) => field.onChange(e.target.value)} />
+                      <Input
+                        max={maxDate}
+                        type="date"
+                        value={field.value}
+                        onChange={(e) => field.onChange(e.target.value)}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -331,12 +355,8 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue
-                          defaultValue={
-                            field.value.toString() == '1' ? 'Ok' : field.value.toString() == '2' ? 'Bad' : 'Undefined'
-                          }
-                        >
-                          {field.value.toString() == '1' ? 'Ok' : field.value.toString() == '2' ? 'Bad' : 'Undefined'}
+                        <SelectValue defaultValue={field.value === 0 ? 'Healthy' : 'Unhealthy'}>
+                          {field.value === 0 ? 'Healthy' : 'Unhealthy'}
                         </SelectValue>
                       </SelectTrigger>
                     </FormControl>
@@ -393,8 +413,8 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue defaultValue={field.value.toString() == '0' ? 'Active' : 'Inactive'}>
-                          {field.value.toString() == '0' ? 'Active' : 'Inactive'}
+                        <SelectValue defaultValue={field.value === 0 ? 'Active' : 'Inactive'}>
+                          {field.value === 0 ? 'Active' : 'Inactive'}
                         </SelectValue>
                       </SelectTrigger>
                     </FormControl>

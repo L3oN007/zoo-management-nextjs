@@ -20,9 +20,9 @@ import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 
 const formSchema = z.object({
-  areaId: z.string().min(1, { message: 'Id must have Alphabet' }).max(1),
+  areaId: z.string().min(1, { message: 'AreaId must have Alphabet' }).max(1),
   areaName: z.string().min(1, { message: 'Title must be between 1-50 characters.' }).max(50),
-  employeeId: z.string()
+  employeeId: z.string().min(1, { message: 'EmployeeID must be required' })
 });
 
 type ManageAreasFormValues = z.infer<typeof formSchema>;
@@ -61,7 +61,7 @@ export const ManageAreasForm: React.FC<ManageAreasFormProps> = ({ initialData })
 
   const title = initialData ? 'Edit a Areas' : 'Create new Areas';
   const description = initialData ? 'Edit a  areas.' : 'Add a new areas';
-  const toastMessage = initialData ? 'Areas name updated.' : 'Areas updated.';
+  const toastMessage = initialData ? 'Areas updated.' : 'Areas created.';
   const action = initialData ? 'Save changes' : 'Create';
 
   const form = useForm<ManageAreasFormValues>({
@@ -127,7 +127,13 @@ export const ManageAreasForm: React.FC<ManageAreasFormProps> = ({ initialData })
                 <FormItem>
                   <FormLabel>Area Id</FormLabel>
                   <FormControl>
-                    <Input readOnly={!!initialData} disabled={loading} placeholder="[A-Z]" {...field} />
+                    <Input
+                      className="read-only:bg-gray-100"
+                      readOnly={!!initialData}
+                      disabled={loading}
+                      placeholder="[A-Z]"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -163,16 +169,14 @@ export const ManageAreasForm: React.FC<ManageAreasFormProps> = ({ initialData })
                             className="w-full flex items-center justify-between"
                           >
                             <div>
-                              {field.value
-                                ? employeeData.find((item) => item === field.value)
-                                : 'Select CertificateCode...'}
+                              {field.value ? employeeData.find((item) => item === field.value) : 'Select EmployeeId...'}
                             </div>
                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                           </Button>
                         </PopoverTrigger>
                         <PopoverContent className="w-[200px] p-0">
                           <Command>
-                            <CommandInput placeholder="Search CertificateName..." />
+                            <CommandInput placeholder="Search EmployeeId..." />
                             <CommandEmpty>No CertificateName found.</CommandEmpty>
                             <CommandGroup>
                               {employeeData.map((item) => (

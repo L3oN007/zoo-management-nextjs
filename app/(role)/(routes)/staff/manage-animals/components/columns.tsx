@@ -92,18 +92,14 @@ export const columns: ColumnDef<AnimalColumn>[] = [
       <div className="flex items-center">
         <span
           className={
-            props.row.original.healthStatus === '0'
-              ? 'bg-yellow-100 text-yellow-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300'
-              : props.row.original.healthStatus === '1'
+            props.row.original.healthStatus === 2
               ? 'bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300'
-              : 'bg-red-100 text-red-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300'
+              : props.row.original.healthStatus === 1
+              ? 'bg-pink-100 text-pink-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-pink-900 dark:text-pink-300'
+              : 'bg-yellow-100 text-yellow-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300'
           }
         >
-          {props.row.original.healthStatus === '0'
-            ? 'Undefined'
-            : props.row.original.healthStatus === '1'
-            ? 'Ok'
-            : 'Bad'}
+          {props.row.original.healthStatus === 2 ? 'Good' : props.row.original.healthStatus === 1 ? 'Bab' : 'Undefined'}
         </span>
       </div>
     ),
@@ -130,7 +126,7 @@ export const columns: ColumnDef<AnimalColumn>[] = [
               : 'bg-pink-100 text-pink-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-pink-900 dark:text-pink-300'
           }
         >
-          {props.row.original.isDeleted === '0' ? 'Active' : 'Inactive'}
+          {props.row.original.isDeleted === 0 ? 'Active' : 'Inactive'}
         </span>
       </div>
     ),
@@ -139,7 +135,7 @@ export const columns: ColumnDef<AnimalColumn>[] = [
     }
   },
   {
-    accessorKey: 'employee.fullName',
+    accessorKey: 'employee',
     header: 'Trainer',
     cell: (props) => (
       <div className="flex items-center">

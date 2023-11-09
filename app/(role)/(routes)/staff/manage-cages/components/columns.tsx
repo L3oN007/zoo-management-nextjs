@@ -1,13 +1,11 @@
 'use client';
 
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
+import { AreaObj } from '@/app/models/area';
 import { Button } from '@/components/ui/button';
 import { ColumnDef } from '@tanstack/react-table';
-import { ArrowUpDown, MoreHorizontal } from 'lucide-react';
+import { ArrowUpDown } from 'lucide-react';
+import Link from 'next/link';
 import { CellAction } from './cell-action';
-import { DataTableRowActions } from '@/components/data-table/data-table-row-actions';
-import { AreaObj } from '@/app/models/area';
 
 export type CageColumn = {
   cageId: string;
@@ -31,6 +29,13 @@ export const columns: ColumnDef<CageColumn>[] = [
           Name
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
+      );
+    },
+    cell: (props) => {
+      return (
+        <Link href={`/staff/manage-animals/${props.row.original.cageId}`}>
+          <span>{props.row.original.name}</span>
+        </Link>
       );
     }
   },

@@ -1,7 +1,9 @@
-import { Separator } from "@/components/ui/separator";
-import { AccountForm } from "./account-form";
+import { Separator } from '@/components/ui/separator';
+import { AccountForm } from './account-form';
+import { useSession } from 'next-auth/react';
 
 export default function SettingsAccountPage() {
+  var session = useSession();
   return (
     <div className="space-y-6 w-full">
       {/* <div>
@@ -11,7 +13,7 @@ export default function SettingsAccountPage() {
 				</p>
 			</div> */}
       {/* <Separator /> */}
-      {/* <AccountForm /> */}
+      <AccountForm initialData={session.data} />
     </div>
   );
 }

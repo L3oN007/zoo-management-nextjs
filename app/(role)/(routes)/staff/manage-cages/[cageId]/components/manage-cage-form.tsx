@@ -146,6 +146,7 @@ export const ManageCageForm: React.FC<ManageCageFormProps> = ({ initialData }) =
                   <FormLabel>Cage Id</FormLabel>
                   <FormControl>
                     <Input
+                      className="read-only:bg-gray-100"
                       disabled={loading}
                       placeholder="ex: A0009"
                       readOnly={initialData ? true : false}

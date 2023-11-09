@@ -2,23 +2,29 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios';
-import { Check, ChevronsUpDown, Trash } from 'lucide-react';
+import { Trash } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
 import * as z from 'zod';
 
 import { AlertModal } from '@/components/modals/alert-modal';
 import { Button } from '@/components/ui/button';
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from '@/components/ui/command';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Heading } from '@/components/ui/heading';
+import ImageUpload from '@/components/ui/image-upload';
 import { Input } from '@/components/ui/input';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
-import { cn } from '@/lib/utils';
-import { CageObj } from '@/app/models/cage';
 
 const formSchema = z.object({
   importDate: z.string().min(1, { message: 'Import Date is required.' }),
@@ -30,7 +36,11 @@ const formSchema = z.object({
 
 type ManageImportFormValues = z.infer<typeof formSchema>;
 
-interface Food {}
+interface Food {
+  foodId: string;
+  foodName: string;
+  inventoryQuantity: number;
+}
 
 interface ManageImportFormProps {
   initialData: Food | null;
@@ -41,19 +51,16 @@ export const ManageImportForm: React.FC<ManageImportFormProps> = ({ initialData 
   const router = useRouter();
   const [openComboBox, setOpenComboBox] = useState(false);
   const [open, setOpen] = useState(false);
-  const [foodData, setFoodData] = useState([]);
+  const [foodData, setFoodData] = useState<Food[]>([]);
   const [loading, setLoading] = useState(false);
   // eslint-disable-next-line import/no-anonymous-default-export
   useEffect(() => {
     axios
-      .get(process.env.NEXT_PUBLIC_API_LOAD_FOOD!)
-      .then((response) => {
-        const foodName = response.data.map((item: any) => item.foodId);
-        console.log(foodName);
-        setFoodData(foodName);
-      })
+      .get<Food[]>('http://localhost:5000/api/FoodInventories/foods')
+      .then((response) => setFoodData(response.data))
       .catch((error) => {
-        console.error('Error fetching data from API:', error);
+        console.error('Lỗi khi lấy danh sách trainers:', error);
+        setLoading(false);
       });
   }, []);
 
@@ -79,7 +86,7 @@ export const ManageImportForm: React.FC<ManageImportFormProps> = ({ initialData 
       if (initialData) {
         // await axios.put(`${url}/${params.no}`, data);
       } else {
-        await axios.post(process.env.NEXT_PUBLIC_API_CREATE_CERTIFICATE!, data);
+        await axios.post(process.env.NEXT_PUBLIC_API_CREATE_IMPORTFOOD!, data);
       }
       router.refresh();
       router.push(`/staff/manage-foods`);
@@ -152,54 +159,39 @@ export const ManageImportForm: React.FC<ManageImportFormProps> = ({ initialData 
             <FormField
               control={form.control}
               name="foodId"
-              render={({ field }) => {
-                return (
-                  <FormItem>
-                    <FormLabel>FoodName</FormLabel>
-                    <FormControl>
-                      <Popover open={openComboBox} onOpenChange={setOpenComboBox}>
-                        <PopoverTrigger asChild>
-                          <Button
-                            variant="outline"
-                            role="combobox"
-                            aria-expanded={open}
-                            className="w-full flex items-center justify-between"
-                          >
-                            <div>
-                              {field.value ? foodData.find((item) => item === field.value) : 'Select FoodName...'}
-                            </div>
-                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-[200px] p-0">
-                          <Command>
-                            <CommandInput placeholder="Search FoodName..." />
-                            <CommandEmpty>No FoodName found.</CommandEmpty>
-                            <CommandGroup>
-                              {foodData.map((item) => (
-                                <CommandItem
-                                  key={item}
-                                  onSelect={() => {
-                                    // Set the selected value in the field
-                                    field.onChange(item === field.value ? '' : item);
-                                    setOpenComboBox(false);
-                                  }}
-                                >
-                                  <Check
-                                    className={cn('mr-2 h-4 w-4', item === field.value ? 'opacity-100' : 'opacity-0')}
-                                  />
-                                  {item}
-                                </CommandItem>
-                              ))}
-                            </CommandGroup>
-                          </Command>
-                        </PopoverContent>
-                      </Popover>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                );
-              }}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>FoodName:</FormLabel>
+                  <Select
+                    disabled={loading}
+                    onValueChange={field.onChange}
+                    value={field.value} // Convert the value to a string here
+                    defaultValue={field.value} // Convert the default value to a string
+                  >
+                    {field.value ? (
+                      <>
+                        <SelectTrigger>
+                          <SelectValue>{foodData.find((food) => food.foodId == field.value)?.foodName}</SelectValue>
+                        </SelectTrigger>
+                      </>
+                    ) : (
+                      <SelectTrigger>
+                        <SelectValue>Choose a Food</SelectValue>
+                      </SelectTrigger>
+                    )}
+                    <SelectContent>
+                      <SelectGroup>
+                        {foodData.map((food) => (
+                          <SelectItem key={food.foodId} value={food?.foodId.toString()}>
+                            {food.foodName}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
           </div>
           <Button disabled={loading} className="ml-auto" type="submit">

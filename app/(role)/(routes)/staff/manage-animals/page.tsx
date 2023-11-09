@@ -10,7 +10,7 @@ const ManageAnimalPage = async () => {
 
   try {
     // Make the GET request to fetch staff data
-    const response = await axios.get(url + ``);
+    const response = await axios.get(url!);
 
     // Check if the response contains data
     if (response.data === null) {
@@ -34,8 +34,6 @@ const ManageAnimalPage = async () => {
         animal.importDate = format(new Date(animal.importDate), 'MM/dd/yyyy');
         var img = animal.image.replace(/\[|\]|'/g, '').split(',');
         animal.image = img[0];
-        animal.healthStatus = animal.healthStatus.toString();
-        animal.isDeleted = animal.isDeleted.toString();
       });
     }
 

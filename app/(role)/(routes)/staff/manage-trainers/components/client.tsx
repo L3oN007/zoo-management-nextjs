@@ -16,6 +16,18 @@ interface ManageTrainerClientProps {
 
 export const ManageTrainerClient: FC<ManageTrainerClientProps> = ({ data }) => {
   const router = useRouter();
+  const statuses = [
+    {
+      value: '0',
+      label: 'Active',
+      icon: CheckCircledIcon
+    },
+    {
+      value: '1',
+      label: 'Inactive',
+      icon: CrossCircledIcon
+    }
+  ];
 
   return (
     <>
@@ -28,7 +40,14 @@ export const ManageTrainerClient: FC<ManageTrainerClientProps> = ({ data }) => {
         </Button>
       </div>
       <Separator />
-      <DataTable columns={columns} data={data} searchKey="fullName" placeholder="Search by full name" />
+      {/* 
+      <div className="flex ">
+        <div className=""> */}
+      <DataTable columns={columns} data={data} searchKey="fullName" filterOptions={statuses} /> {/* </div> */}
+      {/* <div className="">
+          <DataTable columns={columns} data={data} searchKey="fullName" filterOptions={statuses} />
+        </div> */}
+      {/* </div> */}
     </>
   );
 };

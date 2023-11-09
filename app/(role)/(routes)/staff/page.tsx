@@ -1,13 +1,12 @@
 import { Metadata } from 'next';
 
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 import { options } from '@/app/api/auth/[...nextauth]/options';
 import { Heading } from '@/components/ui/heading';
+import axios from 'axios';
 import { getServerSession } from 'next-auth';
 import { Overview } from './components/overview';
-import axios from 'axios';
 
 export const metadata: Metadata = {
   title: 'Dashboard',
