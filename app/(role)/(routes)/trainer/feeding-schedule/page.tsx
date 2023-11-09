@@ -54,8 +54,8 @@ const SchedulePage: React.FC = () => {
         const updatedEvents = response.data.map((event) => {
           const endTime = new Date(event.EndTime);
           return {
-            ...event,
-            IsReadonly: endTime < currentDate
+            ...event
+            // IsReadonly: endTime < currentDate
           };
         });
 

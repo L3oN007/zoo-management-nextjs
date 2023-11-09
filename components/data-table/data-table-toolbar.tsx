@@ -80,7 +80,7 @@ export function DataTableToolbar<TData>({ table, searchKey, data, placeholder }:
         value: '0'
       },
       {
-        label: 'Good',
+        label: 'Ok',
         value: '1'
       },
       {
