@@ -103,7 +103,7 @@ export const columns: ColumnDef<AnimalColumn>[] = [
           {props.row.original.healthStatus === '0'
             ? 'Undefined'
             : props.row.original.healthStatus === '1'
-            ? 'Ok'
+            ? 'Good'
             : 'Bad'}
         </span>
       </div>
