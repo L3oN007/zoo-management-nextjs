@@ -42,7 +42,7 @@ const formSchema = z.object({
   type: z
     .string(),
   description: z.string(),
-  unitPrice: z.number(),
+  unitPrice: z.coerce.number(),
 });
 
 type ManageTicketFormValues = z.infer<typeof formSchema>;

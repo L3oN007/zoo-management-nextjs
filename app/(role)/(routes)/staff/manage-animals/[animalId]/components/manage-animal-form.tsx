@@ -2,7 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios';
-import { Trash } from 'lucide-react';
+import { Check, ChevronsUpDown, Command, Trash } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
@@ -27,6 +27,9 @@ import {
 import { Separator } from '@/components/ui/separator';
 import { log } from 'console';
 import { da } from 'date-fns/locale';
+import { cn } from '@/lib/utils';
+import { Popover, PopoverTrigger, PopoverContent } from '@radix-ui/react-popover';
+import { CommandInput, CommandEmpty, CommandGroup, CommandItem } from 'cmdk';
 
 const formSchema = z.object({
   animalId: z
@@ -92,14 +95,14 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
 
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [openComboBox, setOpenComboBox] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState('');
-  const [trainers, setTrainers] = useState<Trainer[]>([]);
+  const [employeeData, setEmployeeData] = useState<Trainer[]>([]);
+
   const [cages, setCages] = useState<Cage[]>([]);
   const [species, setSpecies] = useState<Species[]>([]);
 
-  const getTrainerNameByID = (id: string | undefined) => {
-    return trainers.find((trainer) => trainer.employeeId === id);
-  };
+ 
   const [maxDate, setMaxDate] = useState('');
 
   useEffect(() => {
@@ -118,12 +121,16 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
 
   useEffect(() => {
     axios
-      .get<Trainer[]>('http://localhost:5000/api/Employees/trainers')
-      .then((response) => setTrainers(response.data))
+      .get(process.env.NEXT_PUBLIC_API_LOAD_TRAINERS!)
+      .then((response) => {
+        const employeeId = response.data.map((item: any) => item.employeeId);
+        console.log(employeeId);
+        setEmployeeData(employeeId);
+      })
       .catch((error) => {
-        console.error('Lỗi khi lấy danh sách trainers:', error);
-        setLoading(false);
+        console.error('Error fetching data from API:', error);
       });
+
 
     axios
       .get<Cage[]>('http://localhost:5000/api/Cages/load-cages')
@@ -139,7 +146,7 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
         console.error('Lỗi khi lấy danh sách Species:', error);
         setLoading(false);
       });
-  }, []);
+    }, []);
 
   const title = initialData ? 'Edit Animal information' : 'Import new animal';
   const description = initialData ? 'Edit an animal.' : 'Import new animal';
@@ -255,7 +262,7 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
                       className="read-only:bg-gray-100"
                       readOnly={!!initialData}
                       disabled={loading}
-                      placeholder="Billboard label"
+                      placeholder="AnimalId"
                       {...field}
                     />
                   </FormControl>
@@ -270,7 +277,7 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
                 <FormItem>
                   <FormLabel>Animal Name</FormLabel>
                   <FormControl>
-                    <Input disabled={loading} placeholder="Billboard label" {...field} />
+                    <Input disabled={loading} placeholder="Animal Name" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -301,7 +308,7 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
                 <FormItem>
                   <FormLabel>ImportDate</FormLabel>
                   <FormControl>
-                    <Input max={maxDate} type="date" disabled={loading} placeholder="Billboard label" {...field} />
+                    <Input max={maxDate} type="date" disabled={loading} placeholder="ImportDate" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -314,7 +321,7 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
                 <FormItem>
                   <FormLabel>Region:</FormLabel>
                   <FormControl>
-                    <Input disabled={loading} placeholder="Billboard label" {...field} />
+                    <Input disabled={loading} placeholder="Region" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -403,46 +410,111 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
                 </FormItem>
               )}
             />
-
-            <FormField
+ {/* <FormField
               control={form.control}
               name="employeeId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Trainer:</FormLabel>
-                  <Select
-                    disabled={loading}
-                    onValueChange={field.onChange}
-                    value={field.value.toString()} // Convert the value to a string here
-                    defaultValue={field.value.toString()} // Convert the default value to a string
-                  >
-                    {field.value ? (
-                      <SelectTrigger>
-                        <SelectValue>
-                          {trainers.find((trainer) => trainer.employeeId === field.value)?.fullName}
-                        </SelectValue>
-                      </SelectTrigger>
-                    ) : (
-                      <SelectTrigger>
-                        <SelectValue>Choose a EmployeeId</SelectValue>
-                      </SelectTrigger>
-                    )}
-
-                    <SelectContent>
-                      <SelectGroup>
-                        {trainers.map((trainer) => (
-                          <SelectItem key={trainer.employeeId} value={trainer?.employeeId.toString()}>
-                            {trainer.fullName}
-                          </SelectItem>
-                        ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
+              render={({ field }) => {
+                return (
+                  <FormItem>
+                    <FormLabel>Employee Id</FormLabel>
+                    <FormControl>
+                      <Popover open={openComboBox} onOpenChange={()=>setOpenComboBox(true)}>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="outline"
+                            role="combobox"
+                            aria-expanded={open}
+                            className="w-full flex items-center justify-between"
+                          >
+                            <div>
+                            {field.value
+                                          ? employeeData.find((trainer) => trainer.employeeId === field.value)?.fullName
+                                          : 'Select trainer...'}                            </div>
+                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-[200px] p-0">
+                          <Command>
+                            <CommandInput placeholder="Search Area ID..." />
+                            <CommandEmpty>No Area ID found.</CommandEmpty>
+                            <CommandGroup>
+                              {employeeData.map((item) => (
+                                <CommandItem
+                                  key={item.employeeId}
+                                  onSelect={() => {
+                                    // Set the selected value in the field
+                                    field.onChange(item.fullName === field.value ? '' : item);
+                                    setOpenComboBox(false);
+                                  }}
+                                >
+                                  <Check
+                                    className={cn('mr-2 h-4 w-4', item.fullName === field.value ? 'opacity-100' : 'opacity-0')}
+                                  />
+                                  {item.fullName}
+                                </CommandItem>
+                              ))}
+                            </CommandGroup>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                );
+              }}
+            /> */}
+             {/* <FormField
+              control={form.control}
+              name="employeeId"
+              render={({ field }) => {
+                return (
+                  <FormItem>
+                    <FormLabel>EmployeeId</FormLabel>
+                    <FormControl>
+                      <Popover open={openComboBox} onOpenChange={setOpenComboBox}>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="outline"
+                            role="combobox"
+                            aria-expanded={open}
+                            className="w-full flex items-center justify-between"
+                          >
+                            <div>
+                              {field.value ? trainers.find((item) => item === field.value) : 'Select EmployeeId...'}
+                            </div>
+                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-[200px] p-0">
+                          <Command>
+                            <CommandInput placeholder="Search EmployeeId..." />
+                            <CommandEmpty>No Trainer found.</CommandEmpty>
+                            <CommandGroup>
+                              {trainers.map((item) => (
+                                <CommandItem
+                                  key={item}
+                                  onSelect={() => {
+                                    // Set the selected value in the field
+                                    field.onChange(item === field.value ? '' : item);
+                                    setOpenComboBox(false);
+                                  }}
+                                >
+                                  <Check
+                                    className={cn('mr-2 h-4 w-4', item === field.value ? 'opacity-100' : 'opacity-0')}
+                                  />
+                                  {item}
+                                </CommandItem>
+                              ))}
+                            </CommandGroup>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                );
+              }}
+            /> */}
             <FormField
               control={form.control}
               name="cageId"
