@@ -2,7 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios';
-import { Check, ChevronsUpDown, Command, Trash } from 'lucide-react';
+import { Check, ChevronsUpDown, Trash } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -98,12 +98,9 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
   const [cages, setCages] = useState<Cage[]>([]);
   const [species, setSpecies] = useState<Species[]>([]);
 
-  const [openComboBoxTrainer, setOpenComboBoxTrainer] = useState(false);
 
   const [openComboBoxTrainer, setOpenComboBoxTrainer] = useState(false);
-  const getTrainerNameByID = (id: string | undefined) => {
-    return trainers.find((trainer) => trainer.employeeId === id);
-  };
+ 
  
   const [maxDate, setMaxDate] = useState('');
 
@@ -127,7 +124,7 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
       .then((response) => {
         const employeeId = response.data.map((item: any) => item.employeeId);
         console.log(employeeId);
-        setEmployeeData(employeeId);
+        setTrainers(employeeId);
       })
       .catch((error) => {
         console.error('Error fetching data from API:', error);
@@ -412,7 +409,7 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
                 </FormItem>
               )}
             />
- {/* <FormField
+  <FormField
               control={form.control}
               name="employeeId"
               render={({ field }) => (
