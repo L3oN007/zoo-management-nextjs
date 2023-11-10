@@ -1,7 +1,7 @@
-import { format } from 'date-fns';
 import axios from 'axios';
-import { ManageAnimalForm } from './components/manage-animal-form';
+import { format } from 'date-fns';
 import { ManageAnimalClient } from '../components/client';
+import { ManageAnimalForm } from './components/manage-animal-form';
 
 const EditAnimalPage = async ({ params }: { params: { animalId: string } }) => {
   // Construct the URL using the animalId from the params object
@@ -34,6 +34,8 @@ const EditAnimalPage = async ({ params }: { params: { animalId: string } }) => {
           animal.importDate = format(new Date(animal.importDate), 'MM/dd/yyyy');
           var img = animal.image.replace(/\[|\]|'/g, '').split(',');
           animal.image = img[0];
+          animal.healthStatus = animal.healthStatus.toString();
+          animal.isDeleted = animal.isDeleted.toString();
         });
       }
 

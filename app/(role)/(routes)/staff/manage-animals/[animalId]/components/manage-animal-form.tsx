@@ -4,17 +4,19 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios';
 import { Check, ChevronsUpDown, Command, Trash } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
 import * as z from 'zod';
 
 import { AlertModal } from '@/components/modals/alert-modal';
 import { Button } from '@/components/ui/button';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from '@/components/ui/command';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Heading } from '@/components/ui/heading';
 import ImageUpload from '@/components/ui/image-upload';
 import { Input } from '@/components/ui/input';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import {
   Select,
   SelectContent,
@@ -25,11 +27,7 @@ import {
   SelectValue
 } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
-import { log } from 'console';
-import { da } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
-import { Popover, PopoverTrigger, PopoverContent } from '@radix-ui/react-popover';
-import { CommandInput, CommandEmpty, CommandGroup, CommandItem } from 'cmdk';
 
 const formSchema = z.object({
   animalId: z
@@ -95,13 +93,17 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
 
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [openComboBox, setOpenComboBox] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState('');
-  const [employeeData, setEmployeeData] = useState<Trainer[]>([]);
-
+  const [trainers, setTrainers] = useState<Trainer[]>([]);
   const [cages, setCages] = useState<Cage[]>([]);
   const [species, setSpecies] = useState<Species[]>([]);
 
+  const [openComboBoxTrainer, setOpenComboBoxTrainer] = useState(false);
+
+  const [openComboBoxTrainer, setOpenComboBoxTrainer] = useState(false);
+  const getTrainerNameByID = (id: string | undefined) => {
+    return trainers.find((trainer) => trainer.employeeId === id);
+  };
  
   const [maxDate, setMaxDate] = useState('');
 
@@ -262,7 +264,7 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
                       className="read-only:bg-gray-100"
                       readOnly={!!initialData}
                       disabled={loading}
-                      placeholder="AnimalId"
+                      placeholder="ANIxxx"
                       {...field}
                     />
                   </FormControl>
@@ -277,7 +279,7 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
                 <FormItem>
                   <FormLabel>Animal Name</FormLabel>
                   <FormControl>
-                    <Input disabled={loading} placeholder="Animal Name" {...field} />
+                    <Input disabled={loading} placeholder="Animal name" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -306,9 +308,9 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
               name="importDate"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>ImportDate</FormLabel>
+                  <FormLabel>Import Date</FormLabel>
                   <FormControl>
-                    <Input max={maxDate} type="date" disabled={loading} placeholder="ImportDate" {...field} />
+                    <Input max={maxDate} type="date" disabled={loading} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -319,7 +321,7 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
               name="region"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Region:</FormLabel>
+                  <FormLabel>Region</FormLabel>
                   <FormControl>
                     <Input disabled={loading} placeholder="Region" {...field} />
                   </FormControl>
@@ -333,9 +335,9 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
               name="behavior"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Behavior:</FormLabel>
+                  <FormLabel>Behavior</FormLabel>
                   <FormControl>
-                    <Input disabled={loading} placeholder="Billboard label" {...field} />
+                    <Input disabled={loading} placeholder="Behavior" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -346,7 +348,7 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
               name="gender"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Gender:</FormLabel>
+                  <FormLabel>Gender</FormLabel>
                   <Select
                     disabled={loading}
                     onValueChange={field.onChange}
@@ -379,7 +381,7 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
               name="rarity"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Rarity:</FormLabel>
+                  <FormLabel>Rarity</FormLabel>
                   <Select
                     disabled={loading}
                     onValueChange={field.onChange}
@@ -413,114 +415,64 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
  {/* <FormField
               control={form.control}
               name="employeeId"
-              render={({ field }) => {
-                return (
-                  <FormItem>
-                    <FormLabel>Employee Id</FormLabel>
-                    <FormControl>
-                      <Popover open={openComboBox} onOpenChange={()=>setOpenComboBox(true)}>
-                        <PopoverTrigger asChild>
-                          <Button
-                            variant="outline"
-                            role="combobox"
-                            aria-expanded={open}
-                            className="w-full flex items-center justify-between"
-                          >
-                            <div>
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Animal</FormLabel>
+                  <FormControl>
+                    <Popover open={openComboBoxTrainer} onOpenChange={setOpenComboBoxTrainer}>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          aria-expanded={open}
+                          className="w-full flex items-center justify-between"
+                        >
+                          <div>
                             {field.value
-                                          ? employeeData.find((trainer) => trainer.employeeId === field.value)?.fullName
-                                          : 'Select trainer...'}                            </div>
-                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-[200px] p-0">
-                          <Command>
-                            <CommandInput placeholder="Search Area ID..." />
-                            <CommandEmpty>No Area ID found.</CommandEmpty>
-                            <CommandGroup>
-                              {employeeData.map((item) => (
-                                <CommandItem
-                                  key={item.employeeId}
-                                  onSelect={() => {
-                                    // Set the selected value in the field
-                                    field.onChange(item.fullName === field.value ? '' : item);
-                                    setOpenComboBox(false);
-                                  }}
-                                >
-                                  <Check
-                                    className={cn('mr-2 h-4 w-4', item.fullName === field.value ? 'opacity-100' : 'opacity-0')}
-                                  />
-                                  {item.fullName}
-                                </CommandItem>
-                              ))}
-                            </CommandGroup>
-                          </Command>
-                        </PopoverContent>
-                      </Popover>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                );
-              }}
-            /> */}
-             {/* <FormField
-              control={form.control}
-              name="employeeId"
-              render={({ field }) => {
-                return (
-                  <FormItem>
-                    <FormLabel>EmployeeId</FormLabel>
-                    <FormControl>
-                      <Popover open={openComboBox} onOpenChange={setOpenComboBox}>
-                        <PopoverTrigger asChild>
-                          <Button
-                            variant="outline"
-                            role="combobox"
-                            aria-expanded={open}
-                            className="w-full flex items-center justify-between"
-                          >
-                            <div>
-                              {field.value ? trainers.find((item) => item === field.value) : 'Select EmployeeId...'}
-                            </div>
-                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-[200px] p-0">
-                          <Command>
-                            <CommandInput placeholder="Search EmployeeId..." />
-                            <CommandEmpty>No Trainer found.</CommandEmpty>
-                            <CommandGroup>
-                              {trainers.map((item) => (
-                                <CommandItem
-                                  key={item}
-                                  onSelect={() => {
-                                    // Set the selected value in the field
-                                    field.onChange(item === field.value ? '' : item);
-                                    setOpenComboBox(false);
-                                  }}
-                                >
-                                  <Check
-                                    className={cn('mr-2 h-4 w-4', item === field.value ? 'opacity-100' : 'opacity-0')}
-                                  />
-                                  {item}
-                                </CommandItem>
-                              ))}
-                            </CommandGroup>
-                          </Command>
-                        </PopoverContent>
-                      </Popover>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                );
-              }}
-            /> */}
+                              ? trainers.find((trainer) => trainer.employeeId === field.value)?.fullName
+                              : 'Select Trainer...'}
+                          </div>
+                          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-[200px] p-0">
+                        <Command>
+                          <CommandInput placeholder="Search Trainer..." />
+                          <CommandEmpty>No trainer found.</CommandEmpty>
+                          <CommandGroup>
+                            {trainers.map((trainer) => (
+                              <CommandItem
+                                key={trainer.employeeId}
+                                onSelect={() => {
+                                  field.onChange(trainer.employeeId === field.value ? '' : trainer.employeeId);
+                                  setOpenComboBoxTrainer(false);
+                                }}
+                              >
+                                <Check
+                                  className={cn(
+                                    'mr-2 h-4 w-4',
+                                    trainer.employeeId === field.value ? 'opacity-100' : 'opacity-0'
+                                  )}
+                                />
+                                {trainer.fullName}
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             <FormField
               control={form.control}
               name="cageId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Cage:</FormLabel>
+                  <FormLabel>Cage</FormLabel>
                   <Select
                     disabled={loading}
                     onValueChange={field.onChange}
@@ -533,7 +485,7 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
                       </SelectTrigger>
                     ) : (
                       <SelectTrigger>
-                        <SelectValue>Choose a CageId</SelectValue>
+                        <SelectValue>Choose a Cage</SelectValue>
                       </SelectTrigger>
                     )}
 
@@ -556,7 +508,7 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
               name="speciesId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Species:</FormLabel>
+                  <FormLabel>Species</FormLabel>
                   <Select
                     disabled={loading}
                     onValueChange={(value) => field.onChange(Number(value))}
@@ -571,7 +523,7 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
                       </SelectTrigger>
                     ) : (
                       <SelectTrigger>
-                        <SelectValue>Choose a SpeciesId</SelectValue>
+                        <SelectValue>Choose a Species</SelectValue>
                       </SelectTrigger>
                     )}
 

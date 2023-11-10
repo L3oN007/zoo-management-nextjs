@@ -70,7 +70,8 @@ export const columns: ColumnDef<AnimalColumn>[] = [
   },
   {
     accessorKey: 'behavior',
-    header: 'Behavior'
+    header: 'Behavior',
+    cell: (props) => <div className="line-clamp-3">{props.row.original.behavior}</div>
   },
 
   {
@@ -102,7 +103,7 @@ export const columns: ColumnDef<AnimalColumn>[] = [
           {props.row.original.healthStatus === '0'
             ? 'Undefined'
             : props.row.original.healthStatus === '1'
-            ? 'Ok'
+            ? 'Good'
             : 'Bad'}
         </span>
       </div>

@@ -1,61 +1,88 @@
 import { Metadata } from 'next';
 
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 import { options } from '@/app/api/auth/[...nextauth]/options';
 import { Heading } from '@/components/ui/heading';
+import axios from 'axios';
 import { getServerSession } from 'next-auth';
 import { Overview } from './components/overview';
-import axios from 'axios';
 
 export const metadata: Metadata = {
   title: 'Dashboard',
   description: 'Example dashboard app built using the components.'
 };
 
+function getMonthName(monthNumber: number) {
+  const months = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December'
+  ];
+
+  if (monthNumber >= 1 && monthNumber <= 12) {
+    return months[monthNumber - 1];
+  } else {
+    return 'Invalid month number';
+  }
+}
+
 export default async function DashboardPage() {
   const session = await getServerSession(options);
   const transUrl = process.env.NEXT_PUBLIC_API_LOAD_TRANSACTIONS!;
   const orderDetailUrl = process.env.NEXT_PUBLIC_API_LOAD_ORDERDETAIL!;
-  const transResponse = await axios.get(transUrl);
-  let transData = transResponse.data;
-  console.log(transData)
-  var totalRevenue = 0;
-  var curTickets = 0;
-  transData.forEach((element: any) => {
-    totalRevenue += element.totalPrice;
-    if ((new Date(element.purchaseDate).getMonth() + 1) === new Date().getMonth() + 1) {
-      element.order.orderDetails.forEach((od: { quantity: number; }) => {
-        curTickets += od.quantity;
-      });
-    }
-  });
-  const odResponse = await axios.get(orderDetailUrl);
-  let odData = odResponse.data;
-  var totalQuantityTickets = 0;
-  odData.forEach((element: any) => {
-    totalQuantityTickets += element.quantity;
-  });
+
+  let totalRevenue = 0;
+  let curTickets = 0;
+  let totalQuantityTickets = 0;
+  let transData = null;
+
+  try {
+    const transResponse = await axios.get(transUrl);
+    transData = transResponse.data;
+    console.log(transData);
+
+    transData.forEach((element: any) => {
+      totalRevenue += element.totalPrice;
+
+      if (new Date(element.purchaseDate).getMonth() + 1 === new Date().getMonth() + 1) {
+        element.order.orderDetails.forEach((od: { quantity: number }) => {
+          curTickets += od.quantity;
+        });
+      }
+    });
+
+    const odResponse = await axios.get(orderDetailUrl);
+    let odData = odResponse.data;
+
+    odData.forEach((element: any) => {
+      totalQuantityTickets += element.quantity;
+    });
+  } catch (error) {
+    // Handle the error here, you can log it or take any other necessary action.
+    console.error('An error occurred:', error);
+  }
+
   return (
     <>
       <div className="hidden flex-col md:flex">
         <div className="flex-1 space-y-4 p-8 pt-6">
           <div className="flex items-center justify-between space-y-2">
-            <Heading
-              title="Dashboard"
-              description={`Welcome back ${session?.user.fullName}`}
-            />
-            <div className="flex items-center space-x-2">
-              <Button>Download</Button>
-            </div>
+            <Heading title="Dashboard" description={`Welcome back ${session?.user.fullName}`} />
           </div>
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  Total Revenue
-                </CardTitle>
+                <CardTitle className="text-sm font-medium">Total Revenue of {new Date().getFullYear()}</CardTitle>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
@@ -70,18 +97,17 @@ export default async function DashboardPage() {
                 </svg>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{totalRevenue.toLocaleString('vi', {
-                  style: 'currency',
-                  currency: 'VND'
-                })}</div>
-                <p className="text-xs text-muted-foreground">
-                  +20.1% from last month
-                </p>
+                <div className="text-2xl font-bold">
+                  {totalRevenue.toLocaleString('vi', {
+                    style: 'currency',
+                    currency: 'VND'
+                  })}
+                </div>
               </CardContent>
             </Card>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Sales</CardTitle>
+                <CardTitle className="text-sm font-medium">Sales in of {new Date().getFullYear()}</CardTitle>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
@@ -98,29 +124,18 @@ export default async function DashboardPage() {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{totalQuantityTickets} sold tickets</div>
-                <p className="text-xs text-muted-foreground">
-                  +19% from last month
-                </p>
               </CardContent>
             </Card>
           </div>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-            <Card className="col-span-4">
+            <Card className="col-span-full">
               <CardHeader>
-                <CardTitle>Overview</CardTitle>
+                <CardTitle>Overview Revenue Of {new Date().getFullYear()}</CardTitle>
+                <CardDescription>Millions per month</CardDescription>
               </CardHeader>
               <CardContent className="pl-2">
                 <Overview dataReal={transData} />
               </CardContent>
-            </Card>
-            <Card className="col-span-3">
-              <CardHeader>
-                <CardTitle>Recent Sales</CardTitle>
-                <CardDescription>
-                  We sold {curTickets} tickets this month.
-                </CardDescription>
-              </CardHeader>
-              <CardContent></CardContent>
             </Card>
           </div>
         </div>
