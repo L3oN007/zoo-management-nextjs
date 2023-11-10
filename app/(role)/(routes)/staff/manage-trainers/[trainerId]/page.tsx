@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { ManageTrainerClient } from '../components/client';
 import { ManageTrainerForm } from './components/manage-trainer-form';
-import { ManageLeadTrainerClient } from '../components/client copy';
+import { ManageLeadTrainerClient } from '../components/chiefTrainerClient';
 
 const ManageTrainerPage = async ({ params }: { params: { trainerId: string } }) => {
   // Construct the URL using the staffId from the params object
