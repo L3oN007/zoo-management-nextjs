@@ -98,10 +98,10 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
   const [species, setSpecies] = useState<Species[]>([]);
 
   const [openComboBoxTrainer, setOpenComboBoxTrainer] = useState(false);
+  const [openComboBoxCage, setOpenComboBoxCage] = useState(false);
+  const [openComboBoxSpecies, setOpenComboBoxSpecies] = useState(false);
 
-  const getTrainerNameByID = (id: string | undefined) => {
-    return trainers.find((trainer) => trainer.employeeId === id);
-  };
+ 
   const [maxDate, setMaxDate] = useState('');
 
   useEffect(() => {
@@ -354,7 +354,7 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
                       </SelectTrigger>
                     ) : (
                       <SelectTrigger>
-                        <SelectValue>Choose the Gender</SelectValue>
+                        <SelectValue>Select the Gender</SelectValue>
                       </SelectTrigger>
                     )}
                     <SelectContent>
@@ -387,7 +387,7 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
                       </SelectTrigger>
                     ) : (
                       <SelectTrigger>
-                        <SelectValue>Choose a Rarity</SelectValue>
+                        <SelectValue>Select a Rarity</SelectValue>
                       </SelectTrigger>
                     )}
 
@@ -411,7 +411,7 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
               name="employeeId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Animal</FormLabel>
+                  <FormLabel>Trainer</FormLabel>
                   <FormControl>
                     <Popover open={openComboBoxTrainer} onOpenChange={setOpenComboBoxTrainer}>
                       <PopoverTrigger asChild>
@@ -423,7 +423,7 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
                         >
                           <div>
                             {field.value
-                              ? trainers.find((trainer) => trainer.employeeId === field.value)?.fullName
+                              ? trainers.find((trainer) => trainer.employeeId === field.value)?.employeeId
                               : 'Select Trainer...'}
                           </div>
                           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -448,7 +448,115 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
                                     trainer.employeeId === field.value ? 'opacity-100' : 'opacity-0'
                                   )}
                                 />
-                                {trainer.fullName}
+                                {trainer.employeeId}
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="cageId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Cage</FormLabel>
+                  <FormControl>
+                    <Popover open={openComboBoxCage} onOpenChange={setOpenComboBoxCage}>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          aria-expanded={open}
+                          className="w-full flex items-center justify-between"
+                        >
+                          <div>
+                            {field.value
+                              ? cages.find((cage) => cage.cageId === field.value)?.cageId
+                              : 'Select CageID...'}
+                          </div>
+                          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-[200px] p-0">
+                        <Command>
+                          <CommandInput placeholder="Search Cage..." />
+                          <CommandEmpty>No cage found.</CommandEmpty>
+                          <CommandGroup>
+                            {cages.map((cage) => (
+                              <CommandItem
+                                key={cage.cageId}
+                                onSelect={() => {
+                                  field.onChange(cage.cageId === field.value ? '' : cage.cageId);
+                                  setOpenComboBoxCage(false);
+                                }}
+                              >
+                                <Check
+                                  className={cn(
+                                    'mr-2 h-4 w-4',
+                                    cage.cageId === field.value ? 'opacity-100' : 'opacity-0'
+                                  )}
+                                />
+                                {cage.cageId}
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="speciesId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Species</FormLabel>
+                  <FormControl>
+                    <Popover open={openComboBoxSpecies} onOpenChange={setOpenComboBoxSpecies}>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          aria-expanded={open}
+                          className="w-full flex items-center justify-between"
+                        >
+                          <div>
+                            {field.value
+                              ? species.find((species) => species.speciesId === field.value)?.speciesName
+                              : 'Select Species...'}
+                          </div>
+                          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-[200px] p-0">
+                        <Command>
+                          <CommandInput placeholder="Search Cage..." />
+                          <CommandEmpty>No cage found.</CommandEmpty>
+                          <CommandGroup>
+                            {species.map((species) => (
+                              <CommandItem
+                                key={species.speciesId}
+                                onSelect={() => {
+                                  field.onChange(species.speciesId === field.value ? '' : species.speciesId);
+                                  setOpenComboBoxCage(false);
+                                }}
+                              >
+                                <Check
+                                  className={cn(
+                                    'mr-2 h-4 w-4',
+                                    species.speciesId === field.value ? 'opacity-100' : 'opacity-0'
+                                  )}
+                                />
+                                {species.speciesName}
                               </CommandItem>
                             ))}
                           </CommandGroup>
@@ -461,80 +569,7 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="cageId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Cage</FormLabel>
-                  <Select
-                    disabled={loading}
-                    onValueChange={field.onChange}
-                    value={field.value} // Convert the value to a string here
-                    defaultValue={field.value} // Convert the default value to a string
-                  >
-                    {field.value ? (
-                      <SelectTrigger>
-                        <SelectValue>{cages.find((cages) => cages.cageId == field.value)?.cageId}</SelectValue>
-                      </SelectTrigger>
-                    ) : (
-                      <SelectTrigger>
-                        <SelectValue>Choose a Cage</SelectValue>
-                      </SelectTrigger>
-                    )}
-
-                    <SelectContent>
-                      <SelectGroup>
-                        {cages.map((cage) => (
-                          <SelectItem key={cage.cageId} value={cage?.cageId.toString()}>
-                            {cage.cageId}
-                          </SelectItem>
-                        ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="speciesId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Species</FormLabel>
-                  <Select
-                    disabled={loading}
-                    onValueChange={(value) => field.onChange(Number(value))}
-                    value={String(field.value)} // Convert the value to a string here
-                    defaultValue={String(field.value)} // Convert the default value to a string
-                  >
-                    {field.value ? (
-                      <SelectTrigger>
-                        <SelectValue>
-                          {species.find((species) => species.speciesId === field.value)?.speciesName}
-                        </SelectValue>
-                      </SelectTrigger>
-                    ) : (
-                      <SelectTrigger>
-                        <SelectValue>Choose a Species</SelectValue>
-                      </SelectTrigger>
-                    )}
-
-                    <SelectContent>
-                      <SelectGroup>
-                        {species.map((species) => (
-                          <SelectItem key={species.speciesId} value={species?.speciesId.toString()}>
-                            {species.speciesName}
-                          </SelectItem>
-                        ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            
             {initialData ? (
               <FormField
                 control={form.control}

@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { ManageTrainerClient } from '../components/client';
 import { ManageTrainerForm } from './components/manage-trainer-form';
+import { ManageLeadTrainerClient } from '../components/chiefTrainerClient';
 
 const ManageTrainerPage = async ({ params }: { params: { trainerId: string } }) => {
   // Construct the URL using the staffId from the params object
@@ -20,7 +21,7 @@ const ManageTrainerPage = async ({ params }: { params: { trainerId: string } }) 
       return (
         <div className="flex-col">
           <div className="flex-1 space-y-4 p-8 pt-6">
-            <ManageTrainerClient data={leadTrainer} />
+            <ManageLeadTrainerClient data={leadTrainer} />
           </div>
         </div>
       );

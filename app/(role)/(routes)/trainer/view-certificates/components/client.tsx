@@ -25,7 +25,7 @@ export const ManageCertificateClient: FC<ManageCertificateClientProps> = (data) 
               
             </div>
             <Separator />
-            <DataTable columns={columns} data={data.data} searchKey="cerName" filterOptions={null as any} />
+            <DataTable columns={columns} data={data.data} searchKey="certificateName" filterOptions={null as any} />
 
         </>
     )
