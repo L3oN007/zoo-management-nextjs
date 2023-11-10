@@ -5,10 +5,9 @@ import { DataTable } from '@/components/ui/data-table';
 import { Heading } from '@/components/ui/heading';
 import { Separator } from '@/components/ui/separator';
 import { Plus } from 'lucide-react';
-import { useParams, useRouter } from 'next/navigation';
-import { FC, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { FC } from 'react';
 import { columns } from './columns';
-import { CheckCircledIcon, CrossCircledIcon } from '@radix-ui/react-icons';
 
 interface ManageTrainerClientProps {
   data: any;
@@ -16,18 +15,6 @@ interface ManageTrainerClientProps {
 
 export const ManageTrainerClient: FC<ManageTrainerClientProps> = ({ data }) => {
   const router = useRouter();
-  const statuses = [
-    {
-      value: '0',
-      label: 'Active',
-      icon: CheckCircledIcon
-    },
-    {
-      value: '1',
-      label: 'Inactive',
-      icon: CrossCircledIcon
-    }
-  ];
 
   return (
     <>
@@ -40,14 +27,7 @@ export const ManageTrainerClient: FC<ManageTrainerClientProps> = ({ data }) => {
         </Button>
       </div>
       <Separator />
-      {/* 
-      <div className="flex ">
-        <div className=""> */}
-      <DataTable columns={columns} data={data} searchKey="fullName" filterOptions={statuses} /> {/* </div> */}
-      {/* <div className="">
-          <DataTable columns={columns} data={data} searchKey="fullName" filterOptions={statuses} />
-        </div> */}
-      {/* </div> */}
+      <DataTable columns={columns} data={data} searchKey="fullName" placeholder="Search by full name" />
     </>
   );
 };
