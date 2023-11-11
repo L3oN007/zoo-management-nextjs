@@ -101,7 +101,6 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
   const [openComboBoxCage, setOpenComboBoxCage] = useState(false);
   const [openComboBoxSpecies, setOpenComboBoxSpecies] = useState(false);
 
- 
   const [maxDate, setMaxDate] = useState('');
 
   useEffect(() => {
@@ -539,7 +538,7 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
                       </PopoverTrigger>
                       <PopoverContent className="w-[200px] p-0">
                         <Command>
-                          <CommandInput placeholder="Search Cage..." />
+                          <CommandInput placeholder="Search Species..." />
                           <CommandEmpty>No cage found.</CommandEmpty>
                           <CommandGroup>
                             {species.map((species) => (
@@ -569,7 +568,6 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
               )}
             />
 
-            
             {initialData ? (
               <FormField
                 control={form.control}

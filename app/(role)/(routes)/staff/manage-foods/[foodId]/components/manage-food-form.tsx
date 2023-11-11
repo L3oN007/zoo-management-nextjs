@@ -79,7 +79,7 @@ export const ManageFoodForm: React.FC<ManageFoodFormProps> = ({ initialData }) =
         await axios.post(process.env.NEXT_PUBLIC_API_CREATE_FOOD!, data);
       }
       router.refresh();
-      router.push(`/staff/manage-foods`);
+      router.push(`/staff/manage-foods/food`);
       toast.success(toastMessage);
     } catch (error: any) {
       toast.error(error.response.data.title);
@@ -94,7 +94,7 @@ export const ManageFoodForm: React.FC<ManageFoodFormProps> = ({ initialData }) =
       setLoading(true);
       await axios.delete(process.env.NEXT_PUBLIC_API_DELETE_FOOD + `${params.foodId}`);
       router.refresh();
-      router.push(`/staff/manage-foods`);
+      router.push(`/staff/manage-foods/food`);
       toast.success('Foods deleted.');
     } catch (error: any) {
       toast.error(error.response.data.title);
