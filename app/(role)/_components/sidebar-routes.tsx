@@ -1,12 +1,14 @@
 'use client';
 
 import {
+  Apple,
   ArchiveRestore,
   BadgeCheck,
   CalendarCheckIcon,
   Cat,
   Compass,
   Layout,
+  LucideIcon,
   MapPin,
   MenuSquareIcon,
   Newspaper,
@@ -19,10 +21,16 @@ import { useSession } from 'next-auth/react';
 import { SidebarItem } from './sidebar-item';
 
 type Route = {
-  icon: any;
+  icon: LucideIcon;
   label: string;
   href: string;
-};
+    subItems?: {
+      icon: LucideIcon;
+      label: string;
+      href: string;
+    }[];
+  };
+  
 
 export const SidebarRoutes = () => {
   const session = useSession();
@@ -61,7 +69,20 @@ export const SidebarRoutes = () => {
       {
         icon: User,
         label: 'Manage Trainers',
-        href: '/staff/manage-trainers'
+        href: '/staff/manage-trainers',
+        subItems: [
+          {
+            icon: User,
+            label: 'Lead Trainer',
+            href: '/staff/manage-trainers/lead'
+          },
+          {
+            icon: User,
+            label: 'Normal Trainer',
+            href: '/staff/manage-trainers/normal'
+          },
+          // Add more trainer subitems as needed
+        ]
       },
       {
         icon: MapPin,
@@ -81,12 +102,39 @@ export const SidebarRoutes = () => {
       {
         icon: BadgeCheck,
         label: 'Manage Certificates',
-        href: '/staff/manage-certificates'
+        href: '/staff/manage-certificates',
+        subItems: [
+          {
+            icon: BadgeCheck,
+            label: 'Edit All Certificate',
+            href: '/staff/manage-certificates/view'
+          },
+          {
+            icon: BadgeCheck,
+            label: 'Employee Certificate',
+            href: '/staff/manage-certificates/empCertificate'
+          },
+          // Add more trainer subitems as needed
+        ]
+
       },
       {
         icon: ArchiveRestore,
         label: 'Manage Foods',
-        href: '/staff/manage-foods'
+        href: '/staff/manage-foods',
+        subItems: [
+          {
+            icon: ArchiveRestore,
+            label: 'Import History',
+            href: '/staff/manage-foods/importHistory'
+          },
+          {
+            icon: Apple,
+            label: 'Food In Zoo',
+            href: '/staff/manage-foods/food'
+          },
+          // Add more trainer subitems as needed
+        ]
       }
     ];
   } else if (role === 'trainer') {
@@ -122,7 +170,7 @@ export const SidebarRoutes = () => {
   return (
     <div className="flex flex-col w-full">
       {routes.map((route) => (
-        <SidebarItem key={route.href} icon={route.icon} label={route.label} href={route.href} />
+        <SidebarItem key={route.href} icon={route.icon} label={route.label} href={route.href} subItems={route.subItems}/>
       ))}
     </div>
   );

@@ -78,7 +78,11 @@ export const ManageTicketClient: FC<ManageTicketClientProps> = ({ data }) => {
     return statusFilter && searchFilter;
   });
 
-  console.log(selectedStatus);
+   function currencyFormat(amount: number) {
+    return (amount / 1000).toFixed(3)
+}
+
+
 
   return (
     <>
@@ -141,7 +145,7 @@ export const ManageTicketClient: FC<ManageTicketClientProps> = ({ data }) => {
                   Type: <span style={{ fontWeight: 'bold', color: '#E98244' }}>{ticket.type}</span>
                 </p>
                 <p>
-                  Unit price: <span style={{ fontWeight: 'bold', color: '#E98244' }}>{ticket.unitPrice}</span>
+                  Unit price: <span style={{ fontWeight: 'bold', color: '#E98244' }}>{currencyFormat(ticket.unitPrice)}₫</span>
                 </p>
               </CardContent>
               <CardFooter style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>

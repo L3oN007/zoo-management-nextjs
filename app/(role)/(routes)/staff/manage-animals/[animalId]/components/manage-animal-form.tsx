@@ -2,19 +2,21 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios';
-import { Trash } from 'lucide-react';
+import { Check, ChevronsUpDown, Trash } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
 import * as z from 'zod';
 
 import { AlertModal } from '@/components/modals/alert-modal';
 import { Button } from '@/components/ui/button';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from '@/components/ui/command';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Heading } from '@/components/ui/heading';
 import ImageUpload from '@/components/ui/image-upload';
 import { Input } from '@/components/ui/input';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import {
   Select,
   SelectContent,
@@ -25,8 +27,7 @@ import {
   SelectValue
 } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
-import { log } from 'console';
-import { da } from 'date-fns/locale';
+import { cn } from '@/lib/utils';
 
 const formSchema = z.object({
   animalId: z
@@ -43,8 +44,8 @@ const formSchema = z.object({
     ),
   image: z.object({ url: z.string() }).array() || z.string().optional(),
   name: z.string().min(1, { message: 'Full name must be between 1-50 characters.' }).max(50),
-  birthDate: z.string().min(1, { message: 'Region is required.' }),
-  importDate: z.string().min(1, { message: 'Region is required.' }),
+  birthDate: z.string().min(1, { message: 'Date of birth is required.' }),
+  importDate: z.string().min(1, { message: 'Date of import is required.' }),
   region: z.string().min(1, { message: 'Region is required.' }),
   behavior: z.string().min(1, { message: 'Behavior is required' }),
   healthStatus: z.coerce.number(),
@@ -92,14 +93,30 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
 
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [selectedStatus, setSelectedStatus] = useState('');
   const [trainers, setTrainers] = useState<Trainer[]>([]);
   const [cages, setCages] = useState<Cage[]>([]);
   const [species, setSpecies] = useState<Species[]>([]);
 
-  const getTrainerNameByID = (id: string | undefined) => {
-    return trainers.find((trainer) => trainer.employeeId === id);
-  };
+  const [openComboBoxTrainer, setOpenComboBoxTrainer] = useState(false);
+  const [openComboBoxCage, setOpenComboBoxCage] = useState(false);
+  const [openComboBoxSpecies, setOpenComboBoxSpecies] = useState(false);
+
+ 
+  const [maxDate, setMaxDate] = useState('');
+
+  useEffect(() => {
+    // Get the current date
+    const currentDate = new Date();
+
+    // Format the date to "YYYY-MM-DD"
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+    const day = String(currentDate.getDate()).padStart(2, '0');
+    const formattedDate = `${year}-${month}-${day}`;
+
+    // Set the max date in state
+    setMaxDate(formattedDate);
+  }, []);
 
   useEffect(() => {
     axios
@@ -236,7 +253,13 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
                 <FormItem>
                   <FormLabel>AnimalId</FormLabel>
                   <FormControl>
-                    <Input readOnly={!!initialData} disabled={loading} placeholder="Billboard label" {...field} />
+                    <Input
+                      className="read-only:bg-gray-100"
+                      readOnly={!!initialData}
+                      disabled={loading}
+                      placeholder="ANIxxx"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -249,7 +272,7 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
                 <FormItem>
                   <FormLabel>Animal Name</FormLabel>
                   <FormControl>
-                    <Input disabled={loading} placeholder="Billboard label" {...field} />
+                    <Input disabled={loading} placeholder="Animal name" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -262,7 +285,12 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
                 <FormItem>
                   <FormLabel>Date of birth</FormLabel>
                   <FormControl>
-                    <Input type="date" value={field.value} onChange={(e) => field.onChange(e.target.value)} />
+                    <Input
+                      max={maxDate}
+                      type="date"
+                      value={field.value}
+                      onChange={(e) => field.onChange(e.target.value)}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -273,9 +301,9 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
               name="importDate"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>ImportDate</FormLabel>
+                  <FormLabel>Import Date</FormLabel>
                   <FormControl>
-                    <Input type="date" disabled={loading} placeholder="Billboard label" {...field} />
+                    <Input max={maxDate} type="date" disabled={loading} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -286,9 +314,9 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
               name="region"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Region:</FormLabel>
+                  <FormLabel>Region</FormLabel>
                   <FormControl>
-                    <Input disabled={loading} placeholder="Billboard label" {...field} />
+                    <Input disabled={loading} placeholder="Region" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -300,46 +328,10 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
               name="behavior"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Behavior:</FormLabel>
+                  <FormLabel>Behavior</FormLabel>
                   <FormControl>
-                    <Input disabled={loading} placeholder="Billboard label" {...field} />
+                    <Input disabled={loading} placeholder="Behavior" {...field} />
                   </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="healthStatus"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Health Status:</FormLabel>
-                  <Select
-                    disabled={loading}
-                    onValueChange={field.onChange}
-                    value={field.value.toString()} // Convert the value to a string here
-                    defaultValue={field.value.toString()} // Convert the default value to a string
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue
-                          defaultValue={
-                            field.value.toString() == '1' ? 'Ok' : field.value.toString() == '2' ? 'Bad' : 'Undefined'
-                          }
-                        >
-                          {field.value.toString() == '1' ? 'Ok' : field.value.toString() == '2' ? 'Bad' : 'Undefined'}
-                        </SelectValue>
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectLabel>Health Status</SelectLabel>
-                        <SelectItem value="0">Undefined</SelectItem>
-                        <SelectItem value="1">Ok</SelectItem>
-                        <SelectItem value="2">Bad</SelectItem>
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
                   <FormMessage />
                 </FormItem>
               )}
@@ -349,25 +341,27 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
               name="gender"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Gender:</FormLabel>
+                  <FormLabel>Gender</FormLabel>
                   <Select
                     disabled={loading}
                     onValueChange={field.onChange}
                     value={field.value.toString()} // Convert the value to a string here
                     defaultValue={field.value.toString()} // Convert the default value to a string
                   >
-                    <FormControl>
+                    {field.value ? (
                       <SelectTrigger>
-                        <SelectValue defaultValue={field.value == 'Male' ? 'Female' : 'Male'}>
-                          {field.value == 'Female' ? 'Female' : 'Male'}
-                        </SelectValue>
+                        <SelectValue>{field.value}</SelectValue>
                       </SelectTrigger>
-                    </FormControl>
+                    ) : (
+                      <SelectTrigger>
+                        <SelectValue>Select the Gender</SelectValue>
+                      </SelectTrigger>
+                    )}
                     <SelectContent>
                       <SelectGroup>
                         <SelectLabel>Gender</SelectLabel>
-                        <SelectItem value="Female">Female</SelectItem>
                         <SelectItem value="Male">Male</SelectItem>
+                        <SelectItem value="Female">Female</SelectItem>
                       </SelectGroup>
                     </SelectContent>
                   </Select>
@@ -380,69 +374,30 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
               name="rarity"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Rarity:</FormLabel>
-                  <FormControl>
-                    <Input disabled={loading} placeholder="Billboard label" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="isDeleted"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Status:</FormLabel>
+                  <FormLabel>Rarity</FormLabel>
                   <Select
                     disabled={loading}
                     onValueChange={field.onChange}
                     value={field.value.toString()} // Convert the value to a string here
                     defaultValue={field.value.toString()} // Convert the default value to a string
                   >
-                    <FormControl>
+                    {field.value ? (
                       <SelectTrigger>
-                        <SelectValue defaultValue={field.value.toString() == '0' ? 'Active' : 'Inactive'}>
-                          {field.value.toString() == '0' ? 'Active' : 'Inactive'}
-                        </SelectValue>
+                        <SelectValue>{field.value}</SelectValue>
                       </SelectTrigger>
-                    </FormControl>
+                    ) : (
+                      <SelectTrigger>
+                        <SelectValue>Select a Rarity</SelectValue>
+                      </SelectTrigger>
+                    )}
+
                     <SelectContent>
                       <SelectGroup>
-                        <SelectLabel>Status</SelectLabel>
-                        <SelectItem value="0">Active</SelectItem>
-                        <SelectItem value="1">Inactive</SelectItem>
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="employeeId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Trainer:</FormLabel>
-                  <Select
-                    disabled={loading}
-                    onValueChange={field.onChange}
-                    value={field.value.toString()} // Convert the value to a string here
-                    defaultValue={field.value.toString()} // Convert the default value to a string
-                  >
-                    <SelectTrigger>
-                      <SelectValue>
-                        {trainers.find((trainer) => trainer.employeeId === field.value)?.fullName}
-                      </SelectValue>
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        {trainers.map((trainer) => (
-                          <SelectItem key={trainer.employeeId} value={trainer?.employeeId.toString()}>
-                            {trainer.fullName}
-                          </SelectItem>
-                        ))}
+                        <SelectLabel>Rarity:</SelectLabel>
+                        <SelectItem value="Normal">Normal</SelectItem>
+                        <SelectItem value="Endangered">Endangered</SelectItem>
+                        <SelectItem value="Critically Endangered">Critically Endangered</SelectItem>
+                        <SelectItem value="Vulnerable">Vulnerable</SelectItem>
                       </SelectGroup>
                     </SelectContent>
                   </Select>
@@ -453,29 +408,108 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
 
             <FormField
               control={form.control}
+              name="employeeId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Trainer</FormLabel>
+                  <FormControl>
+                    <Popover open={openComboBoxTrainer} onOpenChange={setOpenComboBoxTrainer}>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          aria-expanded={open}
+                          className="w-full flex items-center justify-between"
+                        >
+                          <div>
+                            {field.value
+                              ? trainers.find((trainer) => trainer.employeeId === field.value)?.employeeId
+                              : 'Select Trainer...'}
+                          </div>
+                          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-[200px] p-0">
+                        <Command>
+                          <CommandInput placeholder="Search Trainer..." />
+                          <CommandEmpty>No trainer found.</CommandEmpty>
+                          <CommandGroup>
+                            {trainers.map((trainer) => (
+                              <CommandItem
+                                key={trainer.employeeId}
+                                onSelect={() => {
+                                  field.onChange(trainer.employeeId === field.value ? '' : trainer.employeeId);
+                                  setOpenComboBoxTrainer(false);
+                                }}
+                              >
+                                <Check
+                                  className={cn(
+                                    'mr-2 h-4 w-4',
+                                    trainer.employeeId === field.value ? 'opacity-100' : 'opacity-0'
+                                  )}
+                                />
+                                {trainer.employeeId}
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
               name="cageId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Cage:</FormLabel>
-                  <Select
-                    disabled={loading}
-                    onValueChange={field.onChange}
-                    value={field.value} // Convert the value to a string here
-                    defaultValue={field.value} // Convert the default value to a string
-                  >
-                    <SelectTrigger>
-                      <SelectValue>{cages.find((cages) => cages.cageId == field.value)?.cageId}</SelectValue>
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        {cages.map((cage) => (
-                          <SelectItem key={cage.cageId} value={cage?.cageId.toString()}>
-                            {cage.cageId}
-                          </SelectItem>
-                        ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
+                  <FormLabel>Cage</FormLabel>
+                  <FormControl>
+                    <Popover open={openComboBoxCage} onOpenChange={setOpenComboBoxCage}>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          aria-expanded={open}
+                          className="w-full flex items-center justify-between"
+                        >
+                          <div>
+                            {field.value
+                              ? cages.find((cage) => cage.cageId === field.value)?.cageId
+                              : 'Select CageID...'}
+                          </div>
+                          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-[200px] p-0">
+                        <Command>
+                          <CommandInput placeholder="Search Cage..." />
+                          <CommandEmpty>No cage found.</CommandEmpty>
+                          <CommandGroup>
+                            {cages.map((cage) => (
+                              <CommandItem
+                                key={cage.cageId}
+                                onSelect={() => {
+                                  field.onChange(cage.cageId === field.value ? '' : cage.cageId);
+                                  setOpenComboBoxCage(false);
+                                }}
+                              >
+                                <Check
+                                  className={cn(
+                                    'mr-2 h-4 w-4',
+                                    cage.cageId === field.value ? 'opacity-100' : 'opacity-0'
+                                  )}
+                                />
+                                {cage.cageId}
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
@@ -485,32 +519,162 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
               name="speciesId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Species:</FormLabel>
-                  <Select
-                    disabled={loading}
-                    onValueChange={(value) => field.onChange(Number(value))}
-                    value={String(field.value)} // Convert the value to a string here
-                    defaultValue={String(field.value)} // Convert the default value to a string
-                  >
-                    <SelectTrigger>
-                      <SelectValue>
-                        {species.find((species) => species.speciesId === field.value)?.speciesName}
-                      </SelectValue>
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        {species.map((species) => (
-                          <SelectItem key={species.speciesId} value={species?.speciesId.toString()}>
-                            {species.speciesName}
-                          </SelectItem>
-                        ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
+                  <FormLabel>Species</FormLabel>
+                  <FormControl>
+                    <Popover open={openComboBoxSpecies} onOpenChange={setOpenComboBoxSpecies}>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          aria-expanded={open}
+                          className="w-full flex items-center justify-between"
+                        >
+                          <div>
+                            {field.value
+                              ? species.find((species) => species.speciesId === field.value)?.speciesName
+                              : 'Select Species...'}
+                          </div>
+                          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-[200px] p-0">
+                        <Command>
+                          <CommandInput placeholder="Search Cage..." />
+                          <CommandEmpty>No cage found.</CommandEmpty>
+                          <CommandGroup>
+                            {species.map((species) => (
+                              <CommandItem
+                                key={species.speciesId}
+                                onSelect={() => {
+                                  field.onChange(species.speciesId === field.value ? '' : species.speciesId);
+                                  setOpenComboBoxCage(false);
+                                }}
+                              >
+                                <Check
+                                  className={cn(
+                                    'mr-2 h-4 w-4',
+                                    species.speciesId === field.value ? 'opacity-100' : 'opacity-0'
+                                  )}
+                                />
+                                {species.speciesName}
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
+
+            
+            {initialData ? (
+              <FormField
+                control={form.control}
+                name="healthStatus"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Health Status:</FormLabel>
+                    <Select
+                      disabled={loading}
+                      onValueChange={field.onChange}
+                      value={field.value.toString()} // Convert the value to a string here
+                      defaultValue={field.value.toString()} // Convert the default value to a string
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue>
+                            {field.value == 1 ? 'Bad' : field.value == 2 ? 'Good' : 'Undefined'}
+                          </SelectValue>
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectLabel>Health Status</SelectLabel>
+                          <SelectItem value="2">Good</SelectItem>
+                          <SelectItem value="1">Bad</SelectItem>
+                          <SelectItem value="0">Undefined</SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            ) : (
+              <FormField
+                control={form.control}
+                name="healthStatus"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input
+                        type="hidden"
+                        defaultValue={'0'}
+                        disabled={loading}
+                        placeholder="Billboard label"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
+            {initialData ? (
+              <FormField
+                control={form.control}
+                name="isDeleted"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Status:</FormLabel>
+                    <Select
+                      disabled={loading}
+                      onValueChange={field.onChange}
+                      value={field.value.toString()} // Convert the value to a string here
+                      defaultValue={field.value.toString()} // Convert the default value to a string
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue defaultValue={field.value === 0 ? 'Active' : 'Inactive'}>
+                            {field.value === 0 ? 'Active' : 'Inactive'}
+                          </SelectValue>
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectLabel>Status</SelectLabel>
+                          <SelectItem value="0">Active</SelectItem>
+                          <SelectItem value="1">Inactive</SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            ) : (
+              <FormField
+                control={form.control}
+                name="isDeleted"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input
+                        type="hidden"
+                        defaultValue={'0'}
+                        disabled={loading}
+                        placeholder="Billboard label"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
           </div>
           <Button disabled={loading} className="ml-auto" type="submit">
             {action}

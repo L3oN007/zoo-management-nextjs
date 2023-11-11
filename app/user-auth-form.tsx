@@ -79,11 +79,6 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
                 <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
                   Password
                 </label>
-                <div className="text-sm">
-                  <a href="#" className="font-semibold text-black hover:text-slate-700">
-                    Forgot password?
-                  </a>
-                </div>
               </div>
               <div className="mt-2">
                 <Input

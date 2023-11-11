@@ -68,6 +68,13 @@ export function UserNav() {
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
+        {userRole === 'trainer' && (
+          <DropdownMenuGroup>
+            <DropdownMenuItem onClick={() => router.push(`/trainer/manage-certificates`)}>
+              <PersonIcon className="mr-2" /> Manage Certificate
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
+        )}
         <DropdownMenuItem onClick={() => router.push('/api/auth/signout')} className="text-red-500">
           <PinRightIcon className="mr-2" /> Log out
         </DropdownMenuItem>

@@ -54,8 +54,8 @@ const SchedulePage: React.FC = () => {
         const updatedEvents = response.data.map((event) => {
           const endTime = new Date(event.EndTime);
           return {
-            ...event,
-            IsReadonly: endTime < currentDate
+            ...event
+            // IsReadonly: endTime < currentDate
           };
         });
 
@@ -173,7 +173,7 @@ const SchedulePage: React.FC = () => {
         editorTemplate={(props: Event) => <CustomScheduleEditor eventData={props} />}
         popupOpen={(args) => {
           let isEmptyCell =
-            args.target.classList.contains('e-work-cells') || args.target.classList.contains('e-header-cells');
+            args.target?.classList.contains('e-work-cells') || args.target?.classList.contains('e-header-cells');
           if (args.type === 'Editor' && isEmptyCell && areaId == null) {
             args.cancel = true;
           }
@@ -182,8 +182,8 @@ const SchedulePage: React.FC = () => {
         <ViewsDirective>
           <ViewDirective option="Day" startHour="06:00" endHour="19:00"></ViewDirective>
           <ViewDirective option="Week" isSelected={true} eventTemplate={eventTemplate}></ViewDirective>
-          <ViewDirective option="TimelineDay"></ViewDirective>
-          <ViewDirective option="Agenda"></ViewDirective>
+          <ViewDirective option="TimelineWeek" eventTemplate={eventTemplate}></ViewDirective>
+          <ViewDirective option="Agenda" eventTemplate={eventTemplate}></ViewDirective>
         </ViewsDirective>
         <Inject services={[Day, Week, Month, Agenda, TimelineViews, TimelineMonth]} />
       </ScheduleComponent>

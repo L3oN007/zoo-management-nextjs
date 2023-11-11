@@ -3,14 +3,13 @@ import { ManageAnimalClient } from './components/client';
 import ErrorPage from '@/app/error/page';
 import axios from 'axios';
 import { format } from 'date-fns';
-import { any } from 'zod';
 
 const ManageAnimalPage = async () => {
   const url = process.env.NEXT_PUBLIC_API_LOAD_ANIMALS;
 
   try {
     // Make the GET request to fetch staff data
-    const response = await axios.get(url + ``);
+    const response = await axios.get(url!);
 
     // Check if the response contains data
     if (response.data === null) {

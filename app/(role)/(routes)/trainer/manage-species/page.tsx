@@ -13,7 +13,7 @@ const ManageSpeciesPage = async () => {
 
     // Check if the response contains data
     if (response.data === null) {
-      // animal not found, set animalData to null
+      // animal not found, set speciesData to null
       return (
         <div className="flex-col">
           <div className="flex-1 space-y-4 p-8 pt-6">
@@ -23,18 +23,18 @@ const ManageSpeciesPage = async () => {
       );
     }
 
-    // Extract animalData from the response
-    let animalData = response.data;
+    // Extract speciesData from the response
+    let speciesData = response.data;
 
-    // If animalData is an array, loop through it and update date format and isDeleted property
-    if (Array.isArray(animalData)) {
-      animalData.forEach((animal: any) => {});
+    // If speciesData is an array, loop through it and update date format and isDeleted property
+    if (Array.isArray(speciesData)) {
+      speciesData.forEach((animal: any) => {});
     }
 
     return (
       <div className="flex-col">
         <div className="flex-1 space-y-4 p-8 pt-6">
-          <ManageSpeciesClient data={animalData} />
+          <ManageSpeciesClient data={speciesData} />
         </div>
       </div>
     );

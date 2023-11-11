@@ -1,4 +1,5 @@
 'use client';
+'use client';
 
 import axios from 'axios';
 import { Calendar, Copy, Edit, MoreHorizontal, Trash } from 'lucide-react';

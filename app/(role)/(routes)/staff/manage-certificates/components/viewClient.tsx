@@ -8,25 +8,30 @@ import { Plus } from "lucide-react"
 import { useParams, useRouter } from "next/navigation"
 import { FC, useState } from "react"
 import { columns } from "./columns"
+import { empColumns } from "./empColumns"
 
 
 interface ManageCertificateClientProps {
-    data: any
+    data: any,
+
 }
 
-export const ManageCertificateClient: FC<ManageCertificateClientProps> = (data) => {
+export const ManageEmpCertificateClient: FC<ManageCertificateClientProps> = ({data}) => {
     const router = useRouter();
+
+   
 
     return (    
         <>
             <div className="flex items-center justify-between">
-                <Heading title={`Certificate (${Object.keys(data.data).length})`} description="List certificate" />
+                <Heading title={`Certificate  of Trainer (${Object.keys(data).length})`} description="Manage Certificate information of trainer" />
 
-              
             </div>
             <Separator />
-            <DataTable columns={columns} data={data.data} searchKey="certificateName" filterOptions={null as any} />
+            
+            <DataTable key="empCertificate" columns={empColumns} data={data} searchKey={"cerCode"}  filterOptions={null as any} />
 
+         
         </>
     )
 }

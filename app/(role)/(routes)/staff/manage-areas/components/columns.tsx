@@ -7,8 +7,10 @@ import { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown, MoreHorizontal } from 'lucide-react';
 import { CellAction } from './cell-action';
 import { DataTableRowActions } from '@/components/data-table/data-table-row-actions';
+import Link from 'next/link';
+import { useState } from 'react';
 
-export type NewsColumn = {
+export type AreaColumn = {
   areaId: string;
   areaName: string;
   employeeId: string;
@@ -17,7 +19,7 @@ export type NewsColumn = {
   };
 };
 
-export const columns: ColumnDef<NewsColumn>[] = [
+export const columns: ColumnDef<AreaColumn>[] = [
   {
     accessorKey: 'areaId',
     header: 'AreaID'
@@ -31,8 +33,16 @@ export const columns: ColumnDef<NewsColumn>[] = [
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
+    },
+    cell: (props) => {
+      return (
+        <Link href={`/staff/manage-cages/${props.row.original.areaId}`}>
+          <span>{props.row.original.areaName}</span>
+        </Link>
+      );
     }
   },
+
   {
     accessorKey: 'employee',
     header: 'Trainer',

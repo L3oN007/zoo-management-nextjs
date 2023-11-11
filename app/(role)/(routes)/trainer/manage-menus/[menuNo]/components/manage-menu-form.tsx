@@ -31,7 +31,18 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from '
 import { cn } from '@/lib/utils';
 
 const formSchema = z.object({
-  menuNo: z.string().min(1, { message: "Schedule's ID is required." }),
+  menuNo: z
+    .string()
+    .trim()
+    .refine(
+      (value) => {
+        const regex = /^MNU\d{3}$/;
+        return regex.test(value);
+      },
+      {
+        message: 'MenuNo must be in format MNUXXX with MNU being an uppercase letter and XXX being a 3 digit number'
+      }
+    ),
   menuName: z.string().min(1, { message: "Schedule's name is required." }),
   foodId: z.string().min(1, { message: 'Food ID is required.' }),
   speciesId: z.number().min(1, { message: 'Species ID is required' })

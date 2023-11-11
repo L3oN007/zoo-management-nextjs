@@ -13,11 +13,10 @@ import { FoodColumn } from "./foodColumns"
 
 interface ManageFoodClientProps {
     data: any,
-    food: any
 
 }
 
-export const ManageFoodClient: FC<ManageFoodClientProps> = ({data, food}) => {
+export const ManageFoodClient: FC<ManageFoodClientProps> = ({data}) => {
     const router = useRouter();
 
    
@@ -25,12 +24,9 @@ export const ManageFoodClient: FC<ManageFoodClientProps> = ({data, food}) => {
     return (    
         <>
             <div className="flex items-center justify-between">
-                <Heading title={`Food (${Object.keys(food).length})`} description="Manage Food in the zoo" />
+                <Heading title={`Food (${Object.keys(data).length})`} description="Manage Food in the zoo" />
                 <div>
-                <Button onClick={() => router.push("/staff/manage-foods/newImport")}>
-                    <Plus className="mr-2 h-4 w-4" />
-                    Add New Import
-                </Button>
+                
                 <Button className="ml-2" onClick={() => router.push("/staff/manage-foods/new")}>
                     <Plus className="mr-2 h-4 w-4" />
                     Add New Food
@@ -38,15 +34,9 @@ export const ManageFoodClient: FC<ManageFoodClientProps> = ({data, food}) => {
                 </div>
             </div>
             <Separator />
-            <div className="flex justify-around">
-            <div className="flex-1">
-            <DataTable key="certificate" columns={columns} data={data} searchKey="foodId" filterOptions={null as any} />
-            </div>
-            <div className="ml-4">
-            <DataTable key="empCertificate" columns={FoodColumn} data={food} searchKey={"foodName"}  filterOptions={null as any} />
+            
+            <DataTable key="empCertificate" columns={FoodColumn} data={data} searchKey={"foodName"}  filterOptions={null as any} />
 
-            </div>
-            </div>
         </>
     )
 }

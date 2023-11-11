@@ -25,7 +25,9 @@ export const CustomScheduleEditor: React.FC<CustomScheduleEditorProps> = ({ even
   // attribute is used for authorizing which trainer can do CRUD
   const areaId = session.data?.user.areaId;
   let readOnly = areaId !== null ? false : true;
+  let readOnlyStatus = false;
 
+  const currentTime = new Date();
   const cageId = eventData?.cageId || '';
   const animalId = eventData?.animalId || '';
   const employeeId = eventData?.employeeId || '';
@@ -35,12 +37,21 @@ export const CustomScheduleEditor: React.FC<CustomScheduleEditorProps> = ({ even
   const startTime = new Date(eventData?.StartTime);
   const endTime = new Date(eventData?.EndTime);
   const note = eventData?.note || '';
+  // condition for update feeding schedule's status
+  if (endTime < currentTime || startTime > currentTime || feedingStatus == 1) {
+    readOnlyStatus = true;
+    // readOnly = true;
+  }
 
+  // conditon
+  if (endTime < currentTime) {
+    readOnly = true;
+  }
   const menuUrl = process.env.NEXT_PUBLIC_API_LOAD_MENUS;
-  const animalUrl = process.env.NEXT_PUBLIC_API_LOAD_ANIMALS;
+  const loadAllAnimal = process.env.NEXT_PUBLIC_API_LOAD_ANIMALS;
   const loadAllTrainers = process.env.NEXT_PUBLIC_API_LOAD_TRAINERS;
 
-  // const animalUrl = process.env.NEXT_PUBLIC_API_LOAD_ANIMAL_BAD_HEALTH_OF_AREA! + areaId;
+  const loadBadHealthAnimal = process.env.NEXT_PUBLIC_API_LOAD_ANIMAL_BAD_HEALTH_OF_AREA! + areaId;
 
   const loadChiefTrainer = process.env.NEXT_PUBLIC_API_LOAD_TRAINER_OF_AREA! + areaId;
 
@@ -49,6 +60,7 @@ export const CustomScheduleEditor: React.FC<CustomScheduleEditorProps> = ({ even
 
   const loadCage = areaId != null ? loadCagesByArea : loadAllCages;
   const loadTrainer = areaId != null ? loadChiefTrainer : loadAllTrainers;
+  const loadAnimal = areaId != null ? loadBadHealthAnimal : loadAllAnimal;
 
   const [menu, setMenu] = useState([]);
   const [cage, setCage] = useState([]);
@@ -69,7 +81,7 @@ export const CustomScheduleEditor: React.FC<CustomScheduleEditorProps> = ({ even
 
       fetchData(menuUrl!, setMenu);
       fetchData(loadCage!, setCage);
-      fetchData(animalUrl!, setAnimal);
+      fetchData(loadAnimal!, setAnimal);
       fetchData(loadTrainer!, setEmployee);
 
       setDataFetched(true);
@@ -213,6 +225,7 @@ export const CustomScheduleEditor: React.FC<CustomScheduleEditorProps> = ({ even
                     placeholder="Choose feeding status"
                     data-name="feedingStatus"
                     className="e-field"
+                    readonly={readOnlyStatus}
                     style={{ width: '100%' }}
                     dataSource={[
                       { text: 'Pending', value: 0 },
@@ -234,6 +247,7 @@ export const CustomScheduleEditor: React.FC<CustomScheduleEditorProps> = ({ even
                     rows={3}
                     className="e-field block w-full rounded-md border-0 py-1.5 pl-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     defaultValue={note}
+                    readOnly={readOnly}
                   />
                 </div>
               </div>
@@ -363,6 +377,7 @@ export const CustomScheduleEditor: React.FC<CustomScheduleEditorProps> = ({ even
                     placeholder="Choose feeding status"
                     data-name="feedingStatus"
                     className="e-field"
+                    readonly={readOnlyStatus}
                     style={{ width: '100%' }}
                     dataSource={[
                       { text: 'Pending', value: 0 },
@@ -384,6 +399,7 @@ export const CustomScheduleEditor: React.FC<CustomScheduleEditorProps> = ({ even
                     rows={3}
                     className="e-field block w-full rounded-md border-0 py-1.5 pl-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     defaultValue={note}
+                    readOnly={readOnly}
                   />
                 </div>
               </div>
