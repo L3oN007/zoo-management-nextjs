@@ -1,15 +1,13 @@
 'use client';
 
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { DateTimePickerComponent } from '@syncfusion/ej2-react-calendars';
 import { DropDownListComponent } from '@syncfusion/ej2-react-dropdowns';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import axios from 'axios';
+import { format } from 'date-fns';
+import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import { Event } from '../modal/event';
-import { format } from 'date-fns';
-import axios from 'axios';
-import { string } from 'zod';
-import { useSession } from 'next-auth/react';
-import { read } from 'fs';
 interface CustomScheduleEditorProps {
   eventData: Event;
 }
@@ -91,7 +89,7 @@ export const CustomScheduleEditor: React.FC<CustomScheduleEditorProps> = ({ even
   let tab = eventData.cageId == null ? `cage` : `animal`;
 
   return (
-    <>
+    <div>
       <input id="createdTime" className="e-field " type="hidden" name="createdTime" defaultValue={createdTime} />
       <Tabs defaultValue={tab} className="w-full">
         <TabsList className="grid w-[200px] grid-cols-2 mb-3">
@@ -407,6 +405,6 @@ export const CustomScheduleEditor: React.FC<CustomScheduleEditorProps> = ({ even
           </div>
         </TabsContent>
       </Tabs>
-    </>
+    </div>
   );
 };
