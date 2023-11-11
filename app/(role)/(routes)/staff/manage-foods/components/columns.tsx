@@ -47,7 +47,7 @@ export const columns: ColumnDef<CertificateColumn>[] = [
     }
   },
   {
-    accessorKey: 'foodId',
+    accessorKey: 'foodInventory.foodName',
     header: 'FoodName',
     cell: (props) => (
       <div className="flex items-center">

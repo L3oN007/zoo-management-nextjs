@@ -90,7 +90,7 @@ export const ManageTrainerForm: React.FC<ManageTrainerFormProps> = ({ initialDat
         await axios.post(urlPost, data);
       }
       router.refresh();
-      router.push(`/staff/manage-trainers`);
+      router.push(`/staff/manage-trainers/normal`);
       toast.success(toastMessage);
     } catch (error: any) {
       toast.error(error.response.data.title);
@@ -104,7 +104,7 @@ export const ManageTrainerForm: React.FC<ManageTrainerFormProps> = ({ initialDat
       setLoading(true);
       await axios.put(urlDelete + `?id=${params.trainerId}`);
       router.refresh();
-      router.push(`/staff/manage-trainers`);
+      router.push(`/staff/manage-trainers/normal`);
       toast.success('Trainer deleted.');
     } catch (error: any) {
       toast.error('Fail to delete.');
