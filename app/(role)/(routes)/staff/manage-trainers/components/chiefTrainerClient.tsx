@@ -19,9 +19,10 @@ export const ManageLeadTrainerClient: FC<ManageLeadTrainerClientProps> = ({ data
   return (
     <>
       <div className="flex items-center justify-between">
-        <Heading title={`Trainer (${Object.keys(data).length})`} description="Manage Trainers' account in the zoo" />
-
-        
+        <Heading
+          title={`ChiefTrainer (${Object.keys(data).length})`}
+          description="Manage Trainers' account in the zoo"
+        />
       </div>
       <Separator />
       <DataTable columns={columns} data={data} searchKey="fullName" placeholder="Search by full name" />

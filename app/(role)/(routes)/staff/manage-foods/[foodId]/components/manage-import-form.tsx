@@ -89,7 +89,7 @@ export const ManageImportForm: React.FC<ManageImportFormProps> = ({ initialData 
         await axios.post(process.env.NEXT_PUBLIC_API_CREATE_IMPORTFOOD!, data);
       }
       router.refresh();
-      router.push(`/staff/manage-foods`);
+      router.push(`/staff/manage-foods/importHistory`);
       toast.success(toastMessage);
     } catch (error: any) {
       toast.error(error.response.data.title);
@@ -104,7 +104,7 @@ export const ManageImportForm: React.FC<ManageImportFormProps> = ({ initialData 
       setLoading(true);
       // await axios.delete(url + `/${params.no}`);
       router.refresh();
-      router.push(`/staff/manage-foods`);
+      router.push(`/staff/manage-foods/importHistory`);
       toast.success('Foods deleted.');
     } catch (error: any) {
       toast.error(error.response.data.title);

@@ -32,7 +32,13 @@ export const ManageCertificateClient: FC<ManageCertificateClientProps> = ({ data
       </div>
       <Separator />
 
-      <DataTable key="certificate" columns={columns} data={data} searchKey="certificateName" filterOptions={null as any} />
+      <DataTable
+        key="certificate"
+        columns={columns}
+        data={data}
+        searchKey="certificateName"
+        placeholder="Search by CertificateName"
+      />
     </>
   );
 };
