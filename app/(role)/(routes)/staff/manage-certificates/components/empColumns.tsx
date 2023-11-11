@@ -40,7 +40,10 @@ export const empColumns: ColumnDef<empCertificateColumn>[] = [
       <div className="flex items-center">
         <span>{props.row.original.employee?.fullName}</span>
       </div>
-    )
+    ),
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id));
+    }
   },
   {
     accessorKey: 'certificate',

@@ -3,14 +3,11 @@ import { Internationalization, registerLicense } from '@syncfusion/ej2-base';
 import {
   Agenda,
   Day,
-  DragAndDrop,
   Inject,
   Month,
-  Resize,
   ScheduleComponent,
   TimelineMonth,
   TimelineViews,
-  Timezone,
   ViewDirective,
   ViewsDirective,
   Week
@@ -22,7 +19,6 @@ import { CustomScheduleEditor } from './components/CustomEditor';
 // import { toast } from 'react-toastify';
 import { toast } from 'react-hot-toast';
 import { useSession } from 'next-auth/react';
-import { constants } from 'buffer';
 registerLicense('Ngo9BigBOggjHTQxAR8/V1NHaF5cXmVCf1JpRGBGfV5yd0VDalhRTnVZUj0eQnxTdEZiWX5bcXZWRmFUVUR2Ww==');
 
 const SchedulePage: React.FC = () => {
@@ -78,8 +74,8 @@ const SchedulePage: React.FC = () => {
         toast.success('Created successfully!');
       })
       .catch((error) => {
-        console.error(error);
         toast.error(error.response.data.title);
+        console.error(error);
       });
   };
 
@@ -123,7 +119,7 @@ const SchedulePage: React.FC = () => {
     return (
       <div className="template-wrap" style={{ background: props.SecondaryColor }}>
         <div className="subject" style={{ background: props.PrimaryColor }}>
-          <div className="flex">{props.cageName}</div>
+          {/* <div className="flex">{props.animalId}</div> */}
         </div>
         <div className="time" style={{ background: props.PrimaryColor }}>
           {' '}
@@ -180,10 +176,13 @@ const SchedulePage: React.FC = () => {
         }}
       >
         <ViewsDirective>
-          <ViewDirective option="Day" startHour="06:00" endHour="19:00"></ViewDirective>
-          <ViewDirective option="Week" isSelected={true} eventTemplate={eventTemplate}></ViewDirective>
-          <ViewDirective option="TimelineWeek" eventTemplate={eventTemplate}></ViewDirective>
-          <ViewDirective option="Agenda" eventTemplate={eventTemplate}></ViewDirective>
+          <ViewDirective
+            option="Week"
+            isSelected={true}
+            eventTemplate={eventTemplate}
+            startHour="05:00"
+            endHour="20:00"
+          ></ViewDirective>
         </ViewsDirective>
         <Inject services={[Day, Week, Month, Agenda, TimelineViews, TimelineMonth]} />
       </ScheduleComponent>
