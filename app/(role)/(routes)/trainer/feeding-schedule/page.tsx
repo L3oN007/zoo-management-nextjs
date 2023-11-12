@@ -2,30 +2,22 @@
 import { Internationalization, registerLicense } from '@syncfusion/ej2-base';
 import {
   Agenda,
-  Day,
-  DragAndDrop,
   Inject,
   Month,
-  Resize,
   ScheduleComponent,
-  TimelineMonth,
-  TimelineViews,
-  Timezone,
   ViewDirective,
-  ViewsDirective,
-  Week
+  ViewsDirective
 } from '@syncfusion/ej2-react-schedule';
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
-import { Event } from './modal/event';
-import { CustomScheduleEditor } from './components/CustomEditor';
-// import { toast } from 'react-toastify';
-import { toast } from 'react-hot-toast';
 import { useSession } from 'next-auth/react';
-import { constants } from 'buffer';
+import React, { useEffect, useRef, useState } from 'react';
+import { toast } from 'react-hot-toast';
+import { CustomScheduleEditor } from './components/CustomEditor';
+import { Event } from './modal/event';
 registerLicense('Ngo9BigBOggjHTQxAR8/V1NHaF5cXmVCf1JpRGBGfV5yd0VDalhRTnVZUj0eQnxTdEZiWX5bcXZWRmFUVUR2Ww==');
 
 const SchedulePage: React.FC = () => {
+  const scheduleObj = useRef(null);
   const [events, setEvents] = useState<Event[]>();
 
   const session = useSession();
@@ -55,7 +47,6 @@ const SchedulePage: React.FC = () => {
           const endTime = new Date(event.EndTime);
           return {
             ...event
-            // IsReadonly: endTime < currentDate
           };
         });
 
@@ -120,44 +111,63 @@ const SchedulePage: React.FC = () => {
   };
 
   const eventTemplate = (props: any) => {
+    const currentView = scheduleObj.current.currentView;
+    if (currentView === 'Agenda') {
+      return (
+        <div className="template-wrap" style={{ background: props.SecondaryColor }}>
+          <div className="subject" style={{ background: props.PrimaryColor }}>
+            <div className="flex">Title 123</div>
+          </div>
+          <div className="time" style={{ background: props.PrimaryColor }}>
+            {' '}
+            Time: {getTimeString(props.StartTime)} - {getTimeString(props.EndTime)}
+          </div>
+        </div>
+      );
+    }
     return (
       <div className="template-wrap" style={{ background: props.SecondaryColor }}>
         <div className="subject" style={{ background: props.PrimaryColor }}>
-          <div className="flex">{props.cageName}</div>
+          <div className="flex">{getTimeString(props.StartTime)} - Title123</div>
         </div>
-        <div className="time" style={{ background: props.PrimaryColor }}>
-          {' '}
-          Time: {getTimeString(props.StartTime)} - {getTimeString(props.EndTime)}
-        </div>
-
-        <div className="event-description">{props.Description}</div>
-        <div className="footer" style={{ background: props.PrimaryColor }}></div>
       </div>
     );
   };
 
   const onEventRendered = (args: any) => {
     const event = args.data as Event;
-
+    const currentView = scheduleObj.current.currentView;
     switch (event.feedingStatus) {
       case 0:
-        args.element.style.backgroundColor = 'black'; // Change to your desired color
+        if (currentView === 'Agenda') {
+          args.element.firstChild.style.borderLeftColor = 'black'; // Change to your desired color
+        } else {
+          args.element.style.backgroundColor = 'black'; // Change to your desired color
+        }
         break;
       case 1:
-        args.element.style.backgroundColor = 'green'; // Change to your desired color
+        if (currentView === 'Agenda') {
+          args.element.firstChild.style.borderLeftColor = 'green'; // Change to your desired color
+        } else {
+          args.element.style.backgroundColor = 'green'; // Change to your desired color
+        } // Change to your desired color
         break;
       default:
         // Default background color if neither 0 nor 1
-        args.element.style.backgroundColor = 'your_default_color'; // Change to your desired default color
+        args.element.style.backgroundColor = 'red'; // Change to your desired default color
         break;
     }
   };
+  const timeScale = { enable: true, interval: 60, slotCount: 6 };
 
   return (
     <div>
       <ScheduleComponent
+        ref={scheduleObj}
+        timeScale={timeScale}
+        currentView="Month"
         width="100%"
-        height="100%"
+        height="650px"
         eventSettings={{ dataSource: events }}
         actionBegin={(args) => {
           if (args.requestType === 'eventCreate') {
@@ -180,12 +190,15 @@ const SchedulePage: React.FC = () => {
         }}
       >
         <ViewsDirective>
-          <ViewDirective option="Day" startHour="06:00" endHour="19:00"></ViewDirective>
-          <ViewDirective option="Week" isSelected={true} eventTemplate={eventTemplate}></ViewDirective>
-          <ViewDirective option="TimelineWeek" eventTemplate={eventTemplate}></ViewDirective>
-          <ViewDirective option="Agenda" eventTemplate={eventTemplate}></ViewDirective>
+          <ViewDirective option="Month" eventTemplate={eventTemplate} startHour="05:00" endHour="20:00"></ViewDirective>
+          <ViewDirective
+            option="Agenda"
+            eventTemplate={eventTemplate}
+            startHour="05:00"
+            endHour="20:00"
+          ></ViewDirective>
         </ViewsDirective>
-        <Inject services={[Day, Week, Month, Agenda, TimelineViews, TimelineMonth]} />
+        <Inject services={[Month, Agenda]} />
       </ScheduleComponent>
     </div>
   );
