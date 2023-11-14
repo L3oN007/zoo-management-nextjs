@@ -14,7 +14,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { CustomScheduleEditor } from './components/CustomEditor';
 import { Event } from './modal/event';
-registerLicense('Ngo9BigBOggjHTQxAR8/V1NHaF5cXmVCf1JpRGBGfV5yd0VDalhRTnVZUj0eQnxTdEZiWX5bcXZWRmFUVUR2Ww==');
+registerLicense('ORg4AjUWIQA/Gnt2VlhhQlJCfV5AQmJKYVF2R2BJelR1c19GYkwgOX1dQl9gSH9SdUVmXHdfeHRdT2E=');
 
 const SchedulePage: React.FC = () => {
   const scheduleObj = useRef(null);
@@ -167,7 +167,7 @@ const SchedulePage: React.FC = () => {
         timeScale={timeScale}
         currentView="Month"
         width="100%"
-        height="650px"
+        height="950px"
         eventSettings={{ dataSource: events }}
         actionBegin={(args) => {
           if (args.requestType === 'eventCreate') {
