@@ -204,7 +204,7 @@ export const ManageStaffForm: React.FC<ManageStaffFormProps> = ({
                   <FormControl>
                     <Input
                       disabled={loading}
-                      placeholder="Billboard label"
+                      placeholder="Full Name"
                       {...field}
                     />
                   </FormControl>
@@ -222,7 +222,7 @@ export const ManageStaffForm: React.FC<ManageStaffFormProps> = ({
                     <Input
                       type="text"
                       disabled={loading}
-                      placeholder="Billboard label"
+                      placeholder="Citizen ID"
                       {...field}
                     />
                   </FormControl>
@@ -240,7 +240,7 @@ export const ManageStaffForm: React.FC<ManageStaffFormProps> = ({
                     <Input
                       type="email"
                       disabled={loading}
-                      placeholder="Billboard label"
+                      placeholder="Email"
                       {...field}
                     />
                   </FormControl>
@@ -258,7 +258,7 @@ export const ManageStaffForm: React.FC<ManageStaffFormProps> = ({
                     <Input
                       type="tel"
                       disabled={loading}
-                      placeholder="Billboard label"
+                      placeholder="Phone number"
                       {...field}
                     />
                   </FormControl>
