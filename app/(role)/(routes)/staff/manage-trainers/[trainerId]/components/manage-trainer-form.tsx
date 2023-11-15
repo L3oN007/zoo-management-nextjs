@@ -173,7 +173,7 @@ export const ManageTrainerForm: React.FC<ManageTrainerFormProps> = ({ initialDat
                 <FormItem>
                   <FormLabel>Full Name</FormLabel>
                   <FormControl>
-                    <Input disabled={loading} placeholder="Billboard label" {...field} />
+                    <Input disabled={loading} placeholder="Full Name" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -186,7 +186,7 @@ export const ManageTrainerForm: React.FC<ManageTrainerFormProps> = ({ initialDat
                 <FormItem>
                   <FormLabel>Citizen ID:</FormLabel>
                   <FormControl>
-                    <Input type="text" disabled={loading} placeholder="Billboard label" {...field} />
+                    <Input type="text" disabled={loading} placeholder="Citizen ID" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -199,7 +199,7 @@ export const ManageTrainerForm: React.FC<ManageTrainerFormProps> = ({ initialDat
                 <FormItem>
                   <FormLabel>Email:</FormLabel>
                   <FormControl>
-                    <Input type="email" disabled={loading} placeholder="Billboard label" {...field} />
+                    <Input type="email" disabled={loading} placeholder="Email" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -212,7 +212,7 @@ export const ManageTrainerForm: React.FC<ManageTrainerFormProps> = ({ initialDat
                 <FormItem>
                   <FormLabel>Phone:</FormLabel>
                   <FormControl>
-                    <Input type="tel" disabled={loading} placeholder="Billboard label" {...field} />
+                    <Input type="tel" disabled={loading} placeholder="Phone" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -261,7 +261,7 @@ export const ManageTrainerForm: React.FC<ManageTrainerFormProps> = ({ initialDat
                         type="hidden"
                         defaultValue={'0'}
                         disabled={loading}
-                        placeholder="Billboard label"
+                        placeholder="Employee Status"
                         {...field}
                       />
                     </FormControl>

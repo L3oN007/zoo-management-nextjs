@@ -20,7 +20,7 @@ export const ManageImportClient: FC<ManageImportClientProps> = ({ data }) => {
   return (
     <>
       <div className="flex items-center justify-between">
-        <Heading title={`ImportFood (${Object.keys(data).length})`} description="Manage Food in the zoo" />
+        <Heading title={`ImportFood (${Object.keys(data).length})`} description="Manage Import Food History in the zoo" />
         <div>
           <Button onClick={() => router.push('/staff/manage-foods/newImport')}>
             <Plus className="mr-2 h-4 w-4" />
