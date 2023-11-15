@@ -54,7 +54,7 @@ const formSchema = z.object({
   rarity: z.string().min(1, { message: 'Rarity is required.' }),
   employeeId: z.string().min(1, { message: 'Trainer is required.' }),
   cageId: z.string().min(1, { message: 'Cage is required.' }),
-  speciesId: z.number().min(1, { message: 'Species is required.' })
+  speciesId: z.number()
 });
 
 type ManageAnimalFormValues = z.infer<typeof formSchema>;
@@ -513,7 +513,7 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
                 </FormItem>
               )}
             />
-            <FormField
+            {/* <FormField
               control={form.control}
               name="speciesId"
               render={({ field }) => (
@@ -566,7 +566,7 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
                   <FormMessage />
                 </FormItem>
               )}
-            />
+            /> */}
 
             {initialData ? (
               <FormField
@@ -584,15 +584,15 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue>
-                            {field.value == 1 ? 'Bad' : field.value == 2 ? 'Good' : 'Undefined'}
+                            {field.value == 2 ? 'Bad' : field.value == 1 ? 'Good' : 'Undefined'}
                           </SelectValue>
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
                         <SelectGroup>
                           <SelectLabel>Health Status</SelectLabel>
-                          <SelectItem value="2">Good</SelectItem>
-                          <SelectItem value="1">Bad</SelectItem>
+                          <SelectItem value="1">Good</SelectItem>
+                          <SelectItem value="2">Bad</SelectItem>
                           <SelectItem value="0">Undefined</SelectItem>
                         </SelectGroup>
                       </SelectContent>
@@ -673,6 +673,24 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
                 )}
               />
             )}
+            <FormField
+              control={form.control}
+              name="speciesId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input
+                      type="hidden"
+                      defaultValue={'0'}
+                      disabled={loading}
+                      placeholder="Billboard label"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
           <Button disabled={loading} className="ml-auto" type="submit">
             {action}
@@ -682,3 +700,4 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
     </>
   );
 };
+

@@ -140,11 +140,6 @@ export const SidebarRoutes = () => {
   } else if (role === 'trainer') {
     routes = [
       {
-        icon: Compass,
-        label: 'Overview',
-        href: '/trainer'
-      },
-      {
         icon: CalendarCheckIcon,
         label: 'Feeding Schedule',
         href: '/trainer/feeding-schedule'

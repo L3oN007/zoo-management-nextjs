@@ -17,7 +17,7 @@ export default async function DRedirectLayout({ children }: { children: React.Re
     redirect('/staff');
   }
   if (userRole === 'trainer') {
-    redirect('/trainer');
+    redirect('/trainer/feeding-schedule');
   }
   return <>{children}</>;
 }
