@@ -41,7 +41,10 @@ export const columns: ColumnDef<MenuColumn>[] = [
   },
   {
     accessorKey: 'animalSpecies.speciesName',
-    header: 'Species'
+    header: 'Species',
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id));
+    }
   },
   {
     id: 'actions',
