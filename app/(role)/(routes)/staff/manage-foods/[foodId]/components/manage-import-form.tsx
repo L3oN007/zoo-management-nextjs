@@ -25,9 +25,10 @@ import {
   SelectValue
 } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
+import format from 'date-fns/format';
 
 const formSchema = z.object({
-  importDate: z.string().min(1, { message: 'Import Date is required.' }),
+  importDate: z.string().nullable(),
   importQuantity: z.coerce.number().refine((value) => value > 0, {
     message: 'Import Quantity must be greater than 0.'
   }),
@@ -79,6 +80,7 @@ export const ManageImportForm: React.FC<ManageImportFormProps> = ({ initialData 
   });
 
   const onSubmit = async (data: ManageImportFormValues) => {
+    data.importDate = format(new Date(), 'MM/dd/yyyy');
     console.log(params.foodId);
     console.log('abc');
     try {
@@ -143,19 +145,7 @@ export const ManageImportForm: React.FC<ManageImportFormProps> = ({ initialData 
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="importDate"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>ImportDate</FormLabel>
-                  <FormControl>
-                    <Input type="date" disabled={loading} placeholder="ImportDate" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+           
             <FormField
               control={form.control}
               name="foodId"
@@ -189,6 +179,19 @@ export const ManageImportForm: React.FC<ManageImportFormProps> = ({ initialData 
                       </SelectGroup>
                     </SelectContent>
                   </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="importDate"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input type='hidden' disabled={loading} placeholder="ImportDate" {...field} />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
