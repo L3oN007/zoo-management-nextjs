@@ -271,7 +271,7 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
                 <FormItem>
                   <FormLabel>Animal Name</FormLabel>
                   <FormControl>
-                    <Input disabled={loading} placeholder="Animal name" {...field} />
+                    <Input disabled={loading} placeholder="ex: Panda" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -612,7 +612,7 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
                         type="hidden"
                         defaultValue={'0'}
                         disabled={loading}
-                        placeholder="Billboard label"
+                        placeholder="Health Status"
                         {...field}
                       />
                     </FormControl>
@@ -664,7 +664,7 @@ export const ManageAnimalForm: React.FC<ManageAnimalFormProps> = ({ initialData 
                         type="hidden"
                         defaultValue={'0'}
                         disabled={loading}
-                        placeholder="Billboard label"
+                        placeholder="Status"
                         {...field}
                       />
                     </FormControl>

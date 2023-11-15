@@ -1,5 +1,5 @@
 import { Separator } from '@/components/ui/separator';
-import { AccountForm } from './account-form';
+import { ProfileForm } from './account-form';
 import { useSession } from 'next-auth/react';
 
 export default function SettingsAccountPage() {
@@ -13,7 +13,7 @@ export default function SettingsAccountPage() {
 				</p>
 			</div> */}
       {/* <Separator /> */}
-      <AccountForm initialData={session.data} />
+      <ProfileForm initialData={session.data} />
     </div>
   );
 }

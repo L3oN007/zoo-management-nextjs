@@ -21,7 +21,7 @@ export const ManageLeadTrainerClient: FC<ManageLeadTrainerClientProps> = ({ data
       <div className="flex items-center justify-between">
         <Heading
           title={`ChiefTrainer (${Object.keys(data).length})`}
-          description="Manage Trainers' account in the zoo"
+          description="Manage Chief Trainers' account in the zoo"
         />
       </div>
       <Separator />

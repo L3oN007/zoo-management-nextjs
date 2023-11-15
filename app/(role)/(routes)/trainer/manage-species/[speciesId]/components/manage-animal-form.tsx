@@ -139,7 +139,7 @@ export const ManageSpeciesForm: React.FC<ManageSpeciesFormProps> = ({ initialDat
                 <FormItem>
                   <FormLabel>Species Name</FormLabel>
                   <FormControl>
-                    <Input disabled={loading} placeholder="Billboard label" {...field} />
+                    <Input disabled={loading} placeholder="ex: Tiger" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
