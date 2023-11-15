@@ -28,7 +28,7 @@ import { Separator } from '@/components/ui/separator';
 import { log } from 'console';
 
 const formSchema = z.object({
-  speciesId: z.coerce.number(),
+  speciesId: z.number().nullable(),
   speciesName: z.string().min(1, { message: "Species' name is required." })
 });
 
@@ -59,7 +59,8 @@ export const ManageSpeciesForm: React.FC<ManageSpeciesFormProps> = ({ initialDat
   const form = useForm<ManageSpeciesFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: initialData || {
-      speciesName: ''
+      speciesName: '',
+      speciesId: 0
     }
   });
 
@@ -119,19 +120,7 @@ export const ManageSpeciesForm: React.FC<ManageSpeciesFormProps> = ({ initialDat
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
           <div className="md:grid md:grid-cols-3 gap-8">
-          <FormField
-              control={form.control}
-              name="speciesId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Species ID</FormLabel>
-                  <FormControl>
-                    <Input disabled={loading} placeholder="SpeciesID" readOnly={initialData ? true : false} {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+         
             <FormField
               control={form.control}
               name="speciesName"
@@ -140,6 +129,19 @@ export const ManageSpeciesForm: React.FC<ManageSpeciesFormProps> = ({ initialDat
                   <FormLabel>Species Name</FormLabel>
                   <FormControl>
                     <Input disabled={loading} placeholder="ex: Tiger" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+<FormField
+              control={form.control}
+              name="speciesId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input disabled={loading} placeholder="SpeciesID" type='hidden' readOnly={initialData ? true : false} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
