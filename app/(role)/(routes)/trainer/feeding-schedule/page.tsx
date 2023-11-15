@@ -116,7 +116,8 @@ const SchedulePage: React.FC = () => {
       return (
         <div className="template-wrap" style={{ background: props.SecondaryColor }}>
           <div className="subject" style={{ background: props.PrimaryColor }}>
-            <div className="flex">Title 123</div>
+            <div className="flex">{props.cageId != null ? `Cage: ${props.cageId}` : `Animal: ${props.animalId}`}</div>
+            <div>Employee: {props.employeeId}</div>
           </div>
           <div className="time" style={{ background: props.PrimaryColor }}>
             {' '}
@@ -128,7 +129,10 @@ const SchedulePage: React.FC = () => {
     return (
       <div className="template-wrap" style={{ background: props.SecondaryColor }}>
         <div className="subject" style={{ background: props.PrimaryColor }}>
-          <div className="flex">{getTimeString(props.StartTime)} - Title123</div>
+          <div className="flex">
+            {getTimeString(props.StartTime)} -{' '}
+            {props.cageId != null ? `Cage: ${props.cageId}` : `Animal: ${props.animalId}`}
+          </div>
         </div>
       </div>
     );
